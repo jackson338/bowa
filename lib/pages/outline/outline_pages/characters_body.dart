@@ -14,7 +14,7 @@ class CharactersBody extends StatelessWidget {
     return BlocProvider(
       create: (context) => OutlineBloc(),
       child: BlocBuilder<OutlineBloc, OutlineState>(
-        buildWhen: (previous, current) => previous.characters != current.characters,
+        buildWhen: (previous, current) => previous.characters != outlineState.characters,
         builder: (outlineContext, state) {
           if (outlineState.characters.isNotEmpty) {
             outlineContext
