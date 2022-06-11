@@ -67,7 +67,9 @@ class OutlineExpandedPage extends StatelessWidget {
                         outlineExpandedBloc: context.read<OutlineExpandedBloc>(),
                       )
                     : state.bodySelected == 'three'
-                        ? DetailsBodyExpanded()
+                        ? DetailsBodyExpanded(
+                            outlineBloc: outlineBloc,
+                          )
                         : OutlineBodyExpanded(
                             state: state,
                             outlineBloc: context.read<OutlineExpandedBloc>(),

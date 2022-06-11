@@ -1,6 +1,7 @@
+
+
 import 'package:bowa/bloc/outline/outline.dart';
 import 'package:bowa/bloc/outline_expanded/outline_expanded.dart';
-import 'package:bowa/pages/outline/outline_expanded_pages/outline_expanded_page.dart';
 import 'package:bowa/widgets/story_point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

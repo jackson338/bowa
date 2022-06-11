@@ -43,9 +43,10 @@ class CharactersBodyExpanded extends StatelessWidget {
                         //character
                         return ExpansionTile(
                           title: Center(
-                              child: TextField(
-                            controller: name,
-                          )),
+                            child: TextField(
+                              controller: name,
+                            ),
+                          ),
                           //character descriptions
                           children: [
                             Padding(

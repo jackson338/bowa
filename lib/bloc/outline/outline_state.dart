@@ -4,7 +4,7 @@ class OutlineState {
   final List<TextEditingController> storyPoint;
   final List<List<TextEditingController>> subPoint;
   final List<List<TextEditingController>> characters;
-  final List<List<TextEditingController>> details;
+  final List<TextEditingController> details;
   final String bodySelected;
 
   const OutlineState({
@@ -19,7 +19,7 @@ class OutlineState {
     final List<TextEditingController>? storyPoint,
     final List<List<TextEditingController>>? subPoint,
     final List<List<TextEditingController>>? characters,
-    final List<List<TextEditingController>>? details,
+    final List<TextEditingController>? details,
     final String? bodySelected,
   }) {
     return OutlineState(

@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.6.1 (swiftlang-5.6.0.323.66 clang-1316.0.20.12)"
-options: "771ba61dc8176d836ef38f77c180336b7d6069f9022f0feda71b83753d684aa9"
-build_start_time: [1654272468, 57749986]
-build_end_time: [1654272486, 904004096]
-inputs:
-  "/Users/Dan/Downloads/Business/apps/bowa_folder/bowa/ios/Runner/AppDelegate.swift": [1631549366, 449297428]

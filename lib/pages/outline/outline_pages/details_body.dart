@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailsBody extends StatelessWidget {
+  final OutlineState outlineState;
   const DetailsBody({
+    required this.outlineState,
     Key? key,
   }) : super(key: key);
 
@@ -12,12 +14,16 @@ class DetailsBody extends StatelessWidget {
     return BlocProvider(
       create: (context) => OutlineBloc(),
       child: BlocBuilder<OutlineBloc, OutlineState>(
-        buildWhen: (previous, current) => previous != current,
+        buildWhen: (previous, current) => previous.characters != current.characters,
         builder: (outlineContext, state) {
+          if (outlineState.characters.isNotEmpty) {
+            outlineContext.read<OutlineBloc>().updateDetailState(outlineState.details);
+          }
           return Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             color: Colors.grey,
+            //ListView of detail expansion tiles
             child: ListView(
               children: [
                 SizedBox(
@@ -29,26 +35,16 @@ class DetailsBody extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 1.3,
                         child: ListView.builder(
-                          itemCount: 5,
+                          itemCount: state.details.length,
                           itemBuilder: ((context, index) {
-                            //character
-                            return const ExpansionTile(
-                              title: Center(child: Text('details')),
-                              //character descriptions
+                            //detail
+                            return ExpansionTile(
+                              title: Center(child: Text(state.details[index].text)),
+                              //detail description
                               children: [
-                                Align(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text('The sky is blue and the sun is also blue. This doesn\'t really effect the lighting but the sun is blue'),
-                                  ),
-                                ),
                                 Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text('The ships name is the borealis'),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text('The robots name is aurora. Your name is Evan.'),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(state.details[index].text),
                                 ),
                               ],
                             );

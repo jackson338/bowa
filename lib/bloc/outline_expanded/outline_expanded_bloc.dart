@@ -35,7 +35,7 @@ class OutlineExpandedBloc extends Cubit<OutlineExpandedState> {
     emit(state.copyWith(subPoint: subPoints));
   }
 
-   void selectBody(String val) {
+  void selectBody(String val) {
     emit(state.copyWith(bodySelected: val));
   }
 
@@ -78,4 +78,11 @@ class OutlineExpandedBloc extends Cubit<OutlineExpandedState> {
     emit(state.copyWith(characters: character));
   }
 
+  void addDetail() {
+    List<TextEditingController> detail = [];
+    TextEditingController description = TextEditingController();
+    if (state.details.isNotEmpty) detail.addAll(state.details);
+    detail.add(description);
+    emit(state.copyWith(details: detail));
+  }
 }

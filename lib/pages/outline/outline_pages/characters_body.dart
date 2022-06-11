@@ -14,10 +14,12 @@ class CharactersBody extends StatelessWidget {
     return BlocProvider(
       create: (context) => OutlineBloc(),
       child: BlocBuilder<OutlineBloc, OutlineState>(
-        buildWhen: (previous, current) => previous != current,
+        buildWhen: (previous, current) => previous.characters != current.characters,
         builder: (outlineContext, state) {
           if (outlineState.characters.isNotEmpty) {
-            outlineContext.read<OutlineBloc>().updateCharacterState(outlineState.characters);
+            outlineContext
+                .read<OutlineBloc>()
+                .updateCharacterState(outlineState.characters);
           }
           return Container(
             width: MediaQuery.of(context).size.width,
@@ -38,23 +40,23 @@ class CharactersBody extends StatelessWidget {
                           itemBuilder: ((context, index) {
                             //character
                             return ExpansionTile(
-                                    title: Center(child: Text(state.characters[index][0].text)),
-                                    //character descriptions
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(state.characters[index][1].text),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(state.characters[index][2].text),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(state.characters[index][3].text),
-                                      ),
-                                    ],
-                                  );
+                              title: Center(child: Text(state.characters[index][0].text)),
+                              //character descriptions
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(state.characters[index][1].text),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(state.characters[index][2].text),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(state.characters[index][3].text),
+                                ),
+                              ],
+                            );
                           }),
                         ),
                       ),

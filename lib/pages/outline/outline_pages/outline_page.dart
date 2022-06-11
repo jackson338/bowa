@@ -82,10 +82,12 @@ class OutlinePage extends StatelessWidget {
               ),
               body: state.bodySelected == 'two'
                   ? CharactersBody(
-                    outlineState: state,
+                      outlineState: state,
                     )
                   : state.bodySelected == 'three'
-                      ? DetailsBody()
+                      ? DetailsBody(
+                          outlineState: state,
+                        )
                       : OutlineBody(state: state),
             );
           },
