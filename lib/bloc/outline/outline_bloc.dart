@@ -76,4 +76,12 @@ class OutlineBloc extends Cubit<OutlineState> {
   void updateDetailState(List<TextEditingController> details) {
     emit(state.copyWith(details: details));
   }
+
+    void addDetail(List<TextEditingController> details) {
+    List<TextEditingController> detail = [];
+    TextEditingController description = TextEditingController();
+    if (state.details.isNotEmpty) detail.addAll(state.details);
+    detail.add(description);
+    emit(state.copyWith(details: detail));
+  }
 }
