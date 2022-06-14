@@ -1,5 +1,3 @@
-
-
 import 'package:bowa/bloc/outline/outline.dart';
 import 'package:bowa/bloc/outline_expanded/outline_expanded.dart';
 import 'package:bowa/widgets/story_point.dart';
@@ -45,6 +43,8 @@ class OutlineBody extends StatelessWidget {
                                     OutlineExpandedBloc(outlineState: state),
                                 child: BlocBuilder<OutlineExpandedBloc,
                                     OutlineExpandedState>(
+                                  buildWhen: (previous, current) =>
+                                      state.storyPoint != current.storyPoint,
                                   builder: (context, expandedState) {
                                     return StoryPointWidget(
                                       editing: false,

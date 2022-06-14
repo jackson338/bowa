@@ -14,7 +14,7 @@ class DetailsBody extends StatelessWidget {
     return BlocProvider(
       create: (context) => OutlineBloc(),
       child: BlocBuilder<OutlineBloc, OutlineState>(
-        buildWhen: (previous, current) => outlineState.details != current.details,
+        buildWhen: (previous, current) => previous.details != outlineState.details,
         builder: (outlineContext, state) {
           if (outlineState.details.isNotEmpty) {
             outlineContext.read<OutlineBloc>().updateDetailState(outlineState.details);

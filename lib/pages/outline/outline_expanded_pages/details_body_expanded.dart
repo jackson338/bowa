@@ -53,7 +53,7 @@ class DetailsBodyExpanded extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           outlineContext.read<OutlineExpandedBloc>().addDetail();
-                          outlineBloc.updateDetailState(state.details);
+                          outlineBloc.addDetail();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
