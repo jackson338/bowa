@@ -92,7 +92,7 @@ class EditingPage extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 5,
                           child: ListView.builder(
                             itemCount: state.chapters.length,
-                            itemBuilder: ((context, index) {
+                            itemBuilder: (context, index) {
                               return Column(
                                 children: [
                                   TextButton(
@@ -171,7 +171,7 @@ class EditingPage extends StatelessWidget {
                                     ),
                                 ],
                               );
-                            }),
+                            },
                           ),
                         );
                       },

@@ -22,31 +22,31 @@ class WritingBookItem extends StatelessWidget {
         onTap: () {
           onBookTap(id, bookTitle);
         },
-        child: SizedBox(
-          child: Column(
-            children: [
-              Expanded(
-                flex: 1,
-                child: SizedBox(
-                  height: 70,
-                  width: 60,
-                  child: coverArt,
-                ),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: coverArt,
               ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(bookTitle),
-                ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: Text(bookTitle),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+
   void onBookTap(String id, String title) {
-    Navigator.push(context, MaterialPageRoute(builder: (editContext) => ChapterListPage(title: title)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (editContext) => ChapterListPage(title: title)));
   }
 }

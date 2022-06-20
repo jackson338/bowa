@@ -16,7 +16,7 @@ class WritingBookList extends StatelessWidget {
   Widget build(BuildContext context) {
     return OrientationBuilder(builder: (context, orient) {
       return GridView.count(
-        crossAxisCount: orient == Orientation.portrait ? 3 : 4,
+        crossAxisCount: orient == Orientation.portrait ? 2 : 3,
         children: List.generate(
           titleList.length,
           (index) {

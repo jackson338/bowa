@@ -105,7 +105,9 @@ class BooksPage extends StatelessWidget {
                     child: Card(
                       elevation: 2,
                       child: TextButton(
-                        onPressed: context.read<WritingBloc>().newProject,
+                        onPressed: () {
+                          newDraft(context, context.read<WritingBloc>());
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Row(
@@ -130,6 +132,85 @@ class BooksPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  void newDraft(BuildContext context, WritingBloc bloc) {
+    final TextEditingController titleController = TextEditingController();
+    showModalBottomSheet(
+      isDismissible: true,
+      context: context,
+      builder: (sheetContext) {
+        return BlocProvider(
+          create: (context) => WritingBloc(context: context),
+          child: BlocBuilder<WritingBloc, WritingState>(
+            buildWhen: (previous, current) =>
+                previous.coverArtList != current.coverArtList,
+            builder: (context, state) {
+              WritingBloc writingBloc = context.read<WritingBloc>();
+              return Container(
+                color: Colors.grey,
+                height: MediaQuery.of(context).size.height / 1.5,
+                child: Column(
+                  children: [
+                    //pop-up title text
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('new book'),
+                    ),
+                    //title name text field
+                    TextField(
+                      autofocus: true,
+                      decoration: const InputDecoration(hintText: 'Book Title'),
+                      controller: titleController,
+                    ),
+                    //submit button
+                    Card(
+                      color: Theme.of(context).backgroundColor,
+                      elevation: 3,
+                      child: TextButton(
+                        onPressed: () {
+                          bloc.createDraft(
+                              titleController, sheetContext, writingBloc.state);
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Text(
+                            'Create Draft',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: writingBloc.getFromGallery,
+                          child: Row(
+                            children: const [
+                              Text('Add Image'),
+                              Icon(Icons.add),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: 60,
+                          child: state.coverArtList == null
+                              ? Image.asset('lib/images/IMG-1124.jpg')
+                              : state.coverArtList!.isNotEmpty
+                                  ? state.coverArtList!.last
+                                  : Image.asset('lib/images/IMG-1124.jpg'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

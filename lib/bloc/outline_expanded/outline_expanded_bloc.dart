@@ -9,7 +9,7 @@ class OutlineExpandedBloc extends Cubit<OutlineExpandedState> {
 
   void init() {
     emit(state.copyWith(
-        storyPoint: outlineState.storyPoint, subPoint: outlineState.subPoint));
+        storyPoint: outlineState.storyPoint, subPoint: outlineState.subPoint, bodySelected: outlineState.bodySelected));
   }
 
   void addPoint(TextEditingController controller) {
