@@ -5,14 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChapterListPage extends StatelessWidget {
   final String title;
-  const ChapterListPage({Key? key, required this.title}) : super(key: key);
+  final String id;
+  const ChapterListPage({
+    Key? key,
+    required this.title,
+    required this.id,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     RegExp wordCount = RegExp(r"[\w-._]+");
     Iterable matches = [];
     return BlocProvider(
-      create: (context) => ChapterListBloc(context: context),
+      create: (context) => ChapterListBloc(context: context, id: id),
       child: BlocBuilder<ChapterListBloc, ChapterListState>(
         builder: (editContext, state) {
           int totalCount = 0;
@@ -94,6 +99,7 @@ class ChapterListPage extends StatelessWidget {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => EditingPage(
+                                            id: id,
                                             title: title,
                                             chapterListBloc:
                                                 editContext.read<ChapterListBloc>(),
@@ -147,7 +153,7 @@ class ChapterListPage extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                           const Spacer(),
+                                            const Spacer(),
                                             Align(
                                               child: ReorderableDragStartListener(
                                                 index: index,
@@ -165,8 +171,8 @@ class ChapterListPage extends StatelessWidget {
                                                       ),
                                                       Icon(
                                                         Icons.drag_handle,
-                                                        color:
-                                                            Theme.of(context).primaryColor,
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
                                                       ),
                                                     ],
                                                   ),

@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OutlinePage extends StatelessWidget {
+  final String id;
   const OutlinePage({
+    required this.id,
     Key? key,
   }) : super(key: key);
 
@@ -18,7 +20,7 @@ class OutlinePage extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: BlocProvider(
-        create: (context) => OutlineBloc(),
+        create: (context) => OutlineBloc(id: id),
         child: BlocBuilder<OutlineBloc, OutlineState>(
           buildWhen: (previous, current) => previous != current,
           builder: (outlineContext, state) {
@@ -79,7 +81,9 @@ class OutlinePage extends StatelessWidget {
                       ? DetailsBody(
                           outlineState: state,
                         )
-                      : OutlineBody(state: state),
+                      : OutlineBody(
+                          outlineBloc: outlineContext.read<OutlineBloc>(),
+                        ),
             );
           },
         ),

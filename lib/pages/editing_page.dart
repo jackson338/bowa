@@ -1,6 +1,5 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/editing/editing.dart';
-import 'package:bowa/bloc/outline/outline.dart';
 import 'package:bowa/pages/outline/outline_pages/outline_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,11 +8,14 @@ class EditingPage extends StatelessWidget {
   final String title;
   final ChapterListBloc chapterListBloc;
   final ChapterListState chapterListState;
+  final String id;
+
   const EditingPage({
     Key? key,
     required this.title,
     required this.chapterListBloc,
     required this.chapterListState,
+    required this.id,
   }) : super(key: key);
 
   @override
@@ -50,7 +52,9 @@ class EditingPage extends StatelessWidget {
                     width: orient == Orientation.portrait
                         ? MediaQuery.of(context).size.width / 1.8
                         : MediaQuery.of(context).size.width / 3,
-                    child: const OutlinePage(),
+                    child: OutlinePage(
+                      id: id,
+                    ),
                   );
                 },
               ),

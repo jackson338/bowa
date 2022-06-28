@@ -67,20 +67,21 @@ class OutlineBodyExpanded extends StatelessWidget {
                               StoryPointWidget(
                                 editing: true,
                                 stateIndex: index,
-                                state: state,
+                                outlineExpandedBloc: outlineExpandedBloc,
+                                outlineBloc: outlineBloc,
                               ),
                               if (index == state.storyPoint.length - 1)
                                 TextButton(
                                   onPressed: () {
                                     TextEditingController control =
                                         TextEditingController();
-                                    List<TextEditingController> subControl = [];
-                                    TextEditingController cont = TextEditingController();
-                                    outlineBloc.addParentSubPoint(
-                                        index + 1, subControl, cont);
+                                    // List<TextEditingController> subControl = [];
+                                    // TextEditingController cont = TextEditingController();
+                                    // outlineBloc.addParentSubPoint(
+                                    //     index + 1, subControl, cont);
                                     outlineBloc.addPoint(control);
-                                    outlineExpandedBloc.addParentSubPoint(
-                                        index + 1, subControl, cont);
+                                    // outlineExpandedBloc.addParentSubPoint(
+                                    //     index + 1, subControl, cont);
                                     outlineExpandedBloc.addPoint(control);
                                   },
                                   child: Padding(

@@ -61,7 +61,12 @@ class BooksPage extends StatelessWidget {
                             color: state.reading ? Colors.white : Colors.grey,
                             elevation: 3,
                             child: TextButton(
-                              onPressed: context.read<BooksBloc>().writing,
+                              onPressed: () {
+                                if (!context.read<WritingBloc>().state.titlesUpdated) {
+                                  context.read<WritingBloc>().updateTitles();
+                                }
+                                context.read<BooksBloc>().writing();
+                              },
                               child: const Padding(
                                 padding: EdgeInsets.all(5.0),
                                 child: Text(
@@ -90,6 +95,7 @@ class BooksPage extends StatelessWidget {
                                   coverArtList:
                                       context.read<WritingBloc>().state.coverArtList ??
                                           [],
+                                          ids: state.idList,
                                 );
                               },
                             ),
@@ -172,6 +178,7 @@ class BooksPage extends StatelessWidget {
                         onPressed: () {
                           bloc.createDraft(
                               titleController, sheetContext, writingBloc.state);
+                          // Navigator.of(context).pop();
                         },
                         child: const Padding(
                           padding: EdgeInsets.all(5.0),

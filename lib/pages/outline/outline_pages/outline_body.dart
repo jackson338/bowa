@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OutlineBody extends StatelessWidget {
-  final OutlineState state;
+  final OutlineBloc outlineBloc;
   const OutlineBody({
     Key? key,
-    required this.state,
+    required this.outlineBloc,
   }) : super(key: key);
 
   @override
@@ -34,22 +34,24 @@ class OutlineBody extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height / 1.3,
                       child: ListView.builder(
-                        itemCount: state.storyPoint.length,
+                        itemCount: outlineBloc.state.storyPoint.length,
                         itemBuilder: ((context, index) {
                           return Column(
                             children: [
                               BlocProvider(
                                 create: (context) =>
-                                    OutlineExpandedBloc(outlineState: state),
+                                    OutlineExpandedBloc(outlineState: outlineBloc.state),
                                 child: BlocBuilder<OutlineExpandedBloc,
                                     OutlineExpandedState>(
                                   buildWhen: (previous, current) =>
-                                      state.storyPoint != current.storyPoint,
+                                      outlineBloc.state.storyPoint != current.storyPoint,
                                   builder: (context, expandedState) {
                                     return StoryPointWidget(
                                       editing: false,
                                       stateIndex: index,
-                                      state: expandedState,
+                                      outlineExpandedBloc:
+                                          context.read<OutlineExpandedBloc>(),
+                                      outlineBloc: outlineBloc,
                                     );
                                   },
                                 ),

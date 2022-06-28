@@ -5,11 +5,13 @@ class WritingBookList extends StatelessWidget {
   final List<String> idList;
   final List<String> titleList;
   final List<Image> coverArtList;
+  final List<String> ids;
   const WritingBookList({
     Key? key,
     required this.idList,
     required this.titleList,
     required this.coverArtList,
+    required this.ids,
   }) : super(key: key);
 
   @override
@@ -23,10 +25,10 @@ class WritingBookList extends StatelessWidget {
             return SizedBox(
               height: MediaQuery.of(context).size.height / 1.8,
               child: WritingBookItem(
-                id: idList[index],
                 bookTitle: titleList[index],
                 coverArt: coverArtList[index],
                 context: context,
+                id: ids[index],
               ),
             );
           },

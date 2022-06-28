@@ -1,7 +1,6 @@
 import 'package:bowa/bloc/outline/outline.dart';
 import 'package:bowa/bloc/outline_expanded/outline_expanded.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CharactersBodyExpanded extends StatelessWidget {
   final OutlineBloc outlineBloc;
@@ -14,6 +13,10 @@ class CharactersBodyExpanded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (outlineBloc.state.characters.length >
+        outlineExpandedBloc.state.characters.length) {
+      outlineExpandedBloc.updateCharacterState(outlineBloc.state.characters);
+    }
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -45,6 +48,14 @@ class CharactersBodyExpanded extends StatelessWidget {
                           title: Center(
                             child: TextField(
                               controller: name,
+                              onChanged: (change) {
+                                List<List<TextEditingController>> updateCharacters =
+                                    outlineBloc.state.characters;
+                                updateCharacters[index][0].text = change;
+                                outlineBloc.saveCharacterText(updateCharacters);
+                                name.selection = TextSelection.fromPosition(
+                                    TextPosition(offset: name.text.length));
+                              },
                             ),
                           ),
                           //character descriptions
@@ -53,18 +64,42 @@ class CharactersBodyExpanded extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
                                 controller: looks,
+                                onChanged: (change) {
+                                  List<List<TextEditingController>> updateCharacters =
+                                      outlineBloc.state.characters;
+                                  updateCharacters[index][1].text = change;
+                                  outlineBloc.saveCharacterText(updateCharacters);
+                                  looks.selection = TextSelection.fromPosition(
+                                      TextPosition(offset: looks.text.length));
+                                },
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
                                 controller: personality,
+                                  onChanged: (change) {
+                                List<List<TextEditingController>> updateCharacters =
+                                    outlineBloc.state.characters;
+                                updateCharacters[index][2].text = change;
+                                outlineBloc.saveCharacterText(updateCharacters);
+                                personality.selection = TextSelection.fromPosition(
+                                    TextPosition(offset: personality.text.length));
+                              },
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
                                 controller: description,
+                                  onChanged: (change) {
+                                List<List<TextEditingController>> updateCharacters =
+                                    outlineBloc.state.characters;
+                                updateCharacters[index][3].text = change;
+                                outlineBloc.saveCharacterText(updateCharacters);
+                                description.selection = TextSelection.fromPosition(
+                                    TextPosition(offset: description.text.length));
+                              },
                               ),
                             ),
                           ],

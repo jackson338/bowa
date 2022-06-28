@@ -2,16 +2,16 @@ import 'package:bowa/pages/chapter_list_page.dart';
 import 'package:flutter/material.dart';
 
 class WritingBookItem extends StatelessWidget {
-  final String id;
   final String bookTitle;
   final Image coverArt;
   final BuildContext context;
+  final String id;
   const WritingBookItem({
     Key? key,
-    required this.id,
     required this.bookTitle,
     required this.coverArt,
     required this.context,
+    required this.id,
   }) : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class WritingBookItem extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
-          onBookTap(id, bookTitle);
+          onBookTap(bookTitle);
         },
         child: Column(
           children: [
@@ -45,8 +45,8 @@ class WritingBookItem extends StatelessWidget {
     );
   }
 
-  void onBookTap(String id, String title) {
+  void onBookTap(String title) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (editContext) => ChapterListPage(title: title)));
+        MaterialPageRoute(builder: (editContext) => ChapterListPage(title: title, id: id,)));
   }
 }

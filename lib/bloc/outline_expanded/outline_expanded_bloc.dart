@@ -78,6 +78,10 @@ class OutlineExpandedBloc extends Cubit<OutlineExpandedState> {
     emit(state.copyWith(characters: character));
   }
 
+   void updateCharacterState(List<List<TextEditingController>> characters) {
+    emit(state.copyWith(characters: characters));
+  }
+
   void addDetail() {
     List<TextEditingController> detail = [];
     TextEditingController description = TextEditingController();
