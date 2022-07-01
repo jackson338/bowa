@@ -1,6 +1,7 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/pages/editing_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChapterListPage extends StatelessWidget {
@@ -148,8 +149,8 @@ class ChapterListPage extends StatelessWidget {
                                                 child: Text(
                                                   state.chapterText[index],
                                                   maxLines: orient == Orientation.portrait
-                                                      ? 15
-                                                      : 5,
+                                                      ? 10
+                                                      : 3,
                                                 ),
                                               ),
                                             ),
@@ -179,6 +180,21 @@ class ChapterListPage extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: IconButton(
+                                                splashColor:
+                                                    Theme.of(context).primaryColor,
+                                                onPressed: () {
+                                                  String copyText =
+                                                      '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
+                                                  Clipboard.setData(
+                                                      ClipboardData(text: copyText));
+                                                },
+                                                icon: const Icon(Icons.copy),
+                                                iconSize: 15,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -192,6 +208,29 @@ class ChapterListPage extends StatelessWidget {
                                     .read<ChapterListBloc>()
                                     .reorder(oldIndex, newIndex);
                               },
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                const Text('Copy All: '),
+                                IconButton(
+                                  splashColor: Theme.of(context).primaryColor,
+                                  color: Theme.of(context).primaryColor,
+                                  onPressed: () {
+                                    String copyText = '';
+                                    for (int index = 0; index < state.chapterNames.length; index++) {
+                                      copyText+='${state.chapterNames[index]}\n\n';
+                                      copyText+='${state.chapterText[index]}\n\n';
+                                    }
+                                    Clipboard.setData(ClipboardData(text: copyText));
+                                  },
+                                  icon: const Icon(Icons.copy),
+                                  iconSize: 15,
+                                ),
+                              ],
                             ),
                           ),
                         ],
