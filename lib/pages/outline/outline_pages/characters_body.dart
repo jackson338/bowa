@@ -25,45 +25,30 @@ class CharactersBody extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             color: Colors.grey,
-            child: ListView(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 1.3,
-                        child: ListView.builder(
-                          itemCount: outlineState.characters.length,
-                          itemBuilder: ((context, index) {
-                            //character
-                            return ExpansionTile(
-                              title: Center(child: Text(outlineState.characters[index][0].text)),
-                              //character descriptions
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(outlineState.characters[index][1].text),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(outlineState.characters[index][2].text),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(outlineState.characters[index][3].text),
-                                ),
-                              ],
-                            );
-                          }),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            child: ListView.builder(
+              itemCount: outlineState.characters.length,
+              itemBuilder: ((context, index) {
+                //character
+                return ExpansionTile(
+                  title: Center(
+                      child: Text(outlineState.characters[index][0].text)),
+                  //character descriptions
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(outlineState.characters[index][1].text),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(outlineState.characters[index][2].text),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(outlineState.characters[index][3].text),
+                    ),
+                  ],
+                );
+              }),
             ),
           );
         },

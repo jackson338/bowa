@@ -24,13 +24,14 @@ class OutlineBloc extends Cubit<OutlineState> {
       }
       // retrieving character names from local data
       if (prefs.getStringList('$id characters names') != null) {
+        // print('total character names list: ${prefs.getStringList('$id characters names')!}');
         List<String> charNames = prefs.getStringList('$id characters names')!;
         List<String> looksStrings = prefs.getStringList('$id looks')!;
         List<String> personalities = prefs.getStringList('$id personalities')!;
         List<String> descriptions = prefs.getStringList('$id descriptions')!;
-        List<TextEditingController> character = [];
 
         for (int ind = 0; ind < charNames.length; ind++) {
+          List<TextEditingController> character = [];
           TextEditingController name = TextEditingController();
           TextEditingController looks = TextEditingController();
           TextEditingController personality = TextEditingController();
@@ -43,6 +44,9 @@ class OutlineBloc extends Cubit<OutlineState> {
           character.add(looks);
           character.add(personality);
           character.add(description);
+
+          print('charNames at $ind: ${charNames[ind]}');
+          print('Character name at $ind: ${character[0].text}');
 
           chars.add(character);
         }

@@ -37,8 +37,6 @@ class CharactersBodyExpanded extends StatelessWidget {
                       if (outlineExpandedBloc.state.characters.isNotEmpty) {
                         TextEditingController name =
                             outlineExpandedBloc.state.characters[index][0];
-                            TextEditingController newCont = TextEditingController();
-                            newCont.text = name.text;
                         TextEditingController looks =
                             outlineExpandedBloc.state.characters[index][1];
                         TextEditingController personality =
@@ -50,7 +48,7 @@ class CharactersBodyExpanded extends StatelessWidget {
                           title: Center(
                             child: TextField(
                               enableInteractiveSelection: true,
-                              controller: newCont,
+                              controller: name,
                               onSubmitted: (change) {
                                 List<List<TextEditingController>> updateCharacters =
                                     outlineBloc.state.characters;

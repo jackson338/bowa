@@ -2,6 +2,7 @@ import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/editing/editing.dart';
 import 'package:bowa/pages/outline/outline_pages/outline_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditingPage extends StatelessWidget {
@@ -215,7 +216,7 @@ class EditingPage extends StatelessWidget {
                                       ),
                                       // chapter text
                                       SizedBox(
-                                        height: MediaQuery.of(context).size.height / 1.3,
+                                        height: MediaQuery.of(context).size.height / 1.35,
                                         child: Padding(
                                           padding: const EdgeInsets.all(20.0),
                                           child: TextField(
@@ -245,6 +246,18 @@ class EditingPage extends StatelessWidget {
                                               chapterListBloc.saveText(chapterText);
                                             },
                                           ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: IconButton(
+                                          splashColor: Theme.of(context).primaryColor,
+                                          onPressed: () {
+                                            String copyText = '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
+                                             Clipboard.setData(ClipboardData(text: copyText));
+                                          },
+                                          icon: const Icon(Icons.copy),
+                                          iconSize: 15,
                                         ),
                                       ),
                                     ],
