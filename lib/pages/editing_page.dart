@@ -229,6 +229,7 @@ class EditingPage extends StatelessWidget {
                                             keyboardType: TextInputType.multiline,
                                             maxLines: 99999,
                                             controller: contentController,
+                                            keyboardAppearance: Brightness.dark,
                                             onChanged: (_) {
                                               List<String> chapterText = [];
                                               if (state.chapterText.isNotEmpty) {

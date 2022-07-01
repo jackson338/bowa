@@ -37,6 +37,8 @@ class CharactersBodyExpanded extends StatelessWidget {
                       if (outlineExpandedBloc.state.characters.isNotEmpty) {
                         TextEditingController name =
                             outlineExpandedBloc.state.characters[index][0];
+                            TextEditingController newCont = TextEditingController();
+                            newCont.text = name.text;
                         TextEditingController looks =
                             outlineExpandedBloc.state.characters[index][1];
                         TextEditingController personality =
@@ -47,14 +49,14 @@ class CharactersBodyExpanded extends StatelessWidget {
                         return ExpansionTile(
                           title: Center(
                             child: TextField(
-                              controller: name,
-                              onChanged: (change) {
+                              enableInteractiveSelection: true,
+                              controller: newCont,
+                              onSubmitted: (change) {
                                 List<List<TextEditingController>> updateCharacters =
                                     outlineBloc.state.characters;
                                 updateCharacters[index][0].text = change;
+                                print('index: $index name: ${updateCharacters[index][0].text}');
                                 outlineBloc.saveCharacterText(updateCharacters);
-                                name.selection = TextSelection.fromPosition(
-                                    TextPosition(offset: name.text.length));
                               },
                             ),
                           ),
@@ -78,28 +80,28 @@ class CharactersBodyExpanded extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
                                 controller: personality,
-                                  onChanged: (change) {
-                                List<List<TextEditingController>> updateCharacters =
-                                    outlineBloc.state.characters;
-                                updateCharacters[index][2].text = change;
-                                outlineBloc.saveCharacterText(updateCharacters);
-                                personality.selection = TextSelection.fromPosition(
-                                    TextPosition(offset: personality.text.length));
-                              },
+                                onChanged: (change) {
+                                  List<List<TextEditingController>> updateCharacters =
+                                      outlineBloc.state.characters;
+                                  updateCharacters[index][2].text = change;
+                                  outlineBloc.saveCharacterText(updateCharacters);
+                                  personality.selection = TextSelection.fromPosition(
+                                      TextPosition(offset: personality.text.length));
+                                },
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
                                 controller: description,
-                                  onChanged: (change) {
-                                List<List<TextEditingController>> updateCharacters =
-                                    outlineBloc.state.characters;
-                                updateCharacters[index][3].text = change;
-                                outlineBloc.saveCharacterText(updateCharacters);
-                                description.selection = TextSelection.fromPosition(
-                                    TextPosition(offset: description.text.length));
-                              },
+                                onChanged: (change) {
+                                  List<List<TextEditingController>> updateCharacters =
+                                      outlineBloc.state.characters;
+                                  updateCharacters[index][3].text = change;
+                                  outlineBloc.saveCharacterText(updateCharacters);
+                                  description.selection = TextSelection.fromPosition(
+                                      TextPosition(offset: description.text.length));
+                                },
                               ),
                             ),
                           ],

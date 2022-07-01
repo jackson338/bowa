@@ -204,10 +204,10 @@ class BooksPage extends StatelessWidget {
                           height: 70,
                           width: 60,
                           child: state.coverArtList == null
-                              ? Image.asset('lib/images/IMG-1124.jpg')
+                              ? Image.asset('lib/images/Untitled_Artwork.png')
                               : state.coverArtList!.isNotEmpty
                                   ? state.coverArtList!.last
-                                  : Image.asset('lib/images/IMG-1124.jpg'),
+                                  : Image.asset('lib/images/Untitled_Artwork.png'),
                         ),
                       ],
                     ),

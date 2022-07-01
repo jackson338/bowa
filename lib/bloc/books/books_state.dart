@@ -5,7 +5,7 @@ class BooksState {
   final bool reading;
 
   const BooksState({
-    this.title = 'Books State',
+    this.title = 'Books',
     this.reading = true,
   });
 

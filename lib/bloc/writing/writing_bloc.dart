@@ -27,14 +27,14 @@ class WritingBloc extends Cubit<WritingState> {
           titles.add('');
         }
         if (prefs.getString('$id path') != null) {
-          newCoverArtList.add(Image.asset('lib/images/IMG-1124.jpg'));
+          newCoverArtList.add(Image.asset('lib/images/bowa_black.png'));
           // File imageFile = File(prefs.getString('$id path')!);
           // newCoverArtList.add(Image.file(
           //   imageFile,
           //   fit: BoxFit.contain,
           // ));
         } else {
-          newCoverArtList.add(Image.asset('lib/images/IMG-1124.jpg'));
+          newCoverArtList.add(Image.asset('lib/images/bowa_black.png'));
         }
       }
       emit(state.copyWith(
@@ -101,8 +101,8 @@ class WritingBloc extends Cubit<WritingState> {
       newCoverArtList.addAll(writingState.coverArtList!);
       imagePaths.addAll(writingState.imagePaths);
     } else {
-      newCoverArtList.add(Image.asset('lib/images/IMG-1124.jpg'));
-      imagePaths.add('lib/images/IMG-1124.jpg');
+      newCoverArtList.add(Image.asset('lib/images/bowa_black.png'));
+      imagePaths.add('lib/images/bowa_black.png');
     }
 
     idList.add(id);

@@ -36,24 +36,24 @@ class CharactersBody extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 1.3,
                         child: ListView.builder(
-                          itemCount: state.characters.length,
+                          itemCount: outlineState.characters.length,
                           itemBuilder: ((context, index) {
                             //character
                             return ExpansionTile(
-                              title: Center(child: Text(state.characters[index][0].text)),
+                              title: Center(child: Text(outlineState.characters[index][0].text)),
                               //character descriptions
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(state.characters[index][1].text),
+                                  child: Text(outlineState.characters[index][1].text),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(state.characters[index][2].text),
+                                  child: Text(outlineState.characters[index][2].text),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(state.characters[index][3].text),
+                                  child: Text(outlineState.characters[index][3].text),
                                 ),
                               ],
                             );

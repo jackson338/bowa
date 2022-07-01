@@ -25,20 +25,26 @@ class OutlineBloc extends Cubit<OutlineState> {
       // retrieving character names from local data
       if (prefs.getStringList('$id characters names') != null) {
         List<String> charNames = prefs.getStringList('$id characters names')!;
-        List<TextEditingController> characterName = [];
+        List<String> looksStrings = prefs.getStringList('$id looks')!;
+        List<String> personalities = prefs.getStringList('$id personalities')!;
+        List<String> descriptions = prefs.getStringList('$id descriptions')!;
+        List<TextEditingController> character = [];
 
         for (int ind = 0; ind < charNames.length; ind++) {
-          TextEditingController text = TextEditingController();
+          TextEditingController name = TextEditingController();
           TextEditingController looks = TextEditingController();
           TextEditingController personality = TextEditingController();
           TextEditingController description = TextEditingController();
-          text.text = charNames[ind];
-          characterName.add(text);
-          characterName.add(looks);
-          characterName.add(personality);
-          characterName.add(description);
+          name.text = charNames[ind];
+          looks.text = looksStrings[ind];
+          personality.text = personalities[ind];
+          description.text = descriptions[ind];
+          character.add(name);
+          character.add(looks);
+          character.add(personality);
+          character.add(description);
 
-          chars.add(characterName);
+          chars.add(character);
         }
       }
       emit(state.copyWith(storyPoint: points, characters: chars));
@@ -100,8 +106,20 @@ class OutlineBloc extends Cubit<OutlineState> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<List<TextEditingController>> character = [];
     List<String> charNames = [];
+    List<String> looksStrings = [];
+    List<String> personalities = [];
+    List<String> descriptions = [];
     if (prefs.getStringList('$id characters names') != null) {
       charNames = prefs.getStringList('$id characters names')!;
+    }
+    if (prefs.getStringList('$id looks') != null) {
+      looksStrings = prefs.getStringList('$id looks')!;
+    }
+    if (prefs.getStringList('$id personalities') != null) {
+      personalities = prefs.getStringList('$id personalities')!;
+    }
+    if (prefs.getStringList('$id descriptions') != null) {
+      descriptions = prefs.getStringList('$id descriptions')!;
     }
     if (state.characters.isNotEmpty) {
       character.addAll(state.characters);
@@ -121,10 +139,16 @@ class OutlineBloc extends Cubit<OutlineState> {
     prefs.setStringList('$id characters names', charNames);
     // character looks
     details.add(looks);
+    looksStrings.add(looks.text);
+    prefs.setStringList('$id looks', looksStrings);
     // character personality
     details.add(personality);
+    personalities.add(personality.text);
+    prefs.setStringList('$id personalities', personalities);
     // character description
     details.add(description);
+    descriptions.add(description.text);
+    prefs.setStringList('$id descriptions', descriptions);
 
     // character details (parent list)
     character.add(details);
@@ -148,7 +172,28 @@ class OutlineBloc extends Cubit<OutlineState> {
     emit(state.copyWith(details: details));
   }
 
-  void saveCharacterText(List<List<TextEditingController>> characters) {
+// when onChange is called from the characters_body_expanded page it updates and locally saves the text of each individual character attribute.
+  void saveCharacterText(List<List<TextEditingController>> characters) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> charNames = [];
+    List<String> looksStrings = [];
+    List<String> personalities = [];
+    List<String> descriptions = [];
+    for (List<TextEditingController> char in characters) {
+      charNames.add(char[0].text);
+      looksStrings.add(char[1].text);
+      personalities.add(char[2].text);
+      descriptions.add(char[3].text);
+    }
+    // character names
+    prefs.setStringList('$id characters names', charNames);
+    // character looks
+    prefs.setStringList('$id looks', looksStrings);
+    // character personality
+    prefs.setStringList('$id personalities', personalities);
+    // character description
+    prefs.setStringList('$id descriptions', descriptions);
+
     emit(state.copyWith(characters: characters));
   }
 
