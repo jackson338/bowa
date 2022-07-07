@@ -128,35 +128,56 @@ class OutlineBloc extends Cubit<OutlineState> {
     if (state.characters.isNotEmpty) {
       character.addAll(state.characters);
     }
-    List<TextEditingController> details = [];
-    TextEditingController name = TextEditingController();
-    name.text = 'Name: ';
-    TextEditingController looks = TextEditingController();
-    looks.text = 'Looks: ';
-    TextEditingController personality = TextEditingController();
-    personality.text = 'Personality: ';
-    TextEditingController description = TextEditingController();
-    description.text = 'Description: ';
     // character name
-    details.add(name);
-    charNames.add(name.text);
+    charNames.add(_name().text);
     prefs.setStringList('$id characters names', charNames);
     // character looks
-    details.add(looks);
-    looksStrings.add(looks.text);
+    looksStrings.add(_looks().text);
     prefs.setStringList('$id looks', looksStrings);
     // character personality
-    details.add(personality);
-    personalities.add(personality.text);
+    personalities.add(_personality().text);
     prefs.setStringList('$id personalities', personalities);
     // character description
-    details.add(description);
-    descriptions.add(description.text);
+    descriptions.add(_description().text);
     prefs.setStringList('$id descriptions', descriptions);
 
-    // character details (parent list)
-    character.add(details);
+    // character _details() (parent list)
+    character.add(_details());
     emit(state.copyWith(characters: character));
+  }
+
+  List<TextEditingController> _details() {
+    List<TextEditingController> details = [];
+    details.add(_name());
+    details.add(_looks());
+    details.add(_personality());
+    details.add(_description());
+
+    return details;
+  }
+
+  TextEditingController _name() {
+    TextEditingController name = TextEditingController();
+    name.text = 'Name: ';
+    return name;
+  }
+
+  TextEditingController _looks() {
+    TextEditingController looks = TextEditingController();
+    looks.text = 'Looks: ';
+    return looks;
+  }
+
+  TextEditingController _personality() {
+    TextEditingController personality = TextEditingController();
+    personality.text = 'Personality: ';
+    return personality;
+  }
+
+  TextEditingController _description() {
+    TextEditingController description = TextEditingController();
+    description.text = 'Description: ';
+    return description;
   }
 
   void updateCharacterState(List<List<TextEditingController>> characters) {

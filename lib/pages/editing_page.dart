@@ -81,7 +81,10 @@ class EditingPage extends StatelessWidget {
                     );
                   }),
                 ],
-                title: Text(title),
+                title: Text(
+                  title,
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
               body: Row(
                 children: [
@@ -231,6 +234,7 @@ class EditingPage extends StatelessWidget {
                                             maxLines: 99999,
                                             controller: contentController,
                                             keyboardAppearance: Brightness.dark,
+                                            textCapitalization: TextCapitalization.sentences,
                                             onChanged: (_) {
                                               List<String> chapterText = [];
                                               if (state.chapterText.isNotEmpty) {
@@ -253,8 +257,10 @@ class EditingPage extends StatelessWidget {
                                         child: IconButton(
                                           splashColor: Theme.of(context).primaryColor,
                                           onPressed: () {
-                                            String copyText = '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
-                                             Clipboard.setData(ClipboardData(text: copyText));
+                                            String copyText =
+                                                '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
+                                            Clipboard.setData(
+                                                ClipboardData(text: copyText));
                                           },
                                           icon: const Icon(Icons.copy),
                                           iconSize: 15,

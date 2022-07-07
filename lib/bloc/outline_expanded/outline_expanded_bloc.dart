@@ -9,7 +9,9 @@ class OutlineExpandedBloc extends Cubit<OutlineExpandedState> {
 
   void init() {
     emit(state.copyWith(
-        storyPoint: outlineState.storyPoint, subPoint: outlineState.subPoint, bodySelected: outlineState.bodySelected));
+        storyPoint: outlineState.storyPoint,
+        subPoint: outlineState.subPoint,
+        bodySelected: outlineState.bodySelected));
   }
 
   void addPoint(TextEditingController controller) {
@@ -61,24 +63,45 @@ class OutlineExpandedBloc extends Cubit<OutlineExpandedState> {
     if (state.characters.isNotEmpty) {
       character.addAll(state.characters);
     }
-    List<TextEditingController> details = [];
-    TextEditingController name = TextEditingController();
-    name.text = 'Name: ';
-    TextEditingController looks = TextEditingController();
-    looks.text = 'Looks: ';
-    TextEditingController personality = TextEditingController();
-    personality.text = 'Personality: ';
-    TextEditingController description = TextEditingController();
-    description.text = 'Description: ';
-    details.add(name);
-    details.add(looks);
-    details.add(personality);
-    details.add(description);
-    character.add(details);
+    character.add(_details());
     emit(state.copyWith(characters: character));
   }
 
-   void updateCharacterState(List<List<TextEditingController>> characters) {
+  List<TextEditingController> _details() {
+    List<TextEditingController> details = [];
+    details.add(_name());
+    details.add(_looks());
+    details.add(_personality());
+    details.add(_description());
+
+    return details;
+  }
+
+  TextEditingController _name() {
+    TextEditingController name = TextEditingController();
+    name.text = 'Name: ';
+    return name;
+  }
+
+  TextEditingController _looks() {
+    TextEditingController looks = TextEditingController();
+    looks.text = 'Looks: ';
+    return looks;
+  }
+
+  TextEditingController _personality() {
+    TextEditingController personality = TextEditingController();
+    personality.text = 'Personality: ';
+    return personality;
+  }
+
+  TextEditingController _description() {
+    TextEditingController description = TextEditingController();
+    description.text = 'Description: ';
+    return description;
+  }
+
+  void updateCharacterState(List<List<TextEditingController>> characters) {
     emit(state.copyWith(characters: characters));
   }
 

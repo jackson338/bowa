@@ -28,7 +28,10 @@ class ChapterListPage extends StatelessWidget {
           }
           return Scaffold(
             appBar: AppBar(
-              title: Text(title),
+              title: Text(
+                title,
+                style: const TextStyle(fontSize: 15),
+              ),
               actions: [
                 // Total word count
                 Align(
@@ -221,9 +224,11 @@ class ChapterListPage extends StatelessWidget {
                                   color: Theme.of(context).primaryColor,
                                   onPressed: () {
                                     String copyText = '';
-                                    for (int index = 0; index < state.chapterNames.length; index++) {
-                                      copyText+='${state.chapterNames[index]}\n\n';
-                                      copyText+='${state.chapterText[index]}\n\n';
+                                    for (int index = 0;
+                                        index < state.chapterNames.length;
+                                        index++) {
+                                      copyText += '${state.chapterNames[index]}\n\n';
+                                      copyText += '${state.chapterText[index]}\n\n';
                                     }
                                     Clipboard.setData(ClipboardData(text: copyText));
                                   },
