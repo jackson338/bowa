@@ -28,9 +28,11 @@ class ChapterListPage extends StatelessWidget {
           }
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                title,
-                style: const TextStyle(fontSize: 15),
+              title: FittedBox(
+                child: Text(
+                  title,
+                  style: const TextStyle(fontSize: 15),
+                ),
               ),
               actions: [
                 // Total word count
