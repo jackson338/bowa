@@ -107,7 +107,8 @@ class ChapterListPage extends StatelessWidget {
                                             title: title,
                                             chapterListBloc:
                                                 editContext.read<ChapterListBloc>(),
-                                            chapterListState: state,
+                                            chapterListState: editContext.read<ChapterListBloc>().state,
+                                            initialIndex: index,
                                           ),
                                         ),
                                       );
