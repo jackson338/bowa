@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_flip_builder/page_flip_builder.dart';
 
-
 class EditingPage extends StatelessWidget {
   final String title;
   final ChapterListBloc chapterListBloc;
@@ -22,6 +21,27 @@ class EditingPage extends StatelessWidget {
     required this.id,
     required this.initialIndex,
   }) : super(key: key);
+
+  List<InlineSpan> decorateChapter(String chapterText) {
+    List<InlineSpan> children = [];
+    Map myTextSpans = {};
+
+    chapterText.split('"').forEach(
+      (element) {
+        if (element.contains('"')) {
+          children.add(myTextSpans[element.split('"')[0].substring(0, 1)](
+            element.split('"')[0].substring(0),
+          ));
+          if (!element.endsWith('"')) {
+            children.add(myTextSpans['z'](element.split('"')[1]));
+          }
+        } else {
+          children.add(myTextSpans['z'](element));
+        }
+      },
+    );
+    return children;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +85,7 @@ class EditingPage extends StatelessWidget {
                         itemCount: state.chapters.length,
                         itemBuilder: (context, index) {
                           return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextButton(
                                 style: ButtonStyle(
@@ -95,7 +116,7 @@ class EditingPage extends StatelessWidget {
                               ),
                               if (index == state.chapters.length - 1)
                                 IconButton(
-                                  splashColor: Colors.blue,
+                                  splashColor: Theme.of(context).primaryColor,
                                   onPressed: () {
                                     String chapterName;
                                     TextEditingController chaptNameController =
@@ -111,6 +132,9 @@ class EditingPage extends StatelessWidget {
                                             decoration: const InputDecoration(
                                                 hintText: 'Chapter Name'),
                                             controller: chaptNameController,
+                                            keyboardAppearance: Brightness.dark,
+                                            textCapitalization:
+                                                TextCapitalization.sentences,
                                             onSubmitted: (_) {
                                               Navigator.of(context).pop();
                                               chapterName = chaptNameController.text;
@@ -211,6 +235,8 @@ class EditingPage extends StatelessWidget {
                             autofocus: false,
                             decoration: const InputDecoration(hintText: 'Chapter Name'),
                             controller: titleCont,
+                            keyboardAppearance: Brightness.dark,
+                            textCapitalization: TextCapitalization.sentences,
                             onChanged: (_) {
                               String chapterName = titleCont.text;
                               editContext
@@ -223,79 +249,131 @@ class EditingPage extends StatelessWidget {
                         ),
                         // Chapter Text
                         Expanded(
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height / 1.35,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              //page flip
-                              child: PageFlipBuilder(
-                                interactiveFlipEnabled: false,
-                                frontBuilder: (_) => TextField(
-                                  autocorrect: true,
-                                  autofocus: false,
-                                  enableSuggestions: true,
-                                  decoration: const InputDecoration(
-                                    hintText: "Start writing!",
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.arrow_right,
+                                    size: 45.0,
+                                    color: Theme.of(context).primaryColor,
                                   ),
-                                  scrollPadding: const EdgeInsets.all(20.0),
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 99999,
-                                  controller: contentController,
-                                  keyboardAppearance: Brightness.dark,
-                                  textCapitalization: TextCapitalization.sentences,
-                                  onChanged: (_) {
-                                    List<String> chapterText = [];
-                                    if (state.chapterText.isNotEmpty) {
-                                      chapterText.addAll(state.chapterText);
-                                    }
-                                    chapterText[state.chapterSelected] =
-                                        contentController.text;
-                                    matches = wordCount.allMatches(contentController.text);
-                                    editContext.read<EditingBloc>().saveText(chapterText);
-                                    chapterListBloc.saveText(chapterText);
-                                  },
                                 ),
-                                backBuilder: (_) => TextField(
-                                  autocorrect: true,
-                                  autofocus: false,
-                                  enableSuggestions: true,
-                                  decoration: const InputDecoration(
-                                    hintText: "Start writing!",
+                              ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey)),
+                                  height: MediaQuery.of(context).size.height / 1.35,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    //page flip
+                                    child: state.typing
+                                        ? ListView(
+                                            children: [
+                                              RichText(
+                                                text: TextSpan(
+                                                  children: decorateChapter(
+                                                      contentController.text),
+                                                  style: const TextStyle(
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : EditableText(
+                                            autocorrect: true,
+                                            autofocus: false,
+                                            enableSuggestions: true,
+                                            // decoration: const InputDecoration(
+                                            //   hintText: "Start writing!",
+                                            // ),
+                                            scrollPadding: const EdgeInsets.all(20.0),
+                                            maxLines: 99999,
+                                            keyboardType: TextInputType.multiline,
+                                            controller: contentController,
+                                            keyboardAppearance: Brightness.dark,
+                                            textCapitalization:
+                                                TextCapitalization.sentences,
+                                            onChanged: (_) {
+                                              List<String> chapterText = [];
+                                              if (state.chapterText.isNotEmpty) {
+                                                chapterText.addAll(state.chapterText);
+                                              }
+                                              chapterText[state.chapterSelected] =
+                                                  contentController.text;
+                                              matches = wordCount
+                                                  .allMatches(contentController.text);
+                                              editContext
+                                                  .read<EditingBloc>()
+                                                  .saveText(chapterText);
+                                              chapterListBloc.saveText(chapterText);
+                                            },
+                                            backgroundCursorColor: Colors.white,
+                                            cursorColor: Theme.of(context).primaryColor,
+                                            focusNode: FocusNode(canRequestFocus: true),
+                                            style: const TextStyle(color: Colors.black),
+                                            selectionColor:
+                                                Theme.of(context).primaryColor,
+                                            autocorrectionTextRectColor:
+                                                Theme.of(context).primaryColor,
+                                            selectionControls:
+                                                MaterialTextSelectionControls(),
+                                            showSelectionHandles: true,
+                                            readOnly: false,
+                                            obscureText: false,
+                                            toolbarOptions: const ToolbarOptions(
+                                              copy: true,
+                                              cut: true,
+                                              paste: true,
+                                              selectAll: true,
+                                            ),
+                                          ),
                                   ),
-                                  scrollPadding: const EdgeInsets.all(20.0),
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 99999,
-                                  controller: contentController,
-                                  keyboardAppearance: Brightness.dark,
-                                  textCapitalization: TextCapitalization.sentences,
-                                  onChanged: (_) {
-                                    List<String> chapterText = [];
-                                    if (state.chapterText.isNotEmpty) {
-                                      chapterText.addAll(state.chapterText);
-                                    }
-                                    chapterText[state.chapterSelected] =
-                                        contentController.text;
-                                    matches = wordCount.allMatches(contentController.text);
-                                    editContext.read<EditingBloc>().saveText(chapterText);
-                                    chapterListBloc.saveText(chapterText);
-                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                // style: ButtonStyle(
+                                //   backgroundColor:
+                                //       MaterialStateProperty.resolveWith((states) {
+                                //     return Colors.orangeAccent;
+                                //   }),
+                                // ),
+                                onPressed: () {
+                                  String copyText =
+                                      '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
+                                  Clipboard.setData(ClipboardData(text: copyText));
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Copy',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.copy,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: IconButton(
-                            splashColor: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              String copyText =
-                                  '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
-                              Clipboard.setData(ClipboardData(text: copyText));
-                            },
-                            icon: const Icon(Icons.copy),
-                            iconSize: 15,
-                          ),
+                          ],
                         ),
                       ],
                     ),

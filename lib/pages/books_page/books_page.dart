@@ -95,7 +95,7 @@ class BooksPage extends StatelessWidget {
                                   coverArtList:
                                       context.read<WritingBloc>().state.coverArtList ??
                                           [],
-                                          ids: state.idList,
+                                  ids: state.idList,
                                 );
                               },
                             ),
@@ -169,6 +169,8 @@ class BooksPage extends StatelessWidget {
                       autofocus: true,
                       decoration: const InputDecoration(hintText: 'Book Title'),
                       controller: titleController,
+                      keyboardAppearance: Brightness.dark,
+                      textCapitalization: TextCapitalization.sentences,
                     ),
                     //submit button
                     Card(

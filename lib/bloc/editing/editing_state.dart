@@ -6,6 +6,7 @@ class EditingState {
   final List<String> chapters;
   final List<String> chapterNames;
   final List<String> chapterText;
+  final bool typing;
 
   const EditingState({
     this.coverArtList = const [],
@@ -13,6 +14,7 @@ class EditingState {
     this.chapters = const [],
     this.chapterNames = const [],
     this.chapterText = const [],
+    this.typing = false,
   });
 
   EditingState copyWith({
@@ -21,6 +23,7 @@ class EditingState {
     final List<String>? chapters,
     final List<String>? chapterNames,
     final List<String>? chapterText,
+    final bool? typing,
   }) {
     return EditingState(
       coverArtList: coverArtList ?? this.coverArtList,
@@ -28,6 +31,7 @@ class EditingState {
       chapters: chapters ?? this.chapters,
       chapterNames: chapterNames ?? this.chapterNames,
       chapterText: chapterText ?? this.chapterText,
+      typing: typing ?? this.typing,
     );
   }
 }

@@ -7,11 +7,12 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String name = 'Name';
+    final controller = TextEditingController();
     return BlocProvider(
       create: (_) => AccountBloc(button: 'Account Page Baby!'),
       child: BlocBuilder<AccountBloc, AccountState>(
         builder: (context, state) {
+          final accountBloc = context.read<AccountBloc>();
           return Scaffold(
             appBar: AppBar(
               title: Text(state.title),
@@ -29,14 +30,30 @@ class HomePage extends StatelessWidget {
                       child: Image.asset('lib/images/Untitled_Artwork.png'),
                     ),
                   ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-
-                      },
-                      child: Text(
-                        name,
-                        style: const TextStyle(fontSize: 30),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.text = state.name;
+                          accountBloc.nameEdit(true);
+                        },
+                        child: state.nameEdit
+                            ? TextField(
+                                controller: controller,
+                                autofocus: true,
+                                onSubmitted: (_) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  accountBloc.changeName(controller.text);
+                                  accountBloc.nameEdit(false);
+                                },
+                              )
+                            : FittedBox(
+                              child: Text(
+                                  state.name,
+                                  style: const TextStyle(fontSize: 30),
+                                ),
+                            ),
                       ),
                     ),
                   ),

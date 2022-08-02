@@ -47,13 +47,14 @@ class CharactersBodyExpanded extends StatelessWidget {
                         return ExpansionTile(
                           title: Center(
                             child: TextField(
+                              keyboardAppearance: Brightness.dark,
+                              textCapitalization: TextCapitalization.sentences,
                               enableInteractiveSelection: true,
                               controller: name,
                               onSubmitted: (change) {
                                 List<List<TextEditingController>> updateCharacters =
                                     outlineBloc.state.characters;
                                 updateCharacters[index][0].text = change;
-                                print('index: $index name: ${updateCharacters[index][0].text}');
                                 outlineBloc.saveCharacterText(updateCharacters);
                               },
                             ),
@@ -63,6 +64,9 @@ class CharactersBodyExpanded extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
+                                keyboardAppearance: Brightness.dark,
+                                textCapitalization: TextCapitalization.sentences,
+                                maxLines: 4,
                                 controller: looks,
                                 onChanged: (change) {
                                   List<List<TextEditingController>> updateCharacters =
@@ -77,6 +81,9 @@ class CharactersBodyExpanded extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
+                                keyboardAppearance: Brightness.dark,
+                                textCapitalization: TextCapitalization.sentences,
+                                maxLines: 4,
                                 controller: personality,
                                 onChanged: (change) {
                                   List<List<TextEditingController>> updateCharacters =
@@ -91,6 +98,9 @@ class CharactersBodyExpanded extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextField(
+                                keyboardAppearance: Brightness.dark,
+                                textCapitalization: TextCapitalization.sentences,
+                                maxLines: 4,
                                 controller: description,
                                 onChanged: (change) {
                                   List<List<TextEditingController>> updateCharacters =

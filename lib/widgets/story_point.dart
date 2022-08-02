@@ -40,6 +40,8 @@ class StoryPointWidget extends StatelessWidget {
                       : MediaQuery.of(context).size.width / 4,
                   child: editing
                       ? TextField(
+                          keyboardAppearance: Brightness.dark,
+                          textCapitalization: TextCapitalization.sentences,
                           controller: outlineExpandedBloc.state.storyPoint[stateIndex],
                           onChanged: (val) {
                             outlineBloc

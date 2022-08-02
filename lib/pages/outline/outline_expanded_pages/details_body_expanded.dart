@@ -42,7 +42,11 @@ class DetailsBodyExpanded extends StatelessWidget {
                                 Align(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: TextField(controller: state.details[index]),
+                                    child: TextField(
+                                      keyboardAppearance: Brightness.dark,
+                                      textCapitalization: TextCapitalization.sentences,
+                                      controller: state.details[index],
+                                    ),
                                   ),
                                 ),
                               ],

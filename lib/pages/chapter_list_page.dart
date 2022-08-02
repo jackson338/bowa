@@ -57,6 +57,8 @@ class ChapterListPage extends StatelessWidget {
                               autofocus: true,
                               decoration: const InputDecoration(hintText: 'Chapter Name'),
                               controller: chaptNameController,
+                              keyboardAppearance: Brightness.dark,
+                              textCapitalization: TextCapitalization.sentences,
                               onSubmitted: (_) {
                                 Navigator.of(context).pop();
                                 chapterName = chaptNameController.text;
@@ -109,7 +111,8 @@ class ChapterListPage extends StatelessWidget {
                                             title: title,
                                             chapterListBloc:
                                                 editContext.read<ChapterListBloc>(),
-                                            chapterListState: editContext.read<ChapterListBloc>().state,
+                                            chapterListState:
+                                                editContext.read<ChapterListBloc>().state,
                                             initialIndex: index,
                                           ),
                                         ),
