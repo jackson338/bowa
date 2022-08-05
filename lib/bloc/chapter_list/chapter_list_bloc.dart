@@ -12,6 +12,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
 
   void init() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    List jsonChapterText = [];
     List<String> chapters = [];
     List<String> chapterNames = [];
     List<String> chapterText = [];
@@ -24,41 +25,88 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     if (prefs.getStringList('$id chapterText') != null) {
       chapterText = prefs.getStringList('$id chapterText')!;
     }
+    if (prefs.getStringList('$id jsonChapters') != null) {
+      for (String chapter in prefs.getStringList('$id jsonChapters')!) {
+        var chapterJson = jsonDecode(chapter);
+        jsonChapterText.add(chapterJson);
+      }
+    }
     emit(state.copyWith(
       chapters: chapters,
       chapterNames: chapterNames,
       chapterText: chapterText,
+      jsonChapterText: jsonChapterText,
     ));
   }
 
   /// Saves the text typed in the current chapter.
-  void saveText(List<String> text) async {
+  void saveText(String text, QuillController cont, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('$id chapterText', text);
-    emit(state.copyWith(chapterText: text));
+    //creating json string to be used while app is running
+    var json = jsonEncode(cont.document.toDelta().toJson());
+    List<dynamic> jsons = [];
+    //creating json strings to be saved
+    List<String> chapterJsonTexts = [];
+    if (state.jsonChapterText.isNotEmpty) {
+      for (dynamic j in state.jsonChapterText) {
+      chapterJsonTexts.add(jsonEncode(j));
+      }
+    }
+    //creating json object for continued editing
+    if (state.jsonChapterText.isNotEmpty) {
+      jsons.addAll(state.jsonChapterText);
+      jsons[index] = cont.document.toDelta().toJson();
+    } else {
+      jsons.add(cont.document.toDelta().toJson());
+    }
+    List<String> unmodifiedText = [];
+    if (state.chapterText.isNotEmpty) {
+      unmodifiedText.addAll(state.chapterText);
+    }
+    unmodifiedText[state.chapterSelected] = text;
+    chapterJsonTexts[index] = json;
+    prefs.setStringList('$id jsonChapters', chapterJsonTexts);
+    prefs.setStringList('$id chapterText', unmodifiedText);
+
+    emit(state.copyWith(chapterText: unmodifiedText, jsonChapterText: jsons));
   }
 
-//select a chapter
+// select a chapter
   void select(chapterSelect) {
     emit(state.copyWith(chapterSelected: chapterSelect));
   }
 
-  //create a new chapter
-  void addChapter(String chaptName, String chapt, String chaptText) async {
+  // create a new chapter
+  void addChapter(
+      String chaptName, String chapt, String chaptText, QuillController cont) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //add to the state.chapters property
     List<String> chapterList = [];
     if (state.chapters.isNotEmpty) {
       chapterList.addAll(state.chapters);
     }
+    //add json chapterText
+    var json = cont.document.toDelta().toJson();
+    List<dynamic> jsonChapterText = [];
+    if (state.jsonChapterText.isNotEmpty) {
+      jsonChapterText.addAll(state.jsonChapterText);
+    }
+    jsonChapterText.add(json);
 
-    //add to the state.chapterNames property
+    // saving json strings
+    var jsonString = jsonEncode(cont.document.toDelta().toJson());
+    List<String> jsonStrings = [];
+    if (state.jsonChapterText.isNotEmpty) {
+      jsonStrings.addAll(state.chapterText);
+    }
+
+    // add to the state.chapterNames property
     List<String> chapterNames = [];
     if (state.chapterNames.isNotEmpty) {
       chapterNames.addAll(state.chapterNames);
     }
 
-    //add to the state.chapterText property
+    // add to the state.chapterText property
     List<String> chapterText = [];
     if (state.chapterText.isNotEmpty) {
       chapterText.addAll(state.chapterText);
@@ -76,17 +124,22 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     chapterList.add(chapt);
     chapterNames.add(chaptName);
     chapterText.add(chaptText);
+    jsonStrings.add(jsonString);
 
-//locally save the new chapter
+    // locally save new chapter data
     prefs.setStringList('$id chapters', chapterList);
     prefs.setStringList('$id chapterNames', chapterNames);
     prefs.setStringList('$id chapterText', chapterText);
+    prefs.setStringList('$id jsonChapters', jsonStrings);
 
     emit(state.copyWith(
-        chapters: chapterList, chapterNames: chapterNames, chapterText: chapterText));
+        chapters: chapterList,
+        chapterNames: chapterNames,
+        chapterText: chapterText,
+        jsonChapterText: jsonChapterText));
   }
 
-//reorder chapters
+  // reorder chapters
   void reorder(int oldIndex, int newIndex) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (oldIndex < newIndex) {
@@ -98,22 +151,34 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     }
     final String chapterName = newChapterNames.removeAt(oldIndex);
     newChapterNames.insert(newIndex, chapterName);
-    //chapter text
+    // chapter text
     final List<String> newChapterText = [];
     if (state.chapters.isNotEmpty) {
       newChapterText.addAll(state.chapterText);
     }
-
     final String chapterT = newChapterText.removeAt(oldIndex);
     newChapterText.insert(newIndex, chapterT);
 
-    //locally save the reordered list
+      // saving json strings
+      List<dynamic> newJsonList = [];
+      newJsonList.addAll(state.jsonChapterText);
+      final newJSON = newJsonList.removeAt(oldIndex);
+      newJsonList.insert(newIndex, newJSON);
+
+   List<String> chapterJsonTexts = [];
+      for (dynamic j in newJsonList) {
+      chapterJsonTexts.add(jsonEncode(j));
+      }
+
+    // locally save the reordered list
     prefs.setStringList('$id chapterNames', newChapterNames);
     prefs.setStringList('$id chapterText', newChapterText);
-    emit(state.copyWith(chapterNames: newChapterNames, chapterText: newChapterText));
+    prefs.setStringList('$id jsonChapters', chapterJsonTexts);
+
+    emit(state.copyWith(chapterNames: newChapterNames, chapterText: newChapterText,jsonChapterText: newJsonList));
   }
 
-//update the chapter title
+  // update the chapter title
   void updateTitle(String chapName, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> chapterNames = [];

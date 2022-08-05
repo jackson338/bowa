@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/pages/editing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
 
 class ChapterListPage extends StatelessWidget {
   final String title;
@@ -48,6 +51,11 @@ class ChapterListPage extends StatelessWidget {
                     onPressed: () {
                       String chapterName;
                       TextEditingController chaptNameController = TextEditingController();
+                      Document doc = Document();
+                      QuillController quillController = QuillController(
+                        document: doc,
+                        selection: const TextSelection.collapsed(offset: 0),
+                      );
                       showMenu(
                         context: context,
                         position: const RelativeRect.fromLTRB(400, 50, 50, 50),
@@ -66,6 +74,7 @@ class ChapterListPage extends StatelessWidget {
                                       chapterName,
                                       'Chapter ${state.chapters.length + 1}',
                                       chapterName,
+                                      quillController,
                                     );
                               },
                             ),
@@ -103,19 +112,19 @@ class ChapterListPage extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () {
                                       editContext.read<ChapterListBloc>().select(index);
+
+                                      final page = EditingPage(
+                                        id: id,
+                                        title: title,
+                                        chapterListBloc:
+                                            editContext.read<ChapterListBloc>(),
+                                        chapterListState:
+                                            editContext.read<ChapterListBloc>().state,
+                                        initialIndex: index,
+                                      );
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditingPage(
-                                            id: id,
-                                            title: title,
-                                            chapterListBloc:
-                                                editContext.read<ChapterListBloc>(),
-                                            chapterListState:
-                                                editContext.read<ChapterListBloc>().state,
-                                            initialIndex: index,
-                                          ),
-                                        ),
+                                        MaterialPageRoute(builder: (context) => page),
                                       );
                                     },
                                     child: Container(
@@ -157,9 +166,7 @@ class ChapterListPage extends StatelessWidget {
                                               child: SizedBox(
                                                 child: Text(
                                                   state.chapterText[index],
-                                                  maxLines: orient == Orientation.portrait
-                                                      ? 10
-                                                      : 3,
+                                                  maxLines: 10,
                                                 ),
                                               ),
                                             ),

@@ -24,7 +24,6 @@ class OutlineBloc extends Cubit<OutlineState> {
       }
       // retrieving character names from local data
       if (prefs.getStringList('$id characters names') != null) {
-        // print('total character names list: ${prefs.getStringList('$id characters names')!}');
         List<String> charNames = prefs.getStringList('$id characters names')!;
         List<String> looksStrings = prefs.getStringList('$id looks')!;
         List<String> personalities = prefs.getStringList('$id personalities')!;
@@ -45,8 +44,6 @@ class OutlineBloc extends Cubit<OutlineState> {
           character.add(personality);
           character.add(description);
 
-          print('charNames at $ind: ${charNames[ind]}');
-          print('Character name at $ind: ${character[0].text}');
 
           chars.add(character);
         }

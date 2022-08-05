@@ -14,15 +14,20 @@ class EditingBloc extends Cubit<EditingState> {
     emit(
       state.copyWith(
         chapterNames: chapState.chapterNames,
-        chapterText: chapState.chapterText,
         chapters: chapState.chapters,
         chapterSelected: chapState.chapterSelected,
+        jsonChapterText: chapState.jsonChapterText,
       ),
     );
   }
 
-  void saveText(List<String> text) {
-    emit(state.copyWith(chapterText: text));
+  void saveText(QuillController cont) {
+    List<dynamic> jsonTexts = [];
+    if (state.jsonChapterText.isNotEmpty) {
+      jsonTexts.addAll(state.jsonChapterText);
+    }
+    jsonTexts[state.chapterSelected] = cont.document.toDelta().toJson();
+    emit(state.copyWith(jsonChapterText: jsonTexts));
   }
 
 //select a chapter
@@ -31,7 +36,8 @@ class EditingBloc extends Cubit<EditingState> {
   }
 
   //create a new chapter
-  void addChapter(String chaptName, String chapt, String chaptText, int chapterSelect) {
+  void addChapter(String chaptName, String chapt, String chaptText, int chapterSelect,
+      QuillController cont) {
     //add to the state.chapters property
     List<String> chapterList = [];
     if (state.chapters.isNotEmpty) {
@@ -44,17 +50,21 @@ class EditingBloc extends Cubit<EditingState> {
       chapterNames.addAll(state.chapterNames);
     }
     chapterNames.add(chaptName);
-    //add to the state.chapterText property
-    List<String> chapterText = [];
-    if (state.chapterText.isNotEmpty) {
-      chapterText.addAll(state.chapterText);
+
+    //add json chapterText
+    var json = cont.document.toDelta().toJson();
+    List<dynamic> jsonChapterText = [];
+    if (state.jsonChapterText.isNotEmpty) {
+      jsonChapterText.addAll(state.jsonChapterText);
     }
-    chapterText.add(chaptText);
+    jsonChapterText.add(json);
+
     emit(state.copyWith(
-        chapters: chapterList,
-        chapterNames: chapterNames,
-        chapterText: chapterText,
-        chapterSelected: chapterSelect));
+      chapters: chapterList,
+      chapterNames: chapterNames,
+      chapterSelected: chapterSelect,
+      jsonChapterText: jsonChapterText,
+    ));
   }
 
 //reorder chapters
@@ -69,16 +79,16 @@ class EditingBloc extends Cubit<EditingState> {
     final String chapterName = newChapterNames.removeAt(oldIndex);
     newChapterNames.insert(newIndex, chapterName);
     //chapter text
-    final List<String> newChapterText = [];
-    if (state.chapters.isNotEmpty) {
-      newChapterText.addAll(state.chapterText);
+    final List<dynamic> newChapterText = [];
+    if (state.jsonChapterText.isNotEmpty) {
+      newChapterText.addAll(state.jsonChapterText);
     }
-    final String chapterT = newChapterText.removeAt(oldIndex);
+    final chapterT = newChapterText.removeAt(oldIndex);
     newChapterText.insert(newIndex, chapterT);
     emit(state.copyWith(
         // chapters: newChapters,
         chapterNames: newChapterNames,
-        chapterText: newChapterText));
+        jsonChapterText: newChapterText));
   }
 
 //update the chapter title

@@ -5,16 +5,16 @@ class EditingState {
   final int chapterSelected;
   final List<String> chapters;
   final List<String> chapterNames;
-  final List<String> chapterText;
   final bool typing;
+  final List<dynamic> jsonChapterText;
 
   const EditingState({
     this.coverArtList = const [],
     this.chapterSelected = 0,
     this.chapters = const [],
     this.chapterNames = const [],
-    this.chapterText = const [],
-    this.typing = false,
+    this.typing = true,
+    this.jsonChapterText = const [],
   });
 
   EditingState copyWith({
@@ -22,16 +22,16 @@ class EditingState {
     final int? chapterSelected,
     final List<String>? chapters,
     final List<String>? chapterNames,
-    final List<String>? chapterText,
     final bool? typing,
+    final List<dynamic>? jsonChapterText,
   }) {
     return EditingState(
       coverArtList: coverArtList ?? this.coverArtList,
       chapterSelected: chapterSelected ?? this.chapterSelected,
       chapters: chapters ?? this.chapters,
       chapterNames: chapterNames ?? this.chapterNames,
-      chapterText: chapterText ?? this.chapterText,
       typing: typing ?? this.typing,
+      jsonChapterText: jsonChapterText ?? this.jsonChapterText,
     );
   }
 }

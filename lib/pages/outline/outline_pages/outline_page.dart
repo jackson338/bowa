@@ -26,33 +26,7 @@ class OutlinePage extends StatelessWidget {
           builder: (outlineContext, state) {
             return Scaffold(
               appBar: AppBar(
-                title: DropdownButton(
-                  dropdownColor: Theme.of(context).primaryColor,
-                  focusColor: Theme.of(context).primaryColor,
-                  elevation: 0,
-                  value: state.bodySelected,
-                  isExpanded: true,
-                  items: const <DropdownMenuItem<String>>[
-                    DropdownMenuItem(
-                      value: 'one',
-                      child: Text('Outline'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'two',
-                      child: FittedBox(child: Text('Characters')),
-                    ),
-                    DropdownMenuItem(
-                      value: 'three',
-                      child: Text('Details'),
-                    ),
-                  ],
-                  underline: const SizedBox(
-                    height: 0,
-                  ),
-                  onChanged: (value) {
-                    outlineContext.read<OutlineBloc>().selectBody('$value');
-                  },
-                ),
+                title: const Text('Side Notes'),
                 leading: IconButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.arrow_forward_ios_rounded),

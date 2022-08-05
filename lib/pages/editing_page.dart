@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/editing/editing.dart';
 import 'package:bowa/pages/outline/outline_pages/outline_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:page_flip_builder/page_flip_builder.dart';
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
 
 class EditingPage extends StatelessWidget {
   final String title;
@@ -22,52 +24,56 @@ class EditingPage extends StatelessWidget {
     required this.initialIndex,
   }) : super(key: key);
 
-  List<InlineSpan> decorateChapter(String chapterText) {
-    List<InlineSpan> children = [];
-    Map myTextSpans = {};
-
-    chapterText.split('"').forEach(
-      (element) {
-        if (element.contains('"')) {
-          children.add(myTextSpans[element.split('"')[0].substring(0, 1)](
-            element.split('"')[0].substring(0),
-          ));
-          if (!element.endsWith('"')) {
-            children.add(myTextSpans['z'](element.split('"')[1]));
-          }
-        } else {
-          children.add(myTextSpans['z'](element));
-        }
-      },
-    );
-    return children;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final pageFlipper = PageFlipBuilderState();
     RegExp wordCount = RegExp(r"[\w-._]+");
     Iterable matches = [];
     bool buildCalled = false;
-    TextEditingController contentController = TextEditingController();
     TextEditingController titleCont = TextEditingController();
+    QuillController quillController = QuillController.basic();
+    FocusNode quillFocus = FocusNode();
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
+        quillFocus.unfocus();
       },
       child: BlocProvider(
         create: (_) => EditingBloc(context: context, chapState: chapterListState),
         child: BlocBuilder<EditingBloc, EditingState>(
           builder: (editContext, state) {
-            //set the text of the contentController
-            if (state.chapterText.isNotEmpty && !buildCalled) {
-              contentController.text = state.chapterText[state.chapterSelected];
-              contentController.selection = TextSelection.fromPosition(
-                  TextPosition(offset: contentController.text.length));
+            final editingBloc = editContext.read<EditingBloc>();
+            if (state.jsonChapterText.isNotEmpty && !buildCalled) {
+              //Setting title controller text to chapter name
               titleCont.text = state.chapterNames[state.chapterSelected];
               titleCont.selection =
                   TextSelection.fromPosition(TextPosition(offset: titleCont.text.length));
-              matches = wordCount.allMatches(contentController.text);
+              //setting document for json formatting
+              Document doc =
+                  Document.fromJson(state.jsonChapterText[state.chapterSelected]);
+              //creating quill controller and assigning the document to the json created 'doc' value
+              quillController = QuillController(
+                document: doc,
+                selection: const TextSelection.collapsed(offset: 0),
+                onSelectionChanged: (_) {
+                  //creating chapter text variable for wordcount
+                  List<dynamic> chapterText = [];
+                  if (state.jsonChapterText.isNotEmpty) {
+                    chapterText.addAll(state.jsonChapterText);
+                  }
+                  //assigning chapter text plain text from quill controller
+                  chapterText[state.chapterSelected] = quillController.document
+                      .getPlainText(0, quillController.document.length);
+                  //updating word count
+                  matches = wordCount.allMatches(quillController.document.toPlainText());
+                  //editing bloc saveText
+                  editingBloc.saveText(quillController);
+                  //saving data through sharedpreferences and updating the chapterlist.
+                  chapterListBloc.saveText(quillController.document.toPlainText(),
+                      quillController, state.chapterSelected);
+                },
+              );
+              //setting word count based on chapter text
+              matches = wordCount.allMatches(quillController.document.toPlainText());
               buildCalled = true;
             }
             return Scaffold(
@@ -100,10 +106,9 @@ class EditingPage extends StatelessWidget {
                                 onPressed: () {
                                   buildCalled = false;
                                   FocusManager.instance.primaryFocus?.unfocus();
-                                  editContext.read<EditingBloc>().select(index);
+                                  editingBloc.select(index);
                                   chapterListBloc.select(index);
                                   Navigator.of(context).pop();
-                                  pageFlipper.flip();
                                 },
                                 child: FittedBox(
                                   child: Text(
@@ -121,6 +126,11 @@ class EditingPage extends StatelessWidget {
                                     String chapterName;
                                     TextEditingController chaptNameController =
                                         TextEditingController();
+                                    Document doc = Document();
+                                    QuillController quillCont = QuillController(
+                                      document: doc,
+                                      selection: const TextSelection.collapsed(offset: 0),
+                                    );
                                     showMenu(
                                       context: context,
                                       position:
@@ -138,16 +148,22 @@ class EditingPage extends StatelessWidget {
                                             onSubmitted: (_) {
                                               Navigator.of(context).pop();
                                               chapterName = chaptNameController.text;
-                                              editContext.read<EditingBloc>().addChapter(
-                                                  chapterName,
-                                                  'Chapter ${index + 2}',
-                                                  chapterName,
-                                                  index + 1);
+                                              editingBloc.addChapter(
+                                                chapterName,
+                                                'Chapter ${index + 2}',
+                                                chapterName,
+                                                index + 1,
+                                                quillCont,
+                                              );
                                               chapterListBloc.addChapter(
                                                 chapterName,
                                                 'Chapter ${index + 2}',
                                                 chapterName,
+                                                quillCont,
                                               );
+                                              buildCalled = false;
+                                              editingBloc.select(index + 1);
+                                              Navigator.of(context).pop();
                                             },
                                           ),
                                         ),
@@ -172,9 +188,7 @@ class EditingPage extends StatelessWidget {
                 builder: (context, orient) {
                   //contains outline
                   return Drawer(
-                    width: orient == Orientation.portrait
-                        ? MediaQuery.of(context).size.width / 1.8
-                        : MediaQuery.of(context).size.width / 3,
+                    width: MediaQuery.of(context).size.width,
                     child: OutlinePage(
                       id: id,
                     ),
@@ -247,6 +261,7 @@ class EditingPage extends StatelessWidget {
                             },
                           ),
                         ),
+
                         // Chapter Text
                         Expanded(
                           child: Stack(
@@ -270,110 +285,39 @@ class EditingPage extends StatelessWidget {
                                   height: MediaQuery.of(context).size.height / 1.35,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    //page flip
-                                    child: state.typing
-                                        ? ListView(
-                                            children: [
-                                              RichText(
-                                                text: TextSpan(
-                                                  children: decorateChapter(
-                                                      contentController.text),
-                                                  style: const TextStyle(
-                                                      color: Colors.black),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : EditableText(
-                                            autocorrect: true,
-                                            autofocus: false,
-                                            enableSuggestions: true,
-                                            // decoration: const InputDecoration(
-                                            //   hintText: "Start writing!",
-                                            // ),
-                                            scrollPadding: const EdgeInsets.all(20.0),
-                                            maxLines: 99999,
-                                            keyboardType: TextInputType.multiline,
-                                            controller: contentController,
-                                            keyboardAppearance: Brightness.dark,
-                                            textCapitalization:
-                                                TextCapitalization.sentences,
-                                            onChanged: (_) {
-                                              List<String> chapterText = [];
-                                              if (state.chapterText.isNotEmpty) {
-                                                chapterText.addAll(state.chapterText);
-                                              }
-                                              chapterText[state.chapterSelected] =
-                                                  contentController.text;
-                                              matches = wordCount
-                                                  .allMatches(contentController.text);
-                                              editContext
-                                                  .read<EditingBloc>()
-                                                  .saveText(chapterText);
-                                              chapterListBloc.saveText(chapterText);
-                                            },
-                                            backgroundCursorColor: Colors.white,
-                                            cursorColor: Theme.of(context).primaryColor,
-                                            focusNode: FocusNode(canRequestFocus: true),
-                                            style: const TextStyle(color: Colors.black),
-                                            selectionColor:
-                                                Theme.of(context).primaryColor,
-                                            autocorrectionTextRectColor:
-                                                Theme.of(context).primaryColor,
-                                            selectionControls:
-                                                MaterialTextSelectionControls(),
-                                            showSelectionHandles: true,
-                                            readOnly: false,
-                                            obscureText: false,
-                                            toolbarOptions: const ToolbarOptions(
-                                              copy: true,
-                                              cut: true,
-                                              paste: true,
-                                              selectAll: true,
-                                            ),
-                                          ),
+                                    //chapter text editor
+                                    child: QuillEditor(
+                                      controller: quillController,
+                                      focusNode: quillFocus,
+                                      scrollController: ScrollController(),
+                                      scrollable: true,
+                                      padding: const EdgeInsets.only(left: 30),
+                                      autoFocus: false,
+                                      readOnly: false,
+                                      expands: true,
+                                      textCapitalization: TextCapitalization.sentences,
+                                      keyboardAppearance: Brightness.dark,
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                // style: ButtonStyle(
-                                //   backgroundColor:
-                                //       MaterialStateProperty.resolveWith((states) {
-                                //     return Colors.orangeAccent;
-                                //   }),
-                                // ),
-                                onPressed: () {
-                                  String copyText =
-                                      '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
-                                  Clipboard.setData(ClipboardData(text: copyText));
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Copy',
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.copy,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 40.0),
+                          child: QuillToolbar.basic(
+                            controller: quillController,
+                            showCameraButton: false,
+                            showLink: false,
+                            showCenterAlignment: false,
+                            showCodeBlock: false,
+                            showDirection: false,
+                            showFormulaButton: false,
+                            showImageButton: false,
+                            showDividers: false,
+                            showVideoButton: false,
+                          ),
                         ),
                       ],
                     ),
