@@ -45,6 +45,26 @@ class WritingBloc extends Cubit<WritingState> {
     }
   }
 
+  void deleteBook(String id, String title) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> idList = [];
+    idList.addAll(state.idList);
+    idList.remove(id);
+    List<String> titleList = [];
+    titleList.addAll(state.titleList);
+    titleList.remove(title);
+    prefs.setStringList('title ids list', idList);
+    prefs.remove('$id title');
+    prefs.remove('$id path');
+    emit(
+      state.copyWith(
+        titleList: titleList,
+        idList: idList,
+        imageSelected: false,
+      ),
+    );
+  }
+
   getFromGallery() async {
     List<Image> newCoverArtList = [];
     List<String> path = [];

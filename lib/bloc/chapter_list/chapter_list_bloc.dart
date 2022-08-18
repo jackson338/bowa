@@ -39,6 +39,101 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     ));
   }
 
+  void deleteBook(
+    String title,
+    WritingBloc writingBloc,
+  ) {
+    showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: FittedBox(
+              child: Row(
+                children: [
+                  const Text(
+                    'Are you sure you want to Delete ',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    '$title?',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                  ),
+                ],
+              ),
+            ),
+            backgroundColor: Theme.of(context).backgroundColor,
+            actions: [
+              FittedBox(
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextButton(
+                        style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              const BorderSide(width: 1, style: BorderStyle.solid)),
+                        ),
+                        onPressed: () {
+                          deletePrefs();
+                          writingBloc.deleteBook(id, title);
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              'Yes, delete $title',
+                              maxLines: 1,
+                              style: const TextStyle(color: Colors.black, fontSize: 20.0),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Icon(Icons.delete),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextButton(
+                        style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              const BorderSide(width: 1, style: BorderStyle.solid)),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Row(
+                          children: [
+                            Text(
+                              "No, don't delete $title",
+                              maxLines: 1,
+                              style: const TextStyle(color: Colors.black, fontSize: 20.0),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Icon(Icons.delete),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void deletePrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('$id chapters');
+    prefs.remove('$id chapterNames');
+    prefs.remove('$id chapterText');
+    prefs.remove('$id jsonChapters');
+  }
+
   /// Saves the text typed in the current chapter.
   void saveText(String text, QuillController cont, int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,7 +144,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     List<String> chapterJsonTexts = [];
     if (state.jsonChapterText.isNotEmpty) {
       for (dynamic j in state.jsonChapterText) {
-      chapterJsonTexts.add(jsonEncode(j));
+        chapterJsonTexts.add(jsonEncode(j));
       }
     }
     //creating json object for continued editing
@@ -159,23 +254,26 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     final String chapterT = newChapterText.removeAt(oldIndex);
     newChapterText.insert(newIndex, chapterT);
 
-      // saving json strings
-      List<dynamic> newJsonList = [];
-      newJsonList.addAll(state.jsonChapterText);
-      final newJSON = newJsonList.removeAt(oldIndex);
-      newJsonList.insert(newIndex, newJSON);
+    // saving json strings
+    List<dynamic> newJsonList = [];
+    newJsonList.addAll(state.jsonChapterText);
+    final newJSON = newJsonList.removeAt(oldIndex);
+    newJsonList.insert(newIndex, newJSON);
 
-   List<String> chapterJsonTexts = [];
-      for (dynamic j in newJsonList) {
+    List<String> chapterJsonTexts = [];
+    for (dynamic j in newJsonList) {
       chapterJsonTexts.add(jsonEncode(j));
-      }
+    }
 
     // locally save the reordered list
     prefs.setStringList('$id chapterNames', newChapterNames);
     prefs.setStringList('$id chapterText', newChapterText);
     prefs.setStringList('$id jsonChapters', chapterJsonTexts);
 
-    emit(state.copyWith(chapterNames: newChapterNames, chapterText: newChapterText,jsonChapterText: newJsonList));
+    emit(state.copyWith(
+        chapterNames: newChapterNames,
+        chapterText: newChapterText,
+        jsonChapterText: newJsonList));
   }
 
   // update the chapter title

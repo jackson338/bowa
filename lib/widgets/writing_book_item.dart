@@ -1,3 +1,4 @@
+import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/pages/chapter_list_page.dart';
 import 'package:flutter/material.dart';
 
@@ -6,12 +7,14 @@ class WritingBookItem extends StatelessWidget {
   final Image coverArt;
   final BuildContext context;
   final String id;
+  final WritingBloc writingBloc;
   const WritingBookItem({
     Key? key,
     required this.bookTitle,
     required this.coverArt,
     required this.context,
     required this.id,
+    required this.writingBloc,
   }) : super(key: key);
 
   @override
@@ -46,7 +49,13 @@ class WritingBookItem extends StatelessWidget {
   }
 
   void onBookTap(String title) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (editContext) => ChapterListPage(title: title, id: id,)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (editContext) => ChapterListPage(
+                  title: title,
+                  id: id,
+                  writingBloc: writingBloc,
+                )));
   }
 }

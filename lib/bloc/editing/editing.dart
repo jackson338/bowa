@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:flutter/material.dart';

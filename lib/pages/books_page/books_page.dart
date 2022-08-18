@@ -87,7 +87,7 @@ class BooksPage extends StatelessWidget {
                       child: state.reading
                           ? const ReadingPage()
                           : BlocBuilder<WritingBloc, WritingState>(
-                              buildWhen: (previous, current) => previous != current,
+                              buildWhen: (previous, current) => previous.idList != current.idList,
                               builder: (context, state) {
                                 return WritingBookList(
                                   idList: context.read<WritingBloc>().state.idList,
@@ -96,6 +96,7 @@ class BooksPage extends StatelessWidget {
                                       context.read<WritingBloc>().state.coverArtList ??
                                           [],
                                   ids: state.idList,
+                                  writingBloc: context.read<WritingBloc>(),
                                 );
                               },
                             ),

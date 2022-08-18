@@ -1,3 +1,4 @@
+import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/widgets/writing_book_item.dart';
 import 'package:flutter/material.dart';
 
@@ -6,12 +7,14 @@ class WritingBookList extends StatelessWidget {
   final List<String> titleList;
   final List<Image> coverArtList;
   final List<String> ids;
+  final WritingBloc writingBloc;
   const WritingBookList({
     Key? key,
     required this.idList,
     required this.titleList,
     required this.coverArtList,
     required this.ids,
+    required this.writingBloc,
   }) : super(key: key);
 
   @override
@@ -20,7 +23,7 @@ class WritingBookList extends StatelessWidget {
       return GridView.count(
         crossAxisCount: orient == Orientation.portrait ? 2 : 3,
         children: List.generate(
-          titleList.length,
+          idList.length,
           (index) {
             return SizedBox(
               height: MediaQuery.of(context).size.height / 1.8,
@@ -29,6 +32,7 @@ class WritingBookList extends StatelessWidget {
                 coverArt: coverArtList[index],
                 context: context,
                 id: ids[index],
+                writingBloc: writingBloc,
               ),
             );
           },

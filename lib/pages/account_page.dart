@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   Center(
                     child: Container(
-                      width: MediaQuery.of(context).size.width / 2,
+                      width: MediaQuery.of(context).size.width / 3,
                       decoration: BoxDecoration(
                           color: Theme.of(context).hoverColor, shape: BoxShape.circle),
                       child: Image.asset('lib/images/Untitled_Artwork.png'),

@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
+import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/pages/editing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,10 +9,12 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 class ChapterListPage extends StatelessWidget {
   final String title;
   final String id;
+  final WritingBloc writingBloc;
   const ChapterListPage({
     Key? key,
     required this.title,
     required this.id,
+    required this.writingBloc,
   }) : super(key: key);
 
   @override
@@ -228,27 +229,57 @@ class ChapterListPage extends StatelessWidget {
                           ),
                           Align(
                             alignment: Alignment.bottomRight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Text('Copy All: '),
-                                IconButton(
-                                  splashColor: Theme.of(context).primaryColor,
-                                  color: Theme.of(context).primaryColor,
-                                  onPressed: () {
-                                    String copyText = '';
-                                    for (int index = 0;
-                                        index < state.chapterNames.length;
-                                        index++) {
-                                      copyText += '${state.chapterNames[index]}\n\n';
-                                      copyText += '${state.chapterText[index]}\n\n';
-                                    }
-                                    Clipboard.setData(ClipboardData(text: copyText));
-                                  },
-                                  icon: const Icon(Icons.copy),
-                                  iconSize: 15,
-                                ),
-                              ],
+                            child: FittedBox(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  //Delete Book Button
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10.0),
+                                    child: TextButton(
+                                      // style: ButtonStyle(
+                                      //   backgroundColor:
+                                      //       MaterialStateProperty.resolveWith((states) {}),
+                                      // ),
+                                      onPressed: () => editContext
+                                          .read<ChapterListBloc>()
+                                          .deleteBook(title,writingBloc),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Delete $title',
+                                            maxLines: 1,
+                                            style: const TextStyle(
+                                                color: Colors.black, fontSize: 20.0),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsets.only(left: 8.0),
+                                            child: Icon(Icons.delete),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  //Copy All Button
+                                  const Text('Copy All: '),
+                                  IconButton(
+                                    splashColor: Theme.of(context).primaryColor,
+                                    color: Theme.of(context).primaryColor,
+                                    onPressed: () {
+                                      String copyText = '';
+                                      for (int index = 0;
+                                          index < state.chapterNames.length;
+                                          index++) {
+                                        copyText += '${state.chapterNames[index]}\n\n';
+                                        copyText += '${state.chapterText[index]}\n\n';
+                                      }
+                                      Clipboard.setData(ClipboardData(text: copyText));
+                                    },
+                                    icon: const Icon(Icons.copy),
+                                    iconSize: 15,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
