@@ -21,9 +21,6 @@ class EditingBloc extends Cubit<EditingState> {
     );
   }
 
-  void typing(bool typing) {
-    emit(state.copyWith(typing: typing));
-  }
 
   void saveText(QuillController cont) {
     List<dynamic> jsonTexts = [];

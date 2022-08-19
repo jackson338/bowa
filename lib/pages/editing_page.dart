@@ -1,7 +1,6 @@
-
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/editing/editing.dart';
-import 'package:bowa/pages/outline/outline_pages/outline_page.dart';
+import 'package:bowa/pages/outline/side_notes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
@@ -39,7 +38,6 @@ class EditingPage extends StatelessWidget {
         create: (_) => EditingBloc(context: context, chapState: chapterListState),
         child: BlocBuilder<EditingBloc, EditingState>(
           builder: (editContext, state) {
-
             final editingBloc = editContext.read<EditingBloc>();
             if (state.jsonChapterText.isNotEmpty && !buildCalled) {
               //Setting title controller text to chapter name
@@ -188,7 +186,7 @@ class EditingPage extends StatelessWidget {
                   //contains outline
                   return Drawer(
                     width: MediaQuery.of(context).size.width,
-                    child: OutlinePage(
+                    child: SideNotesPage(
                       id: id,
                     ),
                   );

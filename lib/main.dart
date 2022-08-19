@@ -131,7 +131,6 @@ void login(
 ) {
   TextEditingController name = TextEditingController();
   TextEditingController password = TextEditingController();
-  bool switchVal = false;
   showDialog(
     context: context,
     builder: (sheetContext) {
@@ -147,7 +146,6 @@ void login(
                 previous.password != current.password ||
                 previous.autoLogin != current.autoLogin,
             builder: (context, state) {
-              print(state.autoLogin);
               LoginBloc loginBloc = context.read<LoginBloc>();
               return Scaffold(
                 appBar: AppBar(
@@ -210,13 +208,13 @@ void login(
                       //     strokeWidth: 3,
                       //   ),
 
-                      // Switch(
-                      //   value: switchVal,
-                      //   onChanged: (val) {
-                      //     origLoginBloc.switchAutoLogin(val);
-                      //     switchVal = true;
-                      //   },
-                      // ),
+                      Switch(
+                        value: state.autoLogin,
+                        onChanged: (val) {
+                          origLoginBloc.switchAutoLogin(val);
+                          context.read<LoginBloc>().switchAutoLogin(val);
+                        },
+                      ),
                     ],
                   ),
                 ),
