@@ -35,6 +35,26 @@ class SideNotesBloc extends Cubit<SideNotesState> {
     }
   }
 
+  void updateVal(String key, String val) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, String> updatedNote = state.notes.map(
+      (newKey, value) {
+        final MapEntry<String, String> newVal;
+        if (newKey == key) {
+          newVal = MapEntry(newKey, val);
+        } else {
+          newVal = MapEntry(newKey, value);
+        }
+        return newVal;
+      },
+    );
+    final List<String> vals = List.generate(updatedNote.length, (index) {
+      return updatedNote.values.elementAt(index);
+    });
+    prefs.setStringList('$id note vals', vals);
+    emit(state.copyWith(notes: updatedNote));
+  }
+
   void newNote(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 

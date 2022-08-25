@@ -13,12 +13,6 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const LibraryPage(),
-    const BooksPage(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,16 +28,12 @@ class MyApp extends StatelessWidget {
           cardColor: Colors.white,
           // brightness: Brightness.dark,
         ),
-        home: LoginPage(
-          pages: _pages,
-        ));
+        home: LoginPage());
   }
 }
 
 class LoginPage extends StatelessWidget {
-  final List<Widget> pages;
   const LoginPage({
-    required this.pages,
     Key? key,
   }) : super(key: key);
 
@@ -66,8 +56,26 @@ class LoginPage extends StatelessWidget {
       child: BlocBuilder<LoginBloc, LoginState>(
         buildWhen: (previous, current) => previous.loggedIn != current.loggedIn,
         builder: (context, state) {
+          List<Widget> pages = [];
+          if (state.loggedIn) {
+            List<String> accountInfo = [
+              state.name,
+              state.authorName,
+              state.email,
+              state.password
+            ];
+            pages = [
+              AccountPage(
+                authorName: state.authorName,
+                accountInfo: accountInfo,
+              ),
+              const LibraryPage(),
+              const BooksPage(),
+            ];
+          }
           return state.loggedIn
               ? Controller(
+                  authorName: state.authorName,
                   pages: pages,
                 )
               : Scaffold(
@@ -378,8 +386,10 @@ void createAccount(BuildContext context, List<TextEditingController> conts,
 
 class Controller extends StatelessWidget {
   final List<Widget> pages;
+  final String authorName;
 
-  const Controller({Key? key, required this.pages}) : super(key: key);
+  const Controller({Key? key, required this.pages, required this.authorName})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

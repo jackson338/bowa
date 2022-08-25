@@ -23,4 +23,14 @@ class NotesEditingBloc extends Cubit<NotesEditingState> {
     var json = jsonEncode(cont.document.toDelta().toJson());
     prefs.setString('$id $title note json', json);
   }
+
+  void unfocus(QuillController cont) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var json = jsonEncode(cont.document.toDelta().toJson());
+    prefs.setString('$id $title note json', json);
+    final stateJson = jsonDecode(json);
+      emit(state.copyWith(noteText: stateJson));
+  }
+
+
 }

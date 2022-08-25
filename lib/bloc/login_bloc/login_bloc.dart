@@ -12,9 +12,6 @@ class LoginBloc extends Cubit<LoginState> {
       autoLoginInfo = prefs.getStringList('auto login')!;
     }
     if (autoLoginInfo.isNotEmpty) {
-      autoLoginInfo.forEach(
-        (element) => print(element),
-      );
       emit(state.copyWith(
         name: autoLoginInfo[0],
         authorName: autoLoginInfo[1],
@@ -34,16 +31,13 @@ class LoginBloc extends Cubit<LoginState> {
   }
 
   void login(String username, String password, BuildContext context) async {
+    final nav = Navigator.of(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> accountInfo = [];
     if (prefs.getStringList('$username Account Info') != null) {
-      print('made it');
       accountInfo = prefs.getStringList('$username Account Info')!;
     }
     if (accountInfo.isNotEmpty) {
-      accountInfo.forEach(
-        (element) => print(element),
-      );
       emit(state.copyWith(
         name: accountInfo[0],
         authorName: accountInfo[1],
@@ -58,7 +52,7 @@ class LoginBloc extends Cubit<LoginState> {
         prefs.setStringList('auto login', []);
       }
       emit(state.copyWith(loggedIn: true));
-      Navigator.of(context).pop();
+      nav.pop();
     }
   }
 

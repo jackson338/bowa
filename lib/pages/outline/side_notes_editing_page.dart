@@ -26,7 +26,6 @@ class NotesEditingPage extends StatelessWidget {
           state.noteText.isNotEmpty
               ? doc = Document.fromJson(state.noteText)
               : doc = Document();
-              print(state.noteText);
           //creating quill controller and assigning the document to the json created 'doc' value
           quillController = QuillController(
             document: doc,
@@ -36,50 +35,67 @@ class NotesEditingPage extends StatelessWidget {
             },
           );
 
-          return Scaffold(
-            appBar: AppBar(title: Text(title)),
-            body: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-                      height: MediaQuery.of(context).size.height / 1.5,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: QuillEditor(
-                          controller: quillController,
-                          focusNode: quillFocus,
-                          scrollController: ScrollController(),
-                          scrollable: true,
-                          padding: const EdgeInsets.only(left: 30),
-                          autoFocus: false,
-                          readOnly: false,
-                          expands: true,
-                          textCapitalization: TextCapitalization.sentences,
-                          keyboardAppearance: Brightness.dark,
+          return GestureDetector(
+            onTap: () {
+              notesBloc.unfocus(quillController);
+              sideNotesBloc.updateVal(title, quillController.document.toPlainText());
+              quillFocus.unfocus();
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(title),
+                leading: IconButton(
+                  onPressed: () {
+                    sideNotesBloc.updateVal(
+                        title, quillController.document.toPlainText());
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(Icons.arrow_forward_ios_rounded),
+                ),
+              ),
+              body: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+                        height: MediaQuery.of(context).size.height / 1.5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: QuillEditor(
+                            controller: quillController,
+                            focusNode: quillFocus,
+                            scrollController: ScrollController(),
+                            scrollable: true,
+                            padding: const EdgeInsets.only(left: 30),
+                            autoFocus: false,
+                            readOnly: false,
+                            expands: true,
+                            textCapitalization: TextCapitalization.sentences,
+                            keyboardAppearance: Brightness.dark,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 40.0),
-                    child: QuillToolbar.basic(
-                      controller: quillController,
-                      showCameraButton: false,
-                      showLink: false,
-                      showCenterAlignment: false,
-                      showCodeBlock: false,
-                      showDirection: false,
-                      showFormulaButton: false,
-                      showImageButton: false,
-                      showDividers: false,
-                      showVideoButton: false,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 40.0),
+                      child: QuillToolbar.basic(
+                        controller: quillController,
+                        showCameraButton: false,
+                        showLink: false,
+                        showCenterAlignment: false,
+                        showCodeBlock: false,
+                        showDirection: false,
+                        showFormulaButton: false,
+                        showImageButton: false,
+                        showDividers: false,
+                        showVideoButton: false,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

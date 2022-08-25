@@ -39,6 +39,7 @@ class EditingPage extends StatelessWidget {
         child: BlocBuilder<EditingBloc, EditingState>(
           builder: (editContext, state) {
             final editingBloc = editContext.read<EditingBloc>();
+            quillFocus.hasFocus ? editingBloc.openDrawer(false) : editingBloc.openDrawer(true);
             if (state.jsonChapterText.isNotEmpty && !buildCalled) {
               //Setting title controller text to chapter name
               titleCont.text = state.chapterNames[state.chapterSelected];
@@ -117,6 +118,7 @@ class EditingPage extends StatelessWidget {
                                 ),
                               ),
                               if (index == state.chapters.length - 1)
+                                // add chapter button
                                 IconButton(
                                   splashColor: Theme.of(context).primaryColor,
                                   onPressed: () {
@@ -192,14 +194,24 @@ class EditingPage extends StatelessWidget {
                   );
                 },
               ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-              floatingActionButton: Builder(builder: (context) {
-                return FloatingActionButton(
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                  child: const Icon(Icons.list),
-                );
-              }),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              floatingActionButton: state.drawerOpen
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 70.0),
+                      child: Builder(builder: (context) {
+                        return FloatingActionButton(
+                          onPressed: () {
+                            quillFocus.unfocus();
+                            Scaffold.of(context).openDrawer();
+                          },
+                          child: const Icon(Icons.list_alt_outlined),
+                        );
+                      }),
+                    )
+                  : null,
+              // floatingActionButton:
               appBar: AppBar(
+                // back button
                 leading: IconButton(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -217,9 +229,11 @@ class EditingPage extends StatelessWidget {
                   Builder(
                     builder: (context) {
                       return IconButton(
-                        onPressed: () => Scaffold.of(context).openEndDrawer(),
-                        icon: const Icon(Icons.list),
-                      );
+                          onPressed: () {
+                            quillFocus.unfocus();
+                            Scaffold.of(context).openEndDrawer();
+                          },
+                          icon: const Icon(Icons.edit_note_sharp));
                     },
                   ),
                 ],
@@ -261,66 +275,63 @@ class EditingPage extends StatelessWidget {
 
                         // Chapter Text
                         Expanded(
-                          child: Stack(
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.arrow_right,
-                                    size: 45.0,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: Container(
+                              decoration:
+                                  BoxDecoration(border: Border.all(color: Colors.grey)),
+                              height: MediaQuery.of(context).size.height / 1.35,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                //chapter text editor
+                                child: QuillEditor(
+                                  // onTapDown: (test1, test2) {
+                                  //   bool focus;
+                                  //   quillFocus.hasFocus ? focus = true : focus = true;
+                                  //   editingBloc.typing(focus);
+                                  //   return focus;
+                                  // },
+                                  controller: quillController,
+                                  focusNode: quillFocus,
+                                  scrollController: ScrollController(),
+                                  scrollable: true,
+                                  padding: const EdgeInsets.only(left: 30),
+                                  autoFocus: false,
+                                  readOnly: false,
+                                  expands: true,
+                                  textCapitalization: TextCapitalization.sentences,
+                                  keyboardAppearance: Brightness.dark,
                                 ),
                               ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey)),
-                                  height: MediaQuery.of(context).size.height / 1.35,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    //chapter text editor
-                                    child: QuillEditor(
-                                      // onTapDown: (test1, test2) {
-                                      //   bool focus;
-                                      //   quillFocus.hasFocus ? focus = true : focus = true;
-                                      //   editingBloc.typing(focus);
-                                      //   return focus;
-                                      // },
-                                      controller: quillController,
-                                      focusNode: quillFocus,
-                                      scrollController: ScrollController(),
-                                      scrollable: true,
-                                      padding: const EdgeInsets.only(left: 30),
-                                      autoFocus: false,
-                                      readOnly: false,
-                                      expands: true,
-                                      textCapitalization: TextCapitalization.sentences,
-                                      keyboardAppearance: Brightness.dark,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
+
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 40.0),
-                          child: QuillToolbar.basic(
-                            controller: quillController,
-                            showCameraButton: false,
-                            showLink: false,
-                            showCenterAlignment: false,
-                            showCodeBlock: false,
-                            showDirection: false,
-                            showFormulaButton: false,
-                            showImageButton: false,
-                            showDividers: false,
-                            showVideoButton: false,
-                          ),
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Builder(builder: (scaffoldContext) {
+                            return QuillToolbar.basic(
+                              customButtons: [
+                                QuillCustomButton(
+                                  icon: Icons.list_alt_outlined,
+                                  onTap: () {
+                                    quillFocus.unfocus();
+                                    Scaffold.of(scaffoldContext).openDrawer();
+                                  },
+                                ),
+                              ],
+                              controller: quillController,
+                              showCameraButton: false,
+                              showLink: false,
+                              showCenterAlignment: false,
+                              showCodeBlock: false,
+                              showDirection: false,
+                              showFormulaButton: false,
+                              showImageButton: false,
+                              showDividers: false,
+                              showVideoButton: false,
+                            );
+                          }),
                         ),
                       ],
                     ),

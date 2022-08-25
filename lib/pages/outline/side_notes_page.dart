@@ -18,6 +18,11 @@ class SideNotesPage extends StatelessWidget {
       child: BlocBuilder<SideNotesBloc, SideNotesState>(
         buildWhen: (previous, current) => previous.notes != current.notes,
         builder: (context, state) {
+          state.notes.forEach(
+            (key, value) {
+              // print('key: $key, val: $value');
+            },
+          );
           final SideNotesBloc sideNotesBloc = context.read<SideNotesBloc>();
           int totalCount = 0;
           return Scaffold(
@@ -28,6 +33,9 @@ class SideNotesPage extends StatelessWidget {
                   style: TextStyle(fontSize: 15),
                 ),
               ),
+              leading: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.arrow_forward_ios_rounded)),
               actions: [
                 // Total word count
                 Align(
@@ -95,12 +103,10 @@ class SideNotesPage extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             return Padding(
-                              key: UniqueKey(),
                               padding: const EdgeInsets.all(15.0),
                               child: GestureDetector(
                                 onTap: () {
                                   context.read<SideNotesBloc>().select(index);
-
                                   final page = NotesEditingPage(
                                     title: state.notes.keys.elementAt(index),
                                     sideNotesBloc: sideNotesBloc,
