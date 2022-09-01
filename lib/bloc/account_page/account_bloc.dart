@@ -1,10 +1,8 @@
 part of 'account.dart';
 
 class AccountBloc extends Cubit<AccountState> {
-  final String button;
   final List<String> accountInfo;
-  AccountBloc({required this.button, required this.accountInfo})
-      : super(const AccountState()) {
+  AccountBloc({required this.accountInfo}) : super(const AccountState()) {
     init();
   }
 
@@ -16,12 +14,14 @@ class AccountBloc extends Cubit<AccountState> {
         autoLogin = true;
       }
     }
-    emit(state.copyWith(autoLogin: autoLogin, accountInfo: accountInfo));
+    state.accountInfo.isEmpty
+        ? emit(state.copyWith(autoLogin: autoLogin, accountInfo: accountInfo))
+        : emit(state.copyWith(autoLogin: autoLogin));
   }
 
   void switchAutoLogin(bool val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (val == true) {
+    if (val) {
       prefs.setStringList('auto login', accountInfo);
     } else {
       prefs.setStringList('auto login', []);
@@ -33,10 +33,28 @@ class AccountBloc extends Cubit<AccountState> {
     emit(state.copyWith(nameEdit: editing));
   }
 
-  void changeName(newName) {
+  void authorEdit(editing) {
+    emit(state.copyWith(authorEdit: editing));
+  }
+
+  void changeName(newName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> newInfo = [];
     newInfo.addAll(state.accountInfo);
     newInfo[0] = newName;
-    emit(state.copyWith(accountInfo: newName));
+    prefs.setStringList('${accountInfo[1]} Account Info', newInfo);
+    prefs.setStringList('auto login', newInfo);
+    emit(state.copyWith(accountInfo: newInfo));
+  }
+
+  void changeAuthor(newAuthor) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> newInfo = [];
+    newInfo.addAll(state.accountInfo);
+    newInfo[1] = newAuthor;
+    prefs.remove('${accountInfo[1]} Account Info');
+    prefs.setStringList('${newInfo[1]} Account Info', newInfo);
+    prefs.setStringList('auto login', newInfo);
+    emit(state.copyWith(accountInfo: newInfo));
   }
 }

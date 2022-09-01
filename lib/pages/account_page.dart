@@ -13,11 +13,11 @@ class AccountPage extends StatelessWidget {
     final controller = TextEditingController();
     final authorNameCont = TextEditingController();
     return BlocProvider(
-      create: (_) => AccountBloc(button: 'Account Page Baby!', accountInfo: accountInfo),
+      create: (_) => AccountBloc(accountInfo: accountInfo),
       child: BlocBuilder<AccountBloc, AccountState>(
         builder: (context, state) {
           final accountBloc = context.read<AccountBloc>();
-          return Scaffold(
+          return state.accountInfo.isEmpty ? const Center(child: CircularProgressIndicator(strokeWidth: 10,)) : Scaffold(
             appBar: AppBar(
               title: Text(state.title),
               backgroundColor: Theme.of(context).primaryColor,
@@ -34,70 +34,70 @@ class AccountPage extends StatelessWidget {
                       child: Image.asset('lib/images/Untitled_Artwork.png'),
                     ),
                   ),
-                  // SizedBox(
-                  //   width: MediaQuery.of(context).size.width / 2,
-                  //   child: Center(
-                  //     child: GestureDetector(
-                  //       onTap: () {
-                  //         controller.text = state.accountInfo[0];
-                  //         accountBloc.nameEdit(true);
-                  //       },
-                  //       child: state.nameEdit
-                  //           ? TextField(
-                  //               controller: controller,
-                  //               autofocus: true,
-                  //               onSubmitted: (_) {
-                  //                 FocusManager.instance.primaryFocus?.unfocus();
-                  //                 accountBloc.changeName(controller.text);
-                  //                 accountBloc.nameEdit(false);
-                  //               },
-                  //             )
-                  //           : FittedBox(
-                  //               child: Text(
-                  //                 'Name: ${state.accountInfo[0]}',
-                  //                 style: const TextStyle(fontSize: 30),
-                  //               ),
-                  //             ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   width: MediaQuery.of(context).size.width / 2,
-                  //   child: Center(
-                  //     child: GestureDetector(
-                  //       onTap: () {
-                  //         authorNameCont.text = state.accountInfo[1];
-                  //         accountBloc.nameEdit(true);
-                  //       },
-                  //       child: state.nameEdit
-                  //           ? TextField(
-                  //               controller: authorNameCont,
-                  //               autofocus: true,
-                  //               onSubmitted: (_) {
-                  //                 FocusManager.instance.primaryFocus?.unfocus();
-                  //                 accountBloc.changeName(controller.text);
-                  //                 accountBloc.nameEdit(false);
-                  //               },
-                  //             )
-                  //           : FittedBox(
-                  //               child: Text(
-                  //                 'Author Name: ${state.accountInfo[1]}',
-                  //                 style: const TextStyle(fontSize: 30),
-                  //               ),
-                  //             ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // Row(o
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     const Text('Auto Login'),
-                  //     Switch(
-                  //       value: state.autoLogin,
-                  //       onChanged: (val) => accountBloc.switchAutoLogin(val),
-                  //     ),
-                  //   ],
-                  // ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.text = state.accountInfo[0];
+                          accountBloc.nameEdit(true);
+                        },
+                        child: state.nameEdit
+                            ? TextField(
+                                controller: controller,
+                                autofocus: true,
+                                onSubmitted: (_) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  accountBloc.changeName(controller.text);
+                                  accountBloc.nameEdit(false);
+                                },
+                              )
+                            : FittedBox(
+                                child: Text(
+                                  'Name: ${state.accountInfo[0]}',
+                                  style: const TextStyle(fontSize: 30),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          authorNameCont.text = state.accountInfo[1];
+                          accountBloc.authorEdit(true);
+                        },
+                        child: state.authorEdit
+                            ? TextField(
+                                controller: authorNameCont,
+                                autofocus: true,
+                                onSubmitted: (_) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  accountBloc.changeAuthor(authorNameCont.text);
+                                  accountBloc.authorEdit(false);
+                                },
+                              )
+                            : FittedBox(
+                                child: Text(
+                                  'Author Name: ${state.accountInfo[1]}',
+                                  style: const TextStyle(fontSize: 30),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Auto Login'),
+                      Switch(
+                        value: state.autoLogin,
+                        onChanged: (val) => accountBloc.switchAutoLogin(val),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

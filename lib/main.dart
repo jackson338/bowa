@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           cardColor: Colors.white,
           // brightness: Brightness.dark,
         ),
-        home: LoginPage());
+        home: const LoginPage());
   }
 }
 
@@ -57,12 +57,13 @@ class LoginPage extends StatelessWidget {
         buildWhen: (previous, current) => previous.loggedIn != current.loggedIn,
         builder: (context, state) {
           List<Widget> pages = [];
+          List<String> accountInfo = [];
           if (state.loggedIn) {
-            List<String> accountInfo = [
+            accountInfo = [
               state.name,
               state.authorName,
               state.email,
-              state.password
+              state.password,
             ];
             pages = [
               AccountPage(

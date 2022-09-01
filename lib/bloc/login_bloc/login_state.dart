@@ -11,7 +11,7 @@ class LoginState {
 
   const LoginState({
     this.autoLogin = false,
-    this.loggedIn = true,
+    this.loggedIn = false,
     this.name = '',
     this.authorName = '',
     this.email = '',

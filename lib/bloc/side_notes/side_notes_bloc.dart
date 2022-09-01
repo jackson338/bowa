@@ -2,9 +2,8 @@ part of 'side_notes.dart';
 
 class SideNotesBloc extends Cubit<SideNotesState> {
   final String? id;
-  SideNotesBloc({
-    this.id,
-  }) : super(const SideNotesState()) {
+  final String title;
+  SideNotesBloc({this.id, required this.title}) : super(const SideNotesState()) {
     init(id);
   }
 

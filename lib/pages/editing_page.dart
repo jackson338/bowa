@@ -39,7 +39,9 @@ class EditingPage extends StatelessWidget {
         child: BlocBuilder<EditingBloc, EditingState>(
           builder: (editContext, state) {
             final editingBloc = editContext.read<EditingBloc>();
-            quillFocus.hasFocus ? editingBloc.openDrawer(false) : editingBloc.openDrawer(true);
+            quillFocus.hasFocus
+                ? editingBloc.openDrawer(false)
+                : editingBloc.openDrawer(true);
             if (state.jsonChapterText.isNotEmpty && !buildCalled) {
               //Setting title controller text to chapter name
               titleCont.text = state.chapterNames[state.chapterSelected];
@@ -76,120 +78,130 @@ class EditingPage extends StatelessWidget {
             }
             return Scaffold(
               //Chapter Container
-              drawer: Container(
+              drawer: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width / 3.5,
-                color: Colors.grey,
-                child: OrientationBuilder(
-                  builder: (context, orient) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height / 1.4,
-                      width: MediaQuery.of(context).size.width / 5,
-                      child: ListView.builder(
-                        itemCount: state.chapters.length,
-                        itemBuilder: (context, index) {
-                          return Column(
+                child: Scaffold(
+                  appBar: AppBar(title: const Text('Chapters')),
+                  body: Container(
+                    color: Colors.grey,
+                    child: ListView.builder(
+                      itemCount: state.chapters.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith((states) {
-                                    if (index == state.chapterSelected) {
-                                      return Colors.orangeAccent;
-                                    }
-                                    return null;
-                                  }),
-                                ),
-                                onPressed: () {
-                                  buildCalled = false;
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                  editingBloc.select(index);
-                                  chapterListBloc.select(index);
-                                  Navigator.of(context).pop();
-                                },
-                                child: FittedBox(
-                                  child: Text(
-                                    '${index + 1}: ${state.chapterNames[index]}',
-                                    maxLines: 1,
-                                    style: const TextStyle(
-                                        color: Colors.black, fontSize: 20.0),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.resolveWith((states) {
+                                      if (index == state.chapterSelected) {
+                                        return Colors.orangeAccent;
+                                      }
+                                      return null;
+                                    }),
+                                  ),
+                                  onPressed: () {
+                                    buildCalled = false;
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                    editingBloc.select(index);
+                                    chapterListBloc.select(index);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: FittedBox(
+                                      child: Text(
+                                        '${index + 1}: ${state.chapterNames[index]}',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 20.0),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                               if (index == state.chapters.length - 1)
                                 // add chapter button
-                                IconButton(
-                                  splashColor: Theme.of(context).primaryColor,
-                                  onPressed: () {
-                                    String chapterName;
-                                    TextEditingController chaptNameController =
-                                        TextEditingController();
-                                    Document doc = Document();
-                                    QuillController quillCont = QuillController(
-                                      document: doc,
-                                      selection: const TextSelection.collapsed(offset: 0),
-                                    );
-                                    showMenu(
-                                      context: context,
-                                      position:
-                                          const RelativeRect.fromLTRB(0, 110, 100, 100),
-                                      items: [
-                                        PopupMenuItem(
-                                          child: TextField(
-                                            autofocus: true,
-                                            decoration: const InputDecoration(
-                                                hintText: 'Chapter Name'),
-                                            controller: chaptNameController,
-                                            keyboardAppearance: Brightness.dark,
-                                            textCapitalization:
-                                                TextCapitalization.sentences,
-                                            onSubmitted: (_) {
-                                              Navigator.of(context).pop();
-                                              chapterName = chaptNameController.text;
-                                              editingBloc.addChapter(
-                                                chapterName,
-                                                'Chapter ${index + 2}',
-                                                chapterName,
-                                                index + 1,
-                                                quillCont,
-                                              );
-                                              chapterListBloc.addChapter(
-                                                chapterName,
-                                                'Chapter ${index + 2}',
-                                                chapterName,
-                                                quillCont,
-                                              );
-                                              buildCalled = false;
-                                              editingBloc.select(index + 1);
-                                              Navigator.of(context).pop();
-                                            },
+                                Center(
+                                  child: IconButton(
+                                    splashColor: Theme.of(context).primaryColor,
+                                    onPressed: () {
+                                      String chapterName;
+                                      TextEditingController chaptNameController =
+                                          TextEditingController();
+                                      Document doc = Document();
+                                      QuillController quillCont = QuillController(
+                                        document: doc,
+                                        selection:
+                                            const TextSelection.collapsed(offset: 0),
+                                      );
+                                      showMenu(
+                                        context: context,
+                                        position:
+                                            const RelativeRect.fromLTRB(0, 110, 100, 100),
+                                        items: [
+                                          PopupMenuItem(
+                                            child: TextField(
+                                              autofocus: true,
+                                              decoration: const InputDecoration(
+                                                  hintText: 'Chapter Name'),
+                                              controller: chaptNameController,
+                                              keyboardAppearance: Brightness.dark,
+                                              textCapitalization:
+                                                  TextCapitalization.sentences,
+                                              onSubmitted: (_) {
+                                                Navigator.of(context).pop();
+                                                chapterName = chaptNameController.text;
+                                                editingBloc.addChapter(
+                                                  chapterName,
+                                                  'Chapter ${index + 2}',
+                                                  chapterName,
+                                                  index + 1,
+                                                  quillCont,
+                                                );
+                                                chapterListBloc.addChapter(
+                                                  chapterName,
+                                                  'Chapter ${index + 2}',
+                                                  chapterName,
+                                                  quillCont,
+                                                );
+                                                buildCalled = false;
+                                                editingBloc.select(index + 1);
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                      elevation: 8.0,
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.add_box_rounded,
-                                    color: Theme.of(context).primaryColor,
+                                        ],
+                                        elevation: 8.0,
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.add_box_rounded,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                   ),
                                 ),
                             ],
-                          );
-                        },
-                      ),
-                    );
-                  },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
               endDrawer: OrientationBuilder(
                 builder: (context, orient) {
-                  //contains outline
+                  //contains side notes
                   return Drawer(
                     width: MediaQuery.of(context).size.width,
                     child: SideNotesPage(
                       id: id,
+                      title: title,
                     ),
                   );
                 },
@@ -198,15 +210,17 @@ class EditingPage extends StatelessWidget {
               floatingActionButton: state.drawerOpen
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 70.0),
-                      child: Builder(builder: (context) {
-                        return FloatingActionButton(
-                          onPressed: () {
-                            quillFocus.unfocus();
-                            Scaffold.of(context).openDrawer();
-                          },
-                          child: const Icon(Icons.list_alt_outlined),
-                        );
-                      }),
+                      child: Builder(
+                        builder: (context) {
+                          return FloatingActionButton(
+                            onPressed: () {
+                              quillFocus.unfocus();
+                              Scaffold.of(context).openDrawer();
+                            },
+                            child: const Icon(Icons.list_alt_outlined),
+                          );
+                        },
+                      ),
                     )
                   : null,
               // floatingActionButton:
@@ -285,12 +299,6 @@ class EditingPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 //chapter text editor
                                 child: QuillEditor(
-                                  // onTapDown: (test1, test2) {
-                                  //   bool focus;
-                                  //   quillFocus.hasFocus ? focus = true : focus = true;
-                                  //   editingBloc.typing(focus);
-                                  //   return focus;
-                                  // },
                                   controller: quillController,
                                   focusNode: quillFocus,
                                   scrollController: ScrollController(),

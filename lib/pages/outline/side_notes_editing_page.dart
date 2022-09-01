@@ -19,6 +19,7 @@ class NotesEditingPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => NotesEditingBloc(title: title, id: id),
       child: BlocBuilder<NotesEditingBloc, NotesEditingState>(
+        buildWhen: (previous, current) => previous.noteText != current.noteText,
         builder: (context, state) {
           NotesEditingBloc notesBloc = context.read<NotesEditingBloc>();
           //setting document for json formatting

@@ -5,6 +5,7 @@ class AccountState {
   final String name;
   final List<String> accountInfo;
   final bool nameEdit;
+  final bool authorEdit;
   final bool autoLogin;
 
   const AccountState({
@@ -12,6 +13,7 @@ class AccountState {
     this.name = 'Name',
     this.accountInfo = const [],
     this.nameEdit = false,
+    this.authorEdit = false,
     this.autoLogin = false,
   });
 
@@ -20,6 +22,7 @@ class AccountState {
     final String? name,
     final List<String>? accountInfo,
     final bool? nameEdit,
+    final bool? authorEdit,
     final bool? autoLogin,
   }) {
     return AccountState(
@@ -27,6 +30,7 @@ class AccountState {
       name: name ?? this.name,
       accountInfo: accountInfo ?? this.accountInfo,
       nameEdit: nameEdit ?? this.nameEdit,
+      authorEdit: authorEdit ?? this.authorEdit,
       autoLogin: autoLogin ?? this.autoLogin,
     );
   }

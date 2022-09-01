@@ -100,7 +100,7 @@ class WritingBloc extends Cubit<WritingState> {
   }
 
   void createDraft(TextEditingController titleController, BuildContext sheetContext,
-      WritingState writingState) async {
+      WritingState writingState, String wordGoal) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     List<String> titleList = [];
@@ -129,6 +129,7 @@ class WritingBloc extends Cubit<WritingState> {
     pref.setStringList('title ids list', idList);
     pref.setString('$id title', titleController.text);
     pref.setString('$id path', imagePaths.last);
+    pref.setString('$id word goal', wordGoal);
     emit(
       state.copyWith(
         titleList: titleList,

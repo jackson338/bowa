@@ -63,6 +63,8 @@ class EditingBloc extends Cubit<EditingState> {
     }
     jsonChapterText.add(json);
 
+    saveText(cont);
+
     emit(state.copyWith(
       chapters: chapterList,
       chapterNames: chapterNames,

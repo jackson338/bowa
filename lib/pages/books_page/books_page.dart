@@ -3,6 +3,7 @@ import 'package:bowa/pages/books_page/reading_page.dart';
 import 'package:bowa/widgets/writing_book_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../bloc/books/books.dart';
 
 class BooksPage extends StatelessWidget {
@@ -87,7 +88,8 @@ class BooksPage extends StatelessWidget {
                       child: state.reading
                           ? const ReadingPage()
                           : BlocBuilder<WritingBloc, WritingState>(
-                              buildWhen: (previous, current) => previous.idList != current.idList,
+                              buildWhen: (previous, current) =>
+                                  previous.idList != current.idList,
                               builder: (context, state) {
                                 return WritingBookList(
                                   idList: context.read<WritingBloc>().state.idList,
@@ -144,6 +146,7 @@ class BooksPage extends StatelessWidget {
 
   void newDraft(BuildContext context, WritingBloc bloc) {
     final TextEditingController titleController = TextEditingController();
+    final TextEditingController wordGoal = TextEditingController(text: '50000');
     showModalBottomSheet(
       isDismissible: true,
       context: context,
@@ -179,8 +182,8 @@ class BooksPage extends StatelessWidget {
                       elevation: 3,
                       child: TextButton(
                         onPressed: () {
-                          bloc.createDraft(
-                              titleController, sheetContext, writingBloc.state);
+                          bloc.createDraft(titleController, sheetContext,
+                              writingBloc.state, wordGoal.text);
                           // Navigator.of(context).pop();
                         },
                         child: const Padding(
@@ -211,6 +214,20 @@ class BooksPage extends StatelessWidget {
                               : state.coverArtList!.isNotEmpty
                                   ? state.coverArtList!.last
                                   : Image.asset('lib/images/Untitled_Artwork.png'),
+                        ),
+                         Padding(
+                           padding: const EdgeInsets.only(left: 24.0),
+                           child: Text('Word Goal: ',style: TextStyle(color: Theme.of(context).primaryColor),),
+                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 6,
+                            child: TextField(
+                              controller: wordGoal,
+                              cursorColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
                         ),
                       ],
                     ),

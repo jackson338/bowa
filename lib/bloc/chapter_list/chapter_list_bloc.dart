@@ -16,6 +16,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     List<String> chapters = [];
     List<String> chapterNames = [];
     List<String> chapterText = [];
+    int wordGoal = 50000;
     if (prefs.getStringList('$id chapters') != null) {
       chapters = prefs.getStringList('$id chapters')!;
     }
@@ -29,13 +30,19 @@ class ChapterListBloc extends Cubit<ChapterListState> {
       for (String chapter in prefs.getStringList('$id jsonChapters')!) {
         var chapterJson = jsonDecode(chapter);
         jsonChapterText.add(chapterJson);
+        // Clipboard.setData(ClipboardData(text: jsonChapterText.toString()));
       }
+    }
+    if (prefs.getString('$id word goal') != null) {
+      String wordgoal = prefs.getString('$id word goal')!;
+      wordGoal = int.parse(wordgoal);
     }
     emit(state.copyWith(
       chapters: chapters,
       chapterNames: chapterNames,
       chapterText: chapterText,
       jsonChapterText: jsonChapterText,
+      wordGoal: wordGoal,
     ));
   }
 
@@ -75,7 +82,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
                               const BorderSide(width: 1, style: BorderStyle.solid)),
                         ),
                         onPressed: () {
-                          deletePrefs();
+                          deletePrefs(title);
                           writingBloc.deleteBook(id, title);
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
@@ -126,12 +133,18 @@ class ChapterListBloc extends Cubit<ChapterListState> {
         });
   }
 
-  void deletePrefs() async {
+  void deletePrefs(String title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('$id chapters');
     prefs.remove('$id chapterNames');
     prefs.remove('$id chapterText');
     prefs.remove('$id jsonChapters');
+    prefs.remove('$id note keys');
+    prefs.remove('$id note vals');
+    prefs.remove('$id outlines');
+    prefs.remove('$id characters');
+    prefs.remove('$id note');
+    prefs.remove('$id $title note json');
   }
 
   /// Saves the text typed in the current chapter.
@@ -140,7 +153,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     //creating json string to be used while app is running
     var json = jsonEncode(cont.document.toDelta().toJson());
     List<dynamic> jsons = [];
-    //creating json strings to be saved
+    // creating json strings to be saved
     List<String> chapterJsonTexts = [];
     if (state.jsonChapterText.isNotEmpty) {
       for (dynamic j in state.jsonChapterText) {
@@ -192,7 +205,9 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     var jsonString = jsonEncode(cont.document.toDelta().toJson());
     List<String> jsonStrings = [];
     if (state.jsonChapterText.isNotEmpty) {
-      jsonStrings.addAll(state.chapterText);
+      for (final obj in state.jsonChapterText) {
+        jsonStrings.add(jsonEncode(obj));
+      }
     }
 
     // add to the state.chapterNames property

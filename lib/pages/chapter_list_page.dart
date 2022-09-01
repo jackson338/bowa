@@ -30,6 +30,7 @@ class ChapterListPage extends StatelessWidget {
             matches = wordCount.allMatches(text);
             totalCount += matches.length;
           }
+          double length = totalCount / state.wordGoal;
           return Scaffold(
             appBar: AppBar(
               title: FittedBox(
@@ -91,195 +92,262 @@ class ChapterListPage extends StatelessWidget {
               builder: (context, orient) {
                 return Container(
                   color: Theme.of(context).hoverColor,
-                  child: ListView(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
                     children: [
-                      Column(
-                        children: [
-                          //reorderable list widget height
-                          SizedBox(
-                            height: orient == Orientation.portrait
-                                ? MediaQuery.of(context).size.height / 2
-                                : MediaQuery.of(context).size.height / 1.5,
-                            width: MediaQuery.of(context).size.width,
-                            //reorderable list
-                            child: ReorderableListView.builder(
-                              buildDefaultDragHandles: false,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                matches = wordCount.allMatches(state.chapterText[index]);
-                                return Padding(
-                                  key: UniqueKey(),
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      editContext.read<ChapterListBloc>().select(index);
+                      //reorderable list widget height
+                      SizedBox(
+                        height: orient == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 2
+                            : MediaQuery.of(context).size.height / 1.5,
+                        width: MediaQuery.of(context).size.width,
+                        //reorderable list
+                        child: ReorderableListView.builder(
+                          buildDefaultDragHandles: false,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            matches = wordCount.allMatches(state.chapterText[index]);
+                            return Padding(
+                              key: UniqueKey(),
+                              padding: const EdgeInsets.all(15.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  editContext.read<ChapterListBloc>().select(index);
 
-                                      final page = EditingPage(
-                                        id: id,
-                                        title: title,
-                                        chapterListBloc:
-                                            editContext.read<ChapterListBloc>(),
-                                        chapterListState:
-                                            editContext.read<ChapterListBloc>().state,
-                                        initialIndex: index,
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => page),
-                                      );
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        color: Theme.of(context).cardColor,
-                                      ),
-                                      //reorderable list widget width
-                                      width: MediaQuery.of(context).size.width / 2,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.only(bottom: 12.0),
-                                              child: Text(
-                                                state.chapterNames[index],
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.centerRight,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.only(bottom: 12.0),
-                                                child: Text(
-                                                  'Word Count: ${matches.length}',
-                                                  style: TextStyle(
-                                                      color:
-                                                          Theme.of(context).primaryColor),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                child: Text(
-                                                  state.chapterText[index],
-                                                  maxLines: 10,
-                                                ),
-                                              ),
-                                            ),
-                                            const Spacer(),
-                                            Align(
-                                              child: ReorderableDragStartListener(
-                                                index: index,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.center,
-                                                    children: [
-                                                      Text(
-                                                        state.chapters[index],
-                                                        style: TextStyle(
-                                                            color: Theme.of(context)
-                                                                .primaryColor),
-                                                      ),
-                                                      Icon(
-                                                        Icons.drag_handle,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: IconButton(
-                                                splashColor:
-                                                    Theme.of(context).primaryColor,
-                                                onPressed: () {
-                                                  String copyText =
-                                                      '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
-                                                  Clipboard.setData(
-                                                      ClipboardData(text: copyText));
-                                                },
-                                                icon: const Icon(Icons.copy),
-                                                iconSize: 15,
-                                              ),
-                                            ),
-                                          ],
+                                  final page = EditingPage(
+                                    id: id,
+                                    title: title,
+                                    chapterListBloc: editContext.read<ChapterListBloc>(),
+                                    chapterListState:
+                                        editContext.read<ChapterListBloc>().state,
+                                    initialIndex: index,
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => page),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Theme.of(context).cardColor,
+                                  ),
+                                  //reorderable list widget width
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 12.0),
+                                          child: Text(
+                                            state.chapterNames[index],
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
-                                      ),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(bottom: 12.0),
+                                            child: Text(
+                                              'Word Count: ${matches.length}',
+                                              style: TextStyle(
+                                                  color: Theme.of(context).primaryColor),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SizedBox(
+                                            child: Text(
+                                              state.chapterText[index],
+                                              maxLines: 10,
+                                            ),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Align(
+                                          child: ReorderableDragStartListener(
+                                            index: index,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    state.chapters[index],
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                  ),
+                                                  Icon(
+                                                    Icons.drag_handle,
+                                                    color: Theme.of(context).primaryColor,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: IconButton(
+                                            splashColor: Theme.of(context).primaryColor,
+                                            onPressed: () {
+                                              String copyText =
+                                                  '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
+                                              Clipboard.setData(
+                                                  ClipboardData(text: copyText));
+                                            },
+                                            icon: const Icon(Icons.copy),
+                                            iconSize: 15,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
-                              itemCount: state.chapters.length,
-                              onReorder: (oldIndex, newIndex) {
-                                editContext
-                                    .read<ChapterListBloc>()
-                                    .reorder(oldIndex, newIndex);
-                              },
+                                ),
+                              ),
+                            );
+                          },
+                          itemCount: state.chapters.length,
+                          onReorder: (oldIndex, newIndex) {
+                            editContext
+                                .read<ChapterListBloc>()
+                                .reorder(oldIndex, newIndex);
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: FittedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              //Delete Book Button
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: TextButton(
+                                  // style: ButtonStyle(
+                                  //   backgroundColor:
+                                  //       MaterialStateProperty.resolveWith((states) {}),
+                                  // ),
+                                  onPressed: () => editContext
+                                      .read<ChapterListBloc>()
+                                      .deleteBook(title, writingBloc),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Delete $title',
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 20.0),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
+                                        child: Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              //Copy All Button
+                              const Text('Copy All: '),
+                              IconButton(
+                                splashColor: Theme.of(context).primaryColor,
+                                color: Theme.of(context).primaryColor,
+                                onPressed: () {
+                                  String copyText = '';
+                                  for (int index = 0;
+                                      index < state.chapterNames.length;
+                                      index++) {
+                                    copyText += '${state.chapterNames[index]}\n\n';
+                                    copyText += '${state.chapterText[index]}\n\n';
+                                  }
+                                  Clipboard.setData(ClipboardData(text: copyText));
+                                },
+                                icon: const Icon(Icons.copy),
+                                iconSize: 15,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Word Goal: $totalCount / ${state.wordGoal}'),
+                      ),
+                      // SizedBox(
+                      //   width: MediaQuery.of(context).size.width,
+                      //   height: 20,
+                      //   child: ListView.separated(
+                      //     scrollDirection: Axis.horizontal,
+                      //     itemCount: state.chapterNames.length,
+                      //     padding: const EdgeInsets.only(left: 8.0),
+                      //     itemBuilder: (context, index) {
+                      //       return Text('Chapter: ${index + 1}');
+                      //     },
+                      //     separatorBuilder: (BuildContext context, int index) {
+                      //       return SizedBox(
+                      //         height: 10,
+                      //         width: MediaQuery.of(context).size.width /
+                      //             state.chapterNames.length,
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
+                      Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).backgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              width: MediaQuery.of(context).size.width,
+                              height: 20,
+                              child: FractionallySizedBox(
+                                alignment: Alignment.centerLeft,
+                                heightFactor: 1.0,
+                                widthFactor: !length.isNaN ? length : 1.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: FittedBox(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  //Delete Book Button
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10.0),
-                                    child: TextButton(
-                                      // style: ButtonStyle(
-                                      //   backgroundColor:
-                                      //       MaterialStateProperty.resolveWith((states) {}),
-                                      // ),
-                                      onPressed: () => editContext
-                                          .read<ChapterListBloc>()
-                                          .deleteBook(title,writingBloc),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Delete $title',
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                                color: Colors.black, fontSize: 20.0),
-                                          ),
-                                          const Padding(
-                                            padding: EdgeInsets.only(left: 8.0),
-                                            child: Icon(Icons.delete),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: 25,
+                            child: ListView.separated(
+                              reverse: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: state.chapterNames.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: 25,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).disabledColor,
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                  //Copy All Button
-                                  const Text('Copy All: '),
-                                  IconButton(
-                                    splashColor: Theme.of(context).primaryColor,
-                                    color: Theme.of(context).primaryColor,
-                                    onPressed: () {
-                                      String copyText = '';
-                                      for (int index = 0;
-                                          index < state.chapterNames.length;
-                                          index++) {
-                                        copyText += '${state.chapterNames[index]}\n\n';
-                                        copyText += '${state.chapterText[index]}\n\n';
-                                      }
-                                      Clipboard.setData(ClipboardData(text: copyText));
-                                    },
-                                    icon: const Icon(Icons.copy),
-                                    iconSize: 15,
-                                  ),
-                                ],
-                              ),
+                                  child: Icon(Icons.circle,color: Theme.of(context).backgroundColor,size: 17),
+                                );
+                              },
+                              separatorBuilder: (BuildContext context, int index) {
+                                return SizedBox(
+                                  height: 10,
+                                  width: MediaQuery.of(context).size.width /
+                                      state.chapterNames.length,
+                                );
+                              },
                             ),
                           ),
                         ],

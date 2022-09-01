@@ -6,15 +6,17 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 
 class SideNotesPage extends StatelessWidget {
   final String id;
+  final String title;
   const SideNotesPage({
     required this.id,
+    required this.title,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SideNotesBloc(id: id),
+      create: (context) => SideNotesBloc(id: id, title: title),
       child: BlocBuilder<SideNotesBloc, SideNotesState>(
         buildWhen: (previous, current) => previous.notes != current.notes,
         builder: (context, state) {

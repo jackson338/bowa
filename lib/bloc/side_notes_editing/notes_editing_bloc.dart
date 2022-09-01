@@ -14,6 +14,7 @@ class NotesEditingBloc extends Cubit<NotesEditingState> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('$id $title note json') != null) {
       final json = jsonDecode(prefs.getString('$id $title note json')!);
+      print(json);
       emit(state.copyWith(noteText: json));
     }
   }
