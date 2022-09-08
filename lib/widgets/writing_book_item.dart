@@ -29,7 +29,8 @@ class WritingBookItem extends StatelessWidget {
           children: [
             Expanded(
               flex: 1,
-              child: SizedBox(
+              child: Container(
+                color: Theme.of(context).hintColor,
                 height: 100,
                 width: 100,
                 child: coverArt,
@@ -50,12 +51,14 @@ class WritingBookItem extends StatelessWidget {
 
   void onBookTap(String title) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (editContext) => ChapterListPage(
-                  title: title,
-                  id: id,
-                  writingBloc: writingBloc,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (editContext) => ChapterListPage(
+          title: title,
+          id: id,
+          writingBloc: writingBloc,
+        ),
+      ),
+    );
   }
 }

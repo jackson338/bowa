@@ -11,21 +11,16 @@ class BooksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => BooksBloc(
-            context: context,
-          ),
-        ),
-        BlocProvider(
-          create: (_) => WritingBloc(
-            context: context,
-          ),
-        ),
-      ],
-      child: BlocBuilder<BooksBloc, BooksState>(
+    return BlocProvider(
+      create: (_) => WritingBloc(
+        context: context,
+      ),
+      child: BlocBuilder<WritingBloc, WritingState>(
+        buildWhen: (previous, current) => previous.idList != current.idList,
         builder: (context, state) {
+          if (!context.read<WritingBloc>().state.titlesUpdated) {
+            context.read<WritingBloc>().updateTitles();
+          }
           return Scaffold(
             appBar: AppBar(
               title: Text(state.title),
@@ -34,110 +29,46 @@ class BooksPage extends StatelessWidget {
             body: Container(
               height: MediaQuery.of(context).size.height,
               color: Theme.of(context).backgroundColor,
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 0,
-                    child: SizedBox(
-                      height: 70,
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Card(
-                            color: state.reading ? Colors.grey : Colors.white,
-                            elevation: 3,
-                            child: TextButton(
-                              onPressed: context.read<BooksBloc>().reading,
-                              child: const Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Text(
-                                  'Reading',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            color: state.reading ? Colors.white : Colors.grey,
-                            elevation: 3,
-                            child: TextButton(
-                              onPressed: () {
-                                if (!context.read<WritingBloc>().state.titlesUpdated) {
-                                  context.read<WritingBloc>().updateTitles();
-                                }
-                                context.read<BooksBloc>().writing();
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Text(
-                                  'Writing',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: state.reading
-                          ? const ReadingPage()
-                          : BlocBuilder<WritingBloc, WritingState>(
-                              buildWhen: (previous, current) =>
-                                  previous.idList != current.idList,
-                              builder: (context, state) {
-                                return WritingBookList(
-                                  idList: context.read<WritingBloc>().state.idList,
-                                  titleList: context.read<WritingBloc>().state.titleList,
-                                  coverArtList:
-                                      context.read<WritingBloc>().state.coverArtList ??
-                                          [],
-                                  ids: state.idList,
-                                  writingBloc: context.read<WritingBloc>(),
-                                );
-                              },
-                            ),
-                    ),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: WritingBookList(
+                  idList: context.read<WritingBloc>().state.idList,
+                  titleList: context.read<WritingBloc>().state.titleList,
+                  coverArtList: context.read<WritingBloc>().state.coverArtList ?? [],
+                  ids: state.idList,
+                  writingBloc: context.read<WritingBloc>(),
+                ),
               ),
             ),
-            floatingActionButton: state.reading
-                ? null
-                : SizedBox(
-                    width: MediaQuery.of(context).size.width / 2.6,
-                    child: Card(
-                      elevation: 2,
-                      child: TextButton(
-                        onPressed: () {
-                          newDraft(context, context.read<WritingBloc>());
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'New Draft',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Icon(
-                                  Icons.edit_note,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ],
+            floatingActionButton: SizedBox(
+              width: MediaQuery.of(context).size.width / 2.6,
+              child: Card(
+                elevation: 2,
+                child: TextButton(
+                  onPressed: () {
+                    newDraft(context, context.read<WritingBloc>());
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'New Draft',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Icon(
+                            Icons.edit_note,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
+                ),
+              ),
+            ),
           );
         },
       ),
@@ -215,10 +146,13 @@ class BooksPage extends StatelessWidget {
                                   ? state.coverArtList!.last
                                   : Image.asset('lib/images/Untitled_Artwork.png'),
                         ),
-                         Padding(
-                           padding: const EdgeInsets.only(left: 24.0),
-                           child: Text('Word Goal: ',style: TextStyle(color: Theme.of(context).primaryColor),),
-                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24.0),
+                          child: Text(
+                            'Word Goal: ',
+                            style: TextStyle(color: Theme.of(context).primaryColor),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: SizedBox(

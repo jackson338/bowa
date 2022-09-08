@@ -10,7 +10,7 @@ class LoginState {
   final int index;
 
   const LoginState({
-    this.autoLogin = false,
+    this.autoLogin = true,
     this.loggedIn = false,
     this.name = '',
     this.authorName = '',
