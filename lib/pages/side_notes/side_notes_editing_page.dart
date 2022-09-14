@@ -3,6 +3,7 @@ import 'package:bowa/bloc/side_notes_editing/notes_editing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
+import 'package:tuple/tuple.dart';
 
 class NotesEditingPage extends StatelessWidget {
   final String title;
@@ -54,9 +55,10 @@ class NotesEditingPage extends StatelessWidget {
                   icon: const Icon(Icons.arrow_forward_ios_rounded),
                 ),
               ),
-              body: SizedBox(
+              body: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
+                color: Theme.of(context).backgroundColor,
                 child: Column(
                   children: [
                     Expanded(
@@ -76,6 +78,40 @@ class NotesEditingPage extends StatelessWidget {
                             expands: true,
                             textCapitalization: TextCapitalization.sentences,
                             keyboardAppearance: Brightness.dark,
+                            customStyles: DefaultStyles(
+                                paragraph: DefaultTextBlockStyle(
+                                    Theme.of(context).textTheme.bodyText1!,
+                                    const Tuple2(16, 0),
+                                    const Tuple2(0, 0),
+                                    null),
+                                h1: DefaultTextBlockStyle(
+                                    TextStyle(
+                                        color:
+                                            Theme.of(context).textTheme.bodyText1!.color,
+                                        fontSize: 35),
+                                    const Tuple2(16, 0),
+                                    const Tuple2(0, 0),
+                                    null),
+                                h2: DefaultTextBlockStyle(
+                                    TextStyle(
+                                        color:
+                                            Theme.of(context).textTheme.bodyText1!.color,
+                                        fontSize: 28),
+                                    const Tuple2(16, 0),
+                                    const Tuple2(0, 0),
+                                    null),
+                                h3: DefaultTextBlockStyle(
+                                    TextStyle(
+                                        color:
+                                            Theme.of(context).textTheme.bodyText1!.color,
+                                        fontSize: 21),
+                                    const Tuple2(16, 0),
+                                    const Tuple2(0, 0),
+                                    null),
+                                bold: TextStyle(
+                                    color: Theme.of(context).textTheme.bodyText1!.color,
+                                    fontWeight: FontWeight.bold),
+                                color: Theme.of(context).textTheme.bodyText1!.color),
                           ),
                         ),
                       ),
@@ -93,6 +129,8 @@ class NotesEditingPage extends StatelessWidget {
                         showImageButton: false,
                         showDividers: false,
                         showVideoButton: false,
+                        showFontSize: false,
+                        showFontFamily: false,
                       ),
                     ),
                   ],

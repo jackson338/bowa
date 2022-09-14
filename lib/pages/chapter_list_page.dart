@@ -36,7 +36,14 @@ class ChapterListPage extends StatelessWidget {
               title: FittedBox(
                 child: Text(
                   title,
-                  style: const TextStyle(fontSize: 15),
+                  style: Theme.of(context).textTheme.headline1,
+                ),
+              ),
+              leading: IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: Theme.of(context).iconTheme.color,
                 ),
               ),
               actions: [
@@ -85,7 +92,10 @@ class ChapterListPage extends StatelessWidget {
                         elevation: 8.0,
                       );
                     },
-                    icon: const Icon(Icons.add))
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).iconTheme.color,
+                    ))
               ],
             ),
             body: OrientationBuilder(
@@ -130,7 +140,7 @@ class ChapterListPage extends StatelessWidget {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    color: Theme.of(context).cardColor,
+                                    color: Theme.of(context).backgroundColor,
                                   ),
                                   //reorderable list widget width
                                   width: MediaQuery.of(context).size.width / 2,
@@ -143,7 +153,8 @@ class ChapterListPage extends StatelessWidget {
                                           padding: const EdgeInsets.only(bottom: 12.0),
                                           child: Text(
                                             state.chapterNames[index],
-                                            style: const TextStyle(
+                                            style:  TextStyle(
+                                              color: Theme.of(context).textTheme.bodyText1!.color,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -163,6 +174,7 @@ class ChapterListPage extends StatelessWidget {
                                           child: SizedBox(
                                             child: Text(
                                               state.chapterText[index],
+                                              style: Theme.of(context).textTheme.bodyText1,
                                               maxLines: 10,
                                             ),
                                           ),
@@ -338,7 +350,8 @@ class ChapterListPage extends StatelessWidget {
                                     color: Theme.of(context).disabledColor,
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  child: Icon(Icons.circle,color: Theme.of(context).backgroundColor,size: 17),
+                                  child: Icon(Icons.circle,
+                                      color: Theme.of(context).backgroundColor, size: 17),
                                 );
                               },
                               separatorBuilder: (BuildContext context, int index) {

@@ -1,5 +1,6 @@
 import 'package:bowa/bloc/login_bloc/account_creation/account_creation.dart';
 import 'package:bowa/bloc/login_bloc/login.dart';
+import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/pages/account_page.dart';
 import 'package:bowa/pages/books_page/books_page.dart';
 import 'package:bowa/pages/library_page.dart';
@@ -15,26 +16,48 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.orange,
-          primaryColor: Colors.orange,
-          primaryColorLight: Colors.orangeAccent,
-          primaryColorDark: Colors.deepOrange,
-          backgroundColor: Colors.white,
-          disabledColor: Colors.grey[800],
-          hoverColor: Colors.grey,
-          cardColor: Colors.white,
-          // brightness: Brightness.dark,
-        ),
-        home: const LoginPage());
+    return BlocProvider(
+      create: (context) => ThemeBloc(),
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        buildWhen: (previous, current) => previous.background != current.background,
+        builder: (context, state) {
+          final icon = IconThemeData(color: state.icon);
+          return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                primarySwatch: state.primary,
+                primaryColor: state.primary,
+                primaryColorLight: state.primaryLight,
+                primaryColorDark: state.primaryDark,
+                backgroundColor: state.background,
+                disabledColor: state.disabled,
+                hoverColor: state.hover,
+                cardColor: state.card,
+                iconTheme: icon,
+                textTheme: TextTheme(
+                  headline1: TextStyle(
+                    color: state.headline,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w300,
+                  ),
+                  bodyText1: TextStyle(
+                    color: state.bodyText,
+                  ),
+                ),
+              ),
+              home: LoginPage(themeBloc: context.read<ThemeBloc>()));
+        },
+      ),
+    );
   }
 }
 
 class LoginPage extends StatelessWidget {
+  final ThemeBloc themeBloc;
   const LoginPage({
     Key? key,
+    required this.themeBloc,
   }) : super(key: key);
 
   @override
@@ -71,7 +94,9 @@ class LoginPage extends StatelessWidget {
                 accountInfo: accountInfo,
               ),
               const LibraryPage(),
-              const BooksPage(),
+              BooksPage(
+                themeBloc: themeBloc,
+              ),
             ];
           }
           return state.loggedIn
@@ -80,6 +105,7 @@ class LoginPage extends StatelessWidget {
                   pages: pages,
                 )
               : Scaffold(
+                backgroundColor: Theme.of(context).backgroundColor,
                   appBar: AppBar(
                     title: const Text('Login'),
                     backgroundColor: Theme.of(context).primaryColor,
@@ -397,6 +423,7 @@ class Controller extends StatelessWidget {
       length: 3,
       initialIndex: 2,
       child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         body: TabBarView(
           children: pages,
         ),
@@ -405,6 +432,7 @@ class Controller extends StatelessWidget {
           return Container(
             height: MediaQuery.of(context).size.height / 10,
             margin: const EdgeInsets.only(bottom: 20),
+            color: Theme.of(context).backgroundColor,
             child: TabBar(
               tabs: [
                 Tab(
@@ -413,8 +441,9 @@ class Controller extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                   ),
                   child: orient == Orientation.portrait
-                      ? const Text(
+                      ? Text(
                           'Account',
+                          style: Theme.of(context).textTheme.bodyText1,
                         )
                       : null,
                 ),
@@ -424,8 +453,9 @@ class Controller extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                   ),
                   child: orient == Orientation.portrait
-                      ? const Text(
+                      ? Text(
                           'Library',
+                          style: Theme.of(context).textTheme.bodyText1,
                         )
                       : null,
                 ),
@@ -435,8 +465,9 @@ class Controller extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                   ),
                   child: orient == Orientation.portrait
-                      ? const Text(
+                      ? Text(
                           'Books',
+                          style: Theme.of(context).textTheme.bodyText1,
                         )
                       : null,
                 ),

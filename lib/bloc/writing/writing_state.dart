@@ -11,7 +11,7 @@ class WritingState {
 
   const WritingState({
     this.idList = const [],
-    this.title = 'Writing State',
+    this.title = 'Writing Page',
     this.titleList = const [],
     this.coverArtList = const [],
     this.imageSelected = false,

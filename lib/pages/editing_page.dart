@@ -1,9 +1,10 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/editing/editing.dart';
-import 'package:bowa/pages/outline/side_notes_page.dart';
+import 'package:bowa/pages/side_notes/side_notes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
+import 'package:tuple/tuple.dart';
 
 class EditingPage extends StatelessWidget {
   final String title;
@@ -48,8 +49,9 @@ class EditingPage extends StatelessWidget {
               titleCont.selection =
                   TextSelection.fromPosition(TextPosition(offset: titleCont.text.length));
               //setting document for json formatting
-              Document doc =
-                  Document.fromJson(state.jsonChapterText[state.chapterSelected]);
+              Document doc = Document.fromJson(
+                state.jsonChapterText[state.chapterSelected],
+              );
               //creating quill controller and assigning the document to the json created 'doc' value
               quillController = QuillController(
                 document: doc,
@@ -82,9 +84,26 @@ class EditingPage extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width / 3.5,
                 child: Scaffold(
-                  appBar: AppBar(title: const Text('Chapters')),
+                  appBar: AppBar(
+                    title: SizedBox(
+                      width: MediaQuery.of(context).size.width / 9,
+                      child: FittedBox(
+                        child: Text(
+                          'Chapters',
+                          style: Theme.of(context).textTheme.headline1,
+                        ),
+                      ),
+                    ),
+                    leading: IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                    ),
+                  ),
                   body: Container(
-                    color: Colors.grey,
+                    color: Colors.grey[700],
                     child: ListView.builder(
                       itemCount: state.chapters.length,
                       itemBuilder: (context, index) {
@@ -100,7 +119,7 @@ class EditingPage extends StatelessWidget {
                                     backgroundColor:
                                         MaterialStateProperty.resolveWith((states) {
                                       if (index == state.chapterSelected) {
-                                        return Colors.orangeAccent;
+                                        return Theme.of(context).primaryColor;
                                       }
                                       return null;
                                     }),
@@ -148,8 +167,11 @@ class EditingPage extends StatelessWidget {
                                           PopupMenuItem(
                                             child: TextField(
                                               autofocus: true,
-                                              decoration: const InputDecoration(
-                                                  hintText: 'Chapter Name'),
+                                              decoration: InputDecoration(
+                                                hintText: 'Chapter Name',
+                                                hintStyle:
+                                                    Theme.of(context).textTheme.bodyText1,
+                                              ),
                                               controller: chaptNameController,
                                               keyboardAppearance: Brightness.dark,
                                               textCapitalization:
@@ -217,7 +239,10 @@ class EditingPage extends StatelessWidget {
                               quillFocus.unfocus();
                               Scaffold.of(context).openDrawer();
                             },
-                            child: const Icon(Icons.list_alt_outlined),
+                            child: Icon(
+                              Icons.list_alt_outlined,
+                              color: Theme.of(context).iconTheme.color,
+                            ),
                           );
                         },
                       ),
@@ -227,10 +252,11 @@ class EditingPage extends StatelessWidget {
               appBar: AppBar(
                 // back button
                 leading: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(Icons.arrow_back_ios_rounded),
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(
+                    Icons.arrow_back_ios_rounded,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
                 ),
                 actions: [
                   Align(
@@ -247,14 +273,17 @@ class EditingPage extends StatelessWidget {
                             quillFocus.unfocus();
                             Scaffold.of(context).openEndDrawer();
                           },
-                          icon: const Icon(Icons.edit_note_sharp));
+                          icon: Icon(
+                            Icons.edit_note_sharp,
+                            color: Theme.of(context).iconTheme.color,
+                          ));
                     },
                   ),
                 ],
                 title: FittedBox(
                   child: Text(
                     title,
-                    style: const TextStyle(fontSize: 18),
+                    style: Theme.of(context).textTheme.headline1,
                   ),
                 ),
               ),
@@ -264,7 +293,7 @@ class EditingPage extends StatelessWidget {
                   Container(
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
-                    color: Colors.white,
+                    color: Theme.of(context).backgroundColor,
                     child: Column(
                       children: [
                         // Chapter Name
@@ -309,35 +338,83 @@ class EditingPage extends StatelessWidget {
                                   expands: true,
                                   textCapitalization: TextCapitalization.sentences,
                                   keyboardAppearance: Brightness.dark,
+                                  customStyles: DefaultStyles(
+                                      paragraph: DefaultTextBlockStyle(
+                                          Theme.of(context).textTheme.bodyText1!,
+                                          const Tuple2(16, 0),
+                                          const Tuple2(0, 0),
+                                          null),
+                                      h1: DefaultTextBlockStyle(
+                                          TextStyle(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .color,
+                                              fontSize: 35),
+                                          const Tuple2(16, 0),
+                                          const Tuple2(0, 0),
+                                          null),
+                                      h2: DefaultTextBlockStyle(
+                                          TextStyle(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .color,
+                                              fontSize: 28),
+                                          const Tuple2(16, 0),
+                                          const Tuple2(0, 0),
+                                          null),
+                                      h3: DefaultTextBlockStyle(
+                                          TextStyle(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .color,
+                                              fontSize: 21),
+                                          const Tuple2(16, 0),
+                                          const Tuple2(0, 0),
+                                          null),
+                                      bold: TextStyle(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .color,
+                                          fontWeight: FontWeight.bold),
+                                      color:
+                                          Theme.of(context).textTheme.bodyText1!.color),
                                 ),
                               ),
                             ),
                           ),
                         ),
-
                         Padding(
                           padding: const EdgeInsets.only(bottom: 4.0),
                           child: Builder(builder: (scaffoldContext) {
-                            return QuillToolbar.basic(
-                              customButtons: [
-                                QuillCustomButton(
-                                  icon: Icons.list_alt_outlined,
-                                  onTap: () {
-                                    quillFocus.unfocus();
-                                    Scaffold.of(scaffoldContext).openDrawer();
-                                  },
-                                ),
-                              ],
-                              controller: quillController,
-                              showCameraButton: false,
-                              showLink: false,
-                              showCenterAlignment: false,
-                              showCodeBlock: false,
-                              showDirection: false,
-                              showFormulaButton: false,
-                              showImageButton: false,
-                              showDividers: false,
-                              showVideoButton: false,
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: QuillToolbar.basic(
+                                customButtons: [
+                                  QuillCustomButton(
+                                    icon: Icons.list_alt_outlined,
+                                    onTap: () {
+                                      quillFocus.unfocus();
+                                      Scaffold.of(scaffoldContext).openDrawer();
+                                    },
+                                  ),
+                                ],
+                                controller: quillController,
+                                showCameraButton: false,
+                                showLink: false,
+                                showCenterAlignment: false,
+                                showCodeBlock: false,
+                                showDirection: false,
+                                showFormulaButton: false,
+                                showImageButton: false,
+                                showDividers: false,
+                                showVideoButton: false,
+                                showFontSize: false,
+                                showFontFamily: false,
+                              ),
                             );
                           }),
                         ),

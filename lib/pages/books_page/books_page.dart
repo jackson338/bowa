@@ -1,13 +1,13 @@
+import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
-import 'package:bowa/pages/books_page/reading_page.dart';
+import 'package:bowa/pages/books_page/settings.dart';
 import 'package:bowa/widgets/writing_book_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../bloc/books/books.dart';
 
 class BooksPage extends StatelessWidget {
-  const BooksPage({Key? key}) : super(key: key);
+  final ThemeBloc themeBloc;
+  const BooksPage({Key? key,required this.themeBloc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,19 @@ class BooksPage extends StatelessWidget {
           }
           return Scaffold(
             appBar: AppBar(
-              title: Text(state.title),
+              title: Text(
+                state.title,
+                style: Theme.of(context).textTheme.headline1,
+              ),
+              actions: [
+                IconButton(
+                    onPressed: () => Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => SettingsPage(themeBloc: themeBloc,))),
+                    icon: Icon(
+                      Icons.settings,
+                      color: Theme.of(context).iconTheme.color,
+                    ))
+              ],
               backgroundColor: Theme.of(context).primaryColor,
             ),
             body: Container(
@@ -43,6 +55,7 @@ class BooksPage extends StatelessWidget {
             floatingActionButton: SizedBox(
               width: MediaQuery.of(context).size.width / 2.6,
               child: Card(
+                color: Theme.of(context).cardColor,
                 elevation: 2,
                 child: TextButton(
                   onPressed: () {
@@ -52,9 +65,9 @@ class BooksPage extends StatelessWidget {
                     padding: const EdgeInsets.all(5.0),
                     child: Row(
                       children: [
-                        const Text(
+                        Text(
                           'New Draft',
-                          style: TextStyle(color: Colors.black),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
@@ -90,14 +103,17 @@ class BooksPage extends StatelessWidget {
             builder: (context, state) {
               WritingBloc writingBloc = context.read<WritingBloc>();
               return Container(
-                color: Colors.grey,
+                color: Colors.grey[700],
                 height: MediaQuery.of(context).size.height / 1.5,
                 child: Column(
                   children: [
                     //pop-up title text
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('new book'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'New Draft',
+                        style: Theme.of(context).textTheme.headline1,
+                      ),
                     ),
                     //title name text field
                     TextField(
@@ -117,11 +133,11 @@ class BooksPage extends StatelessWidget {
                               writingBloc.state, wordGoal.text);
                           // Navigator.of(context).pop();
                         },
-                        child: const Padding(
-                          padding: EdgeInsets.all(5.0),
+                        child:  Padding(
+                          padding: const EdgeInsets.all(5.0),
                           child: Text(
                             'Create Draft',
-                            style: TextStyle(color: Colors.black),
+                            style: Theme.of(context).textTheme.bodyText1,
                           ),
                         ),
                       ),
@@ -131,9 +147,16 @@ class BooksPage extends StatelessWidget {
                         TextButton(
                           onPressed: writingBloc.getFromGallery,
                           child: Row(
-                            children: const [
-                              Text('Add Image'),
-                              Icon(Icons.add),
+                            children: [
+                              Text(
+                                'Add Image',
+                                style:
+                                    TextStyle(color: Theme.of(context).primaryColorLight),
+                              ),
+                              Icon(
+                                Icons.add,
+                                color: Theme.of(context).primaryColorLight,
+                              ),
                             ],
                           ),
                         ),
@@ -150,7 +173,7 @@ class BooksPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 24.0),
                           child: Text(
                             'Word Goal: ',
-                            style: TextStyle(color: Theme.of(context).primaryColor),
+                            style: TextStyle(color: Theme.of(context).primaryColorLight),
                           ),
                         ),
                         Padding(

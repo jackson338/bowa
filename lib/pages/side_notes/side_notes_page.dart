@@ -1,5 +1,5 @@
 import 'package:bowa/bloc/side_notes/side_notes.dart';
-import 'package:bowa/pages/outline/side_notes_editing_page.dart';
+import 'package:bowa/pages/side_notes/side_notes_editing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
@@ -29,10 +29,10 @@ class SideNotesPage extends StatelessWidget {
           int totalCount = 0;
           return Scaffold(
             appBar: AppBar(
-              title: const FittedBox(
+              title: FittedBox(
                 child: Text(
                   'Side Notes',
-                  style: TextStyle(fontSize: 15),
+                  style: Theme.of(context).textTheme.headline1,
                 ),
               ),
               leading: IconButton(
@@ -53,7 +53,16 @@ class SideNotesPage extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return Scaffold(
-                        appBar: AppBar(title: const Text('New Note')),
+                        appBar: AppBar(
+                          title: const Text('New Note'),
+                          leading: IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Theme.of(context).iconTheme.color,
+                            ),
+                          ),
+                        ),
                         backgroundColor: Theme.of(context).hintColor,
                         body: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -94,13 +103,12 @@ class SideNotesPage extends StatelessWidget {
                   color: Theme.of(context).hoverColor,
                   child: Column(
                     children: [
-                      //reorderable list widget height
+                      // list widget height
                       SizedBox(
                         height: orient == Orientation.portrait
                             ? MediaQuery.of(context).size.height / 2
                             : MediaQuery.of(context).size.height / 1.5,
                         width: MediaQuery.of(context).size.width,
-                        //reorderable list
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
@@ -122,9 +130,8 @@ class SideNotesPage extends StatelessWidget {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    color: Theme.of(context).cardColor,
+                                    color: Theme.of(context).backgroundColor,
                                   ),
-                                  //reorderable list widget width
                                   width: MediaQuery.of(context).size.width / 2,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -135,8 +142,12 @@ class SideNotesPage extends StatelessWidget {
                                           padding: const EdgeInsets.only(bottom: 12.0),
                                           child: Text(
                                             state.notes.keys.elementAt(index),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .color),
                                           ),
                                         ),
                                         Padding(
@@ -145,6 +156,8 @@ class SideNotesPage extends StatelessWidget {
                                             child: Text(
                                               state.notes.values.elementAt(index),
                                               maxLines: 10,
+                                              style:
+                                                  Theme.of(context).textTheme.bodyText1,
                                             ),
                                           ),
                                         ),

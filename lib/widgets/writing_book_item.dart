@@ -30,7 +30,10 @@ class WritingBookItem extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Container(
-                color: Theme.of(context).hintColor,
+                  decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          color: Theme.of(context).hoverColor,
+                        ),
                 height: 100,
                 width: 100,
                 child: coverArt,
@@ -40,7 +43,7 @@ class WritingBookItem extends StatelessWidget {
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.only(top: 5.0),
-                child: Text(bookTitle),
+                child: Text(bookTitle,style: Theme.of(context).textTheme.bodyText1,),
               ),
             ),
           ],
