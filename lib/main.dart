@@ -1,3 +1,6 @@
+// This app was created by Jackson Oaks and he olds all rights to this code. It is not to be copied or used publicly by anyone.
+
+
 import 'package:bowa/bloc/login_bloc/account_creation/account_creation.dart';
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
@@ -38,7 +41,7 @@ class MyApp extends StatelessWidget {
                 textTheme: TextTheme(
                   headline1: TextStyle(
                     color: state.headline,
-                    fontSize: 28,
+                    fontSize: 32,
                     fontWeight: FontWeight.w300,
                   ),
                   bodyText1: TextStyle(
@@ -215,7 +218,6 @@ void login(
                           controller: name,
                           keyboardAppearance: Brightness.dark,
                           onChanged: (nameText) => loginBloc.name(nameText),
-                          keyboardType: TextInputType.name,
                           onSubmitted: (_) {},
                         ),
                       ),

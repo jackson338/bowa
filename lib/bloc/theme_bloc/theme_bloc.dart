@@ -20,13 +20,25 @@ class ThemeBloc extends Cubit<ThemeState> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('theme', 'dark');
     emit(state.copyWith(
-        background: Colors.black, bodyText: Colors.white, card: Colors.grey));
+      background: Colors.black,
+      bodyText: Colors.white,
+      card: Colors.blueGrey,
+      hover: Colors.blueGrey,
+      icon: Colors.cyan,
+      headline: Colors.cyan,
+    ));
   }
 
   void lightTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('theme', 'light');
     emit(state.copyWith(
-        background: Colors.white, bodyText: Colors.black, card: Colors.white));
+      background: Colors.white,
+      bodyText: Colors.black,
+      card: Colors.white,
+      hover: Colors.blueGrey,
+      icon: Colors.cyan,
+      headline: Colors.cyan,
+    ));
   }
 }

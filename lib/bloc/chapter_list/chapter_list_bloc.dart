@@ -58,13 +58,20 @@ class ChapterListBloc extends Cubit<ChapterListState> {
             title: FittedBox(
               child: Row(
                 children: [
-                  const Text(
+                  Text(
                     'Are you sure you want to Delete ',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textTheme.headline1!.color,
+                    ),
                   ),
                   Text(
                     '$title?',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Theme.of(context).textTheme.headline1!.color,
+                    ),
                   ),
                 ],
               ),
@@ -92,7 +99,9 @@ class ChapterListBloc extends Cubit<ChapterListState> {
                             Text(
                               'Yes, delete $title',
                               maxLines: 1,
-                              style: const TextStyle(color: Colors.black, fontSize: 20.0),
+                              style: TextStyle(
+                                  color: Theme.of(context).textTheme.headline1!.color,
+                                  fontSize: 20.0),
                             ),
                             const Padding(
                               padding: EdgeInsets.only(left: 8.0),
@@ -115,7 +124,10 @@ class ChapterListBloc extends Cubit<ChapterListState> {
                             Text(
                               "No, don't delete $title",
                               maxLines: 1,
-                              style: const TextStyle(color: Colors.black, fontSize: 20.0),
+                              style: TextStyle(
+                                color: Theme.of(context).textTheme.headline1!.color,
+                                fontSize: 20.0,
+                              ),
                             ),
                             const Padding(
                               padding: EdgeInsets.only(left: 8.0),

@@ -29,6 +29,8 @@ class SideNotesPage extends StatelessWidget {
           int totalCount = 0;
           return Scaffold(
             appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Theme.of(context).hoverColor,
               title: FittedBox(
                 child: Text(
                   'Side Notes',
@@ -36,17 +38,11 @@ class SideNotesPage extends StatelessWidget {
                 ),
               ),
               leading: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.arrow_forward_ios_rounded)),
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_forward_ios_rounded),
+                color: Theme.of(context).iconTheme.color,
+              ),
               actions: [
-                // Total word count
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Words: $totalCount',
-                    style: const TextStyle(color: Colors.black, fontSize: 15),
-                  ),
-                ),
                 // New chapter button
                 IconButton(
                   onPressed: () => showModalBottomSheet(
@@ -54,16 +50,19 @@ class SideNotesPage extends StatelessWidget {
                     builder: (context) {
                       return Scaffold(
                         appBar: AppBar(
-                          title: const Text('New Note'),
+                          title: Text(
+                            'New Note',
+                            style: TextStyle(color: Theme.of(context).hoverColor),
+                          ),
                           leading: IconButton(
                             onPressed: () => Navigator.of(context).pop(),
                             icon: Icon(
                               Icons.keyboard_arrow_down_rounded,
-                              color: Theme.of(context).iconTheme.color,
+                              color: Theme.of(context).hoverColor,
                             ),
                           ),
                         ),
-                        backgroundColor: Theme.of(context).hintColor,
+                        backgroundColor: Theme.of(context).hoverColor,
                         body: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -93,7 +92,7 @@ class SideNotesPage extends StatelessWidget {
                       );
                     },
                   ),
-                  icon: const Icon(Icons.add),
+                  icon: Icon(Icons.add,color: Theme.of(context).iconTheme.color,),
                 ),
               ],
             ),

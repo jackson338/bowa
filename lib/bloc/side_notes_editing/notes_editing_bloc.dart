@@ -10,11 +10,14 @@ class NotesEditingBloc extends Cubit<NotesEditingState> {
     init();
   }
 
+  void tool() {
+    emit(state.copyWith(tools: !state.tools));
+  }
+
   void init() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('$id $title note json') != null) {
       final json = jsonDecode(prefs.getString('$id $title note json')!);
-      print(json);
       emit(state.copyWith(noteText: json));
     }
   }
@@ -30,8 +33,6 @@ class NotesEditingBloc extends Cubit<NotesEditingState> {
     var json = jsonEncode(cont.document.toDelta().toJson());
     prefs.setString('$id $title note json', json);
     final stateJson = jsonDecode(json);
-      emit(state.copyWith(noteText: stateJson));
+    emit(state.copyWith(noteText: stateJson));
   }
-
-
 }

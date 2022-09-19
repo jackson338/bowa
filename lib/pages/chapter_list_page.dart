@@ -33,6 +33,8 @@ class ChapterListPage extends StatelessWidget {
           double length = totalCount / state.wordGoal;
           return Scaffold(
             appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Theme.of(context).hoverColor,
               title: FittedBox(
                 child: Text(
                   title,
@@ -52,7 +54,7 @@ class ChapterListPage extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Words: $totalCount',
-                    style: const TextStyle(color: Colors.black, fontSize: 15),
+                    style: TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 15),
                   ),
                 ),
                 // New chapter button
@@ -292,25 +294,6 @@ class ChapterListPage extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Text('Word Goal: $totalCount / ${state.wordGoal}'),
                       ),
-                      // SizedBox(
-                      //   width: MediaQuery.of(context).size.width,
-                      //   height: 20,
-                      //   child: ListView.separated(
-                      //     scrollDirection: Axis.horizontal,
-                      //     itemCount: state.chapterNames.length,
-                      //     padding: const EdgeInsets.only(left: 8.0),
-                      //     itemBuilder: (context, index) {
-                      //       return Text('Chapter: ${index + 1}');
-                      //     },
-                      //     separatorBuilder: (BuildContext context, int index) {
-                      //       return SizedBox(
-                      //         height: 10,
-                      //         width: MediaQuery.of(context).size.width /
-                      //             state.chapterNames.length,
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
                       Stack(
                         children: [
                           Padding(

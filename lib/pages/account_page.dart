@@ -26,11 +26,12 @@ class AccountPage extends StatelessWidget {
                 ))
               : Scaffold(
                   appBar: AppBar(
+                    elevation: 0,
                     title: Text(
                       state.title,
                       style: Theme.of(context).textTheme.headline1,
                     ),
-                    backgroundColor: Theme.of(context).primaryColor,
+                    backgroundColor: Theme.of(context).backgroundColor,
                   ),
                   body: Container(
                     color: Theme.of(context).backgroundColor,
@@ -47,146 +48,173 @@ class AccountPage extends StatelessWidget {
                               child: Image.asset('lib/images/Untitled_Artwork.png'),
                             ),
                           ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  controller.text = state.accountInfo[0];
-                                  accountBloc.nameEdit(true);
-                                },
-                                child: state.nameEdit
-                                    ? TextField(
-                                        controller: controller,
-                                        autofocus: true,
-                                        onSubmitted: (_) {
-                                          FocusManager.instance.primaryFocus?.unfocus();
-                                          accountBloc.changeName(controller.text);
-                                          accountBloc.nameEdit(false);
-                                        },
-                                      )
-                                    : FittedBox(
-                                        child: Text(
-                                          'Name: ${state.accountInfo[0]}',
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color),
+                          // name text and editor
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    controller.text = state.accountInfo[0];
+                                    accountBloc.nameEdit(true);
+                                  },
+                                  child: state.nameEdit
+                                      ? TextField(
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                          controller: controller,
+                                          autofocus: true,
+                                          onSubmitted: (_) {
+                                            FocusManager.instance.primaryFocus?.unfocus();
+                                            accountBloc.changeName(controller.text);
+                                            accountBloc.nameEdit(false);
+                                          },
+                                        )
+                                      : FittedBox(
+                                          child: Text(
+                                            'Name: ${state.accountInfo[0]}',
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .color),
+                                          ),
                                         ),
-                                      ),
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  authorNameCont.text = state.accountInfo[1];
-                                  accountBloc.authorEdit(true);
-                                },
-                                child: state.authorEdit
-                                    ? TextField(
-                                        controller: authorNameCont,
-                                        autofocus: true,
-                                        onSubmitted: (_) {
-                                          FocusManager.instance.primaryFocus?.unfocus();
-                                          accountBloc.changeAuthor(authorNameCont.text);
-                                          accountBloc.authorEdit(false);
-                                        },
-                                      )
-                                    : FittedBox(
-                                        child: Text(
-                                          'Author Name: ${state.accountInfo[1]}',
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color),
+                          // author name text and editor
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    authorNameCont.text = state.accountInfo[1];
+                                    accountBloc.authorEdit(true);
+                                  },
+                                  child: state.authorEdit
+                                      ? TextField(
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                          controller: authorNameCont,
+                                          autofocus: true,
+                                          onSubmitted: (_) {
+                                            FocusManager.instance.primaryFocus?.unfocus();
+                                            accountBloc.changeAuthor(authorNameCont.text);
+                                            accountBloc.authorEdit(false);
+                                          },
+                                        )
+                                      : FittedBox(
+                                          child: Text(
+                                            'Author Name: ${state.accountInfo[1]}',
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .color),
+                                          ),
                                         ),
-                                      ),
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  emailCont.text = state.accountInfo[2];
-                                  accountBloc.emailEdit(true);
-                                },
-                                child: state.emailEdit
-                                    ? TextField(
-                                        controller: emailCont,
-                                        autofocus: true,
-                                        onSubmitted: (_) {
-                                          FocusManager.instance.primaryFocus?.unfocus();
-                                          accountBloc.changeEmail(emailCont.text);
-                                          accountBloc.emailEdit(false);
-                                        },
-                                      )
-                                    : FittedBox(
-                                        child: Text(
-                                          'Email: ${state.accountInfo[2]}',
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color),
+                          // email text and editor
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    emailCont.text = state.accountInfo[2];
+                                    accountBloc.emailEdit(true);
+                                  },
+                                  child: state.emailEdit
+                                      ? TextField(
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                          controller: emailCont,
+                                          autofocus: true,
+                                          onSubmitted: (_) {
+                                            FocusManager.instance.primaryFocus?.unfocus();
+                                            accountBloc.changeEmail(emailCont.text);
+                                            accountBloc.emailEdit(false);
+                                          },
+                                        )
+                                      : FittedBox(
+                                          child: Text(
+                                            'Email: ${state.accountInfo[2]}',
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .color),
+                                          ),
                                         ),
-                                      ),
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  passwordCont.text = state.accountInfo[3];
-                                  accountBloc.passwordEdit(true);
-                                },
-                                child: state.passwordEdit
-                                    ? TextField(
-                                        controller: passwordCont,
-                                        autofocus: true,
-                                        onSubmitted: (_) {
-                                          FocusManager.instance.primaryFocus?.unfocus();
-                                          accountBloc.changePassword(passwordCont.text);
-                                          accountBloc.passwordEdit(false);
-                                        },
-                                      )
-                                    : FittedBox(
-                                        child: Text(
-                                          'Password: ${state.accountInfo[3]}',
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color),
+                          // password text and editor
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    passwordCont.text = state.accountInfo[3];
+                                    accountBloc.passwordEdit(true);
+                                  },
+                                  child: state.passwordEdit
+                                      ? TextField(
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                          controller: passwordCont,
+                                          autofocus: true,
+                                          onSubmitted: (_) {
+                                            FocusManager.instance.primaryFocus?.unfocus();
+                                            accountBloc.changePassword(passwordCont.text);
+                                            accountBloc.passwordEdit(false);
+                                          },
+                                        )
+                                      : FittedBox(
+                                          child: Text(
+                                            'Password: ${state.accountInfo[3]}',
+                                            style: TextStyle(
+                                                fontSize: 30,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .color),
+                                          ),
                                         ),
-                                      ),
+                                ),
                               ),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Auto Login',
-                                style: Theme.of(context).textTheme.bodyText1,
-                              ),
-                              Switch(
-                                value: state.autoLogin,
-                                onChanged: (val) => accountBloc.switchAutoLogin(val),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Auto Login',
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                                Switch(
+                                  value: state.autoLogin,
+                                  activeColor: Theme.of(context).primaryColorLight,
+                                  activeTrackColor: Theme.of(context).primaryColor,
+                                  inactiveTrackColor: Theme.of(context).hoverColor,
+                                  inactiveThumbColor: Theme.of(context).primaryColor,
+                                  onChanged: (val) => accountBloc.switchAutoLogin(val),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),

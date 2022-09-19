@@ -20,7 +20,6 @@ class NotesEditingPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => NotesEditingBloc(title: title, id: id),
       child: BlocBuilder<NotesEditingBloc, NotesEditingState>(
-        buildWhen: (previous, current) => previous.noteText != current.noteText,
         builder: (context, state) {
           NotesEditingBloc notesBloc = context.read<NotesEditingBloc>();
           //setting document for json formatting
@@ -45,14 +44,22 @@ class NotesEditingPage extends StatelessWidget {
             },
             child: Scaffold(
               appBar: AppBar(
-                title: Text(title),
+                elevation: 0,
+                backgroundColor: Theme.of(context).backgroundColor,
+                title: Text(
+                  title,
+                  style: Theme.of(context).textTheme.headline1,
+                ),
                 leading: IconButton(
                   onPressed: () {
                     sideNotesBloc.updateVal(
                         title, quillController.document.toPlainText());
                     Navigator.of(context).pop();
                   },
-                  icon: const Icon(Icons.arrow_forward_ios_rounded),
+                  icon: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
                 ),
               ),
               body: Container(
@@ -62,63 +69,70 @@ class NotesEditingPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+                      child: SizedBox(
                         height: MediaQuery.of(context).size.height / 1.5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: QuillEditor(
-                            controller: quillController,
-                            focusNode: quillFocus,
-                            scrollController: ScrollController(),
-                            scrollable: true,
-                            padding: const EdgeInsets.only(left: 30),
-                            autoFocus: false,
-                            readOnly: false,
-                            expands: true,
-                            textCapitalization: TextCapitalization.sentences,
-                            keyboardAppearance: Brightness.dark,
-                            customStyles: DefaultStyles(
-                                paragraph: DefaultTextBlockStyle(
-                                    Theme.of(context).textTheme.bodyText1!,
-                                    const Tuple2(16, 0),
-                                    const Tuple2(0, 0),
-                                    null),
-                                h1: DefaultTextBlockStyle(
-                                    TextStyle(
-                                        color:
-                                            Theme.of(context).textTheme.bodyText1!.color,
-                                        fontSize: 35),
-                                    const Tuple2(16, 0),
-                                    const Tuple2(0, 0),
-                                    null),
-                                h2: DefaultTextBlockStyle(
-                                    TextStyle(
-                                        color:
-                                            Theme.of(context).textTheme.bodyText1!.color,
-                                        fontSize: 28),
-                                    const Tuple2(16, 0),
-                                    const Tuple2(0, 0),
-                                    null),
-                                h3: DefaultTextBlockStyle(
-                                    TextStyle(
-                                        color:
-                                            Theme.of(context).textTheme.bodyText1!.color,
-                                        fontSize: 21),
-                                    const Tuple2(16, 0),
-                                    const Tuple2(0, 0),
-                                    null),
-                                bold: TextStyle(
-                                    color: Theme.of(context).textTheme.bodyText1!.color,
-                                    fontWeight: FontWeight.bold),
-                                color: Theme.of(context).textTheme.bodyText1!.color),
-                          ),
+                        child: QuillEditor(
+                          controller: quillController,
+                          focusNode: quillFocus,
+                          scrollController: ScrollController(),
+                          scrollable: true,
+                          padding: const EdgeInsets.only(left: 30),
+                          autoFocus: false,
+                          readOnly: false,
+                          expands: true,
+                          textCapitalization: TextCapitalization.sentences,
+                          keyboardAppearance: Brightness.dark,
+                          customStyles: DefaultStyles(
+                              paragraph: DefaultTextBlockStyle(
+                                  Theme.of(context).textTheme.bodyText1!,
+                                  const Tuple2(16, 0),
+                                  const Tuple2(0, 0),
+                                  null),
+                              h1: DefaultTextBlockStyle(
+                                  TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                      fontSize: 35),
+                                  const Tuple2(16, 0),
+                                  const Tuple2(0, 0),
+                                  null),
+                              h2: DefaultTextBlockStyle(
+                                  TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                      fontSize: 28),
+                                  const Tuple2(16, 0),
+                                  const Tuple2(0, 0),
+                                  null),
+                              h3: DefaultTextBlockStyle(
+                                  TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                      fontSize: 21),
+                                  const Tuple2(16, 0),
+                                  const Tuple2(0, 0),
+                                  null),
+                              bold: TextStyle(
+                                  color: Theme.of(context).textTheme.bodyText1!.color,
+                                  fontWeight: FontWeight.bold),
+                              color: Theme.of(context).textTheme.bodyText1!.color),
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 40.0),
                       child: QuillToolbar.basic(
+                        customButtons: [
+                          QuillCustomButton(
+                            icon: state.tools
+                                ? Icons.arrow_downward_rounded
+                                : Icons.arrow_upward_rounded,
+                            onTap: () {
+                              notesBloc.unfocus(quillController);
+                              sideNotesBloc.updateVal(
+                                  title, quillController.document.toPlainText());
+                              quillFocus.unfocus();
+                              notesBloc.tool();
+                            },
+                          ),
+                        ],
                         controller: quillController,
                         showCameraButton: false,
                         showLink: false,
@@ -131,6 +145,16 @@ class NotesEditingPage extends StatelessWidget {
                         showVideoButton: false,
                         showFontSize: false,
                         showFontFamily: false,
+                        // showAlignmentButtons: state.tools,
+                        showColorButton: false,
+                        showQuote: false,
+                        showBackgroundColorButton: false,
+                        showListCheck: state.tools,
+                        showInlineCode: state.tools,
+                        showListBullets: state.tools,
+                        showListNumbers: state.tools,
+                        showSearchButton: state.tools,
+                        showIndent: state.tools,
                       ),
                     ),
                   ],

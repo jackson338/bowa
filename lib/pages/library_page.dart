@@ -7,8 +7,9 @@ class LibraryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Library'),
-        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        title: Text('Library',style: Theme.of(context).textTheme.headline1,),
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,

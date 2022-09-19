@@ -25,6 +25,10 @@ class EditingBloc extends Cubit<EditingState> {
     emit(state.copyWith(drawerOpen: status));
   }
 
+  void tool() {
+    emit(state.copyWith(tools: !state.tools));
+  }
+
   void saveText(QuillController cont) {
     List<dynamic> jsonTexts = [];
     if (state.jsonChapterText.isNotEmpty) {

@@ -87,23 +87,23 @@ class EditingPage extends StatelessWidget {
                   appBar: AppBar(
                     title: SizedBox(
                       width: MediaQuery.of(context).size.width / 9,
-                      child: FittedBox(
+                      child: const FittedBox(
                         child: Text(
                           'Chapters',
-                          style: Theme.of(context).textTheme.headline1,
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
                     leading: IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back_ios_rounded,
-                        color: Theme.of(context).iconTheme.color,
+                        color: Colors.black,
                       ),
                     ),
                   ),
                   body: Container(
-                    color: Colors.grey[700],
+                    color: Theme.of(context).hoverColor,
                     child: ListView.builder(
                       itemCount: state.chapters.length,
                       itemBuilder: (context, index) {
@@ -231,7 +231,7 @@ class EditingPage extends StatelessWidget {
               floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
               floatingActionButton: state.drawerOpen
                   ? Padding(
-                      padding: const EdgeInsets.only(bottom: 70.0),
+                      padding: const EdgeInsets.only(bottom: 90.0),
                       child: Builder(
                         builder: (context) {
                           return FloatingActionButton(
@@ -239,9 +239,9 @@ class EditingPage extends StatelessWidget {
                               quillFocus.unfocus();
                               Scaffold.of(context).openDrawer();
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.list_alt_outlined,
-                              color: Theme.of(context).iconTheme.color,
+                              color: Colors.black,
                             ),
                           );
                         },
@@ -251,6 +251,8 @@ class EditingPage extends StatelessWidget {
               // floatingActionButton:
               appBar: AppBar(
                 // back button
+                elevation: 0,
+                backgroundColor: Theme.of(context).backgroundColor,
                 leading: IconButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
@@ -263,7 +265,8 @@ class EditingPage extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: Text(
                       'Words: ${matches.length}',
-                      style: const TextStyle(fontSize: 15, color: Colors.black),
+                      style: TextStyle(
+                          fontSize: 15, color: Theme.of(context).iconTheme.color),
                     ),
                   ),
                   Builder(
@@ -305,6 +308,7 @@ class EditingPage extends StatelessWidget {
                             controller: titleCont,
                             keyboardAppearance: Brightness.dark,
                             textCapitalization: TextCapitalization.sentences,
+                            style: Theme.of(context).textTheme.bodyText1,
                             onChanged: (_) {
                               String chapterName = titleCont.text;
                               editContext
@@ -320,12 +324,10 @@ class EditingPage extends StatelessWidget {
                         Expanded(
                           child: Align(
                             alignment: Alignment.topRight,
-                            child: Container(
-                              decoration:
-                                  BoxDecoration(border: Border.all(color: Colors.grey)),
+                            child: SizedBox(
                               height: MediaQuery.of(context).size.height / 1.35,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(4.0),
                                 //chapter text editor
                                 child: QuillEditor(
                                   controller: quillController,
@@ -401,6 +403,12 @@ class EditingPage extends StatelessWidget {
                                       Scaffold.of(scaffoldContext).openDrawer();
                                     },
                                   ),
+                                  QuillCustomButton(
+                                    icon: state.tools
+                                        ? Icons.arrow_downward_rounded
+                                        : Icons.arrow_upward_rounded,
+                                    onTap: () => editingBloc.tool(),
+                                  ),
                                 ],
                                 controller: quillController,
                                 showCameraButton: false,
@@ -414,6 +422,16 @@ class EditingPage extends StatelessWidget {
                                 showVideoButton: false,
                                 showFontSize: false,
                                 showFontFamily: false,
+                                // showAlignmentButtons: state.tools,
+                                showColorButton: false,
+                                showQuote: false,
+                                showBackgroundColorButton: false,
+                                showListCheck: state.tools,
+                                showInlineCode: state.tools,
+                                showListBullets: state.tools,
+                                showListNumbers: state.tools,
+                                showSearchButton: state.tools,
+                                showIndent: state.tools,
                               ),
                             );
                           }),
