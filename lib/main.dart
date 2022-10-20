@@ -1,5 +1,6 @@
 // This app was created by Jackson Oaks and he olds all rights to this code. It is not to be copied or used publicly by anyone.
 
+import 'dart:async';
 
 import 'package:bowa/bloc/login_bloc/account_creation/account_creation.dart';
 import 'package:bowa/bloc/login_bloc/login.dart';
@@ -108,7 +109,7 @@ class LoginPage extends StatelessWidget {
                   pages: pages,
                 )
               : Scaffold(
-                backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).backgroundColor,
                   appBar: AppBar(
                     title: const Text('Login'),
                     backgroundColor: Theme.of(context).primaryColor,
@@ -182,7 +183,8 @@ void login(
             buildWhen: (previous, current) =>
                 previous.name != current.name ||
                 previous.password != current.password ||
-                previous.autoLogin != current.autoLogin,
+                previous.autoLogin != current.autoLogin ||
+                previous.loading != current.loading,
             builder: (context, state) {
               LoginBloc loginBloc = context.read<LoginBloc>();
               return Scaffold(
@@ -245,12 +247,18 @@ void login(
                       //     strokeWidth: 3,
                       //   ),
 
-                      Switch(
-                        value: state.autoLogin,
-                        onChanged: (val) {
-                          origLoginBloc.switchAutoLogin(val);
-                          context.read<LoginBloc>().switchAutoLogin(val);
-                        },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Auto Login'),
+                          Switch(
+                            value: state.autoLogin,
+                            onChanged: (val) {
+                              origLoginBloc.switchAutoLogin(val);
+                              context.read<LoginBloc>().switchAutoLogin(val);
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -261,9 +269,22 @@ void login(
                       : Theme.of(context).hoverColor,
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    origLoginBloc.login(name.text, password.text, context);
+                    loginBloc.loading(true);
+                    Timer(
+                      const Duration(seconds: 1),
+                      () {
+                        loginBloc.loading(false);
+                        origLoginBloc.login(name.text, password.text, context);
+                      },
+                    );
                   },
-                  child: const Text('Login'),
+                  child: state.loading
+                      ? CircularProgressIndicator(
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          color: Theme.of(context).primaryColor,
+                          strokeWidth: 3,
+                        )
+                      : const Text('Login'),
                 ),
               );
             },

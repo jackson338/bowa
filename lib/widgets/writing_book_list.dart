@@ -1,3 +1,4 @@
+import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/widgets/writing_book_item.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class WritingBookList extends StatelessWidget {
   final List<Image> coverArtList;
   final List<String> ids;
   final WritingBloc writingBloc;
+  final ThemeBloc themeBloc;
   const WritingBookList({
     Key? key,
     required this.idList,
@@ -15,6 +17,7 @@ class WritingBookList extends StatelessWidget {
     required this.coverArtList,
     required this.ids,
     required this.writingBloc,
+    required this.themeBloc,
   }) : super(key: key);
 
   @override
@@ -33,6 +36,7 @@ class WritingBookList extends StatelessWidget {
                 context: context,
                 id: ids[index],
                 writingBloc: writingBloc,
+                themeBloc: themeBloc,
               ),
             );
           },

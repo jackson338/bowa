@@ -31,17 +31,17 @@ class SettingsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //light theme
-            themeWidget(context, Colors.black, Colors.white, 'Light Theme'),
+            themeWidget(context, Colors.black, Colors.white, 'Light Theme', themeBloc),
             //dark theme
-            themeWidget(context, Colors.white, Colors.black, 'Dark Theme'),
+            themeWidget(context, Colors.white, Colors.black, 'Dark Theme', themeBloc),
           ],
         ),
       ),
     );
   }
 
-  Padding themeWidget(
-      BuildContext context, Color themeContrast, Color themeColor, String theme) {
+  static Padding themeWidget(BuildContext context, Color themeContrast, Color themeColor,
+      String theme, ThemeBloc themeBloc) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -70,7 +70,7 @@ class SettingsPage extends StatelessWidget {
                   child: FittedBox(
                     child: Text(
                       theme,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: TextStyle(color: themeColor),
                     ),
                   ),
                 ),

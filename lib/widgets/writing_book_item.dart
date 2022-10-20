@@ -1,3 +1,4 @@
+import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/pages/chapter_list_page.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class WritingBookItem extends StatelessWidget {
   final BuildContext context;
   final String id;
   final WritingBloc writingBloc;
+  final ThemeBloc themeBloc;
   const WritingBookItem({
     Key? key,
     required this.bookTitle,
@@ -15,6 +17,7 @@ class WritingBookItem extends StatelessWidget {
     required this.context,
     required this.id,
     required this.writingBloc,
+    required this.themeBloc,
   }) : super(key: key);
 
   @override
@@ -60,6 +63,7 @@ class WritingBookItem extends StatelessWidget {
           title: title,
           id: id,
           writingBloc: writingBloc,
+          themeBloc: themeBloc,
         ),
       ),
     );

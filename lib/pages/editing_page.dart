@@ -325,7 +325,7 @@ class EditingPage extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.topRight,
                             child: SizedBox(
-                              height: MediaQuery.of(context).size.height / 1.35,
+                              height: MediaQuery.of(context).size.height,
                               child: Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 //chapter text editor
@@ -432,6 +432,7 @@ class EditingPage extends StatelessWidget {
                                 showListNumbers: state.tools,
                                 showSearchButton: state.tools,
                                 showIndent: state.tools,
+                                showHeaderStyle: state.tools,
                               ),
                             );
                           }),

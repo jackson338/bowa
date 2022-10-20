@@ -64,6 +64,7 @@ class AccountPage extends StatelessWidget {
                                         style: Theme.of(context).textTheme.bodyText1,
                                           controller: controller,
                                           autofocus: true,
+                                          keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
                                             accountBloc.changeName(controller.text);
@@ -101,6 +102,7 @@ class AccountPage extends StatelessWidget {
                                         style: Theme.of(context).textTheme.bodyText1,
                                           controller: authorNameCont,
                                           autofocus: true,
+                                          keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
                                             accountBloc.changeAuthor(authorNameCont.text);
@@ -138,6 +140,7 @@ class AccountPage extends StatelessWidget {
                                         style: Theme.of(context).textTheme.bodyText1,
                                           controller: emailCont,
                                           autofocus: true,
+                                          keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
                                             accountBloc.changeEmail(emailCont.text);
@@ -175,6 +178,7 @@ class AccountPage extends StatelessWidget {
                                         style: Theme.of(context).textTheme.bodyText1,
                                           controller: passwordCont,
                                           autofocus: true,
+                                          keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
                                             accountBloc.changePassword(passwordCont.text);
@@ -207,8 +211,8 @@ class AccountPage extends StatelessWidget {
                                 ),
                                 Switch(
                                   value: state.autoLogin,
-                                  activeColor: Theme.of(context).primaryColorLight,
-                                  activeTrackColor: Theme.of(context).primaryColor,
+                                  activeColor: Theme.of(context).primaryColor,
+                                  activeTrackColor: Theme.of(context).primaryColorLight,
                                   inactiveTrackColor: Theme.of(context).hoverColor,
                                   inactiveThumbColor: Theme.of(context).primaryColor,
                                   onChanged: (val) => accountBloc.switchAutoLogin(val),

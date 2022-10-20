@@ -32,6 +32,7 @@ class LoginBloc extends Cubit<LoginState> {
 
   void login(String username, String password, BuildContext context) async {
     final nav = Navigator.of(context);
+    final contx = context;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> accountInfo = [];
     if (prefs.getStringList('$username Account Info') != null) {
@@ -53,7 +54,23 @@ class LoginBloc extends Cubit<LoginState> {
       }
       emit(state.copyWith(loggedIn: true));
       nav.pop();
+    } else {
+      ScaffoldMessenger.of(contx).showSnackBar(const SnackBar(
+        backgroundColor: Colors.red,
+        // clipBehavior: Clip.antiAlias,
+        behavior: SnackBarBehavior.floating,
+        dismissDirection: DismissDirection.down,
+        duration: Duration(seconds: 1),
+        margin: EdgeInsets.all(10.0),
+        elevation: 3,
+        content: Text('Incorrect Login'),
+      ));
     }
+  }
+
+  void loading(bool loading) {
+    emit(state.copyWith(loading: loading));
+    
   }
 
   void switchAutoLogin(bool val) {

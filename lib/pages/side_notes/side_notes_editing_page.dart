@@ -155,6 +155,7 @@ class NotesEditingPage extends StatelessWidget {
                         showListNumbers: state.tools,
                         showSearchButton: state.tools,
                         showIndent: state.tools,
+                        showHeaderStyle: state.tools,
                       ),
                     ),
                   ],

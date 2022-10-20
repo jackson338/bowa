@@ -6,7 +6,7 @@ class NotesEditingState {
 
   const NotesEditingState({
     this.noteText = '',
-    this.tools = false,
+    this.tools = true,
   });
 
   NotesEditingState copyWith({

@@ -92,7 +92,10 @@ class SideNotesPage extends StatelessWidget {
                       );
                     },
                   ),
-                  icon: Icon(Icons.add,color: Theme.of(context).iconTheme.color,),
+                  icon: Icon(
+                    Icons.add,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
                 ),
               ],
             ),

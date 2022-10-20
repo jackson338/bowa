@@ -50,6 +50,7 @@ class BooksPage extends StatelessWidget {
                   coverArtList: context.read<WritingBloc>().state.coverArtList ?? [],
                   ids: state.idList,
                   writingBloc: context.read<WritingBloc>(),
+                  themeBloc: themeBloc,
                 ),
               ),
             ),

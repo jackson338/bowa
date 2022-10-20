@@ -19,8 +19,8 @@ class ThemeState {
     this.background = Colors.white,
     this.disabled = Colors.blueGrey,
     this.hover = Colors.blueGrey,
-    this.icon = Colors.black,
-    this.headline = Colors.black,
+    this.icon = Colors.cyan,
+    this.headline = Colors.cyan,
     this.bodyText = Colors.black,
     this.card = Colors.white,
   });
