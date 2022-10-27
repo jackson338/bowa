@@ -1,8 +1,8 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
-import 'package:bowa/pages/editing_page.dart';
 import 'package:bowa/pages/settings.dart';
+import 'package:bowa/widgets/reorderable_chapter_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,219 +121,44 @@ class ChapterListPage extends StatelessWidget {
                     child: Column(
                       children: [
                         //reorderable list widget height
-                        state.chapterNames.isNotEmpty
-                            ? SizedBox(
-                                height: orient == Orientation.portrait
-                                    ? MediaQuery.of(context).size.height / 2
-                                    : MediaQuery.of(context).size.height / 1.5,
-                                width: MediaQuery.of(context).size.width,
-                                //reorderable list
-                                child: ReorderableListView.builder(
-                                  buildDefaultDragHandles: false,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    matches =
-                                        wordCount.allMatches(state.chapterText[index]);
-                                    return Padding(
-                                      key: UniqueKey(),
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          editContext
-                                              .read<ChapterListBloc>()
-                                              .select(index);
-                                          final page = EditingPage(
-                                            id: id,
-                                            title: title,
-                                            chapterListBloc:
-                                                editContext.read<ChapterListBloc>(),
-                                            chapterListState:
-                                                editContext.read<ChapterListBloc>().state,
-                                            initialIndex: index,
-                                          );
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => page),
-                                          );
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10.0),
-                                            color: Theme.of(context).backgroundColor,
-                                          ),
-                                          //reorderable list widget width
-                                          width: MediaQuery.of(context).size.width / 2,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(bottom: 12.0),
-                                                  child: Text(
-                                                    state.chapterNames[index],
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1!
-                                                            .color,
-                                                        fontWeight: FontWeight.bold),
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.centerRight,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        bottom: 12.0),
-                                                    child: Text(
-                                                      'Word Count: ${matches.length}',
-                                                      style: TextStyle(
-                                                          color: Theme.of(context)
-                                                              .primaryColor),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: SizedBox(
-                                                    child: Text(
-                                                      state.chapterText[index],
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText1,
-                                                      maxLines: 10,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                Align(
-                                                  child: ReorderableDragStartListener(
-                                                    index: index,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment.center,
-                                                        children: [
-                                                          Text(
-                                                            state.chapters[index],
-                                                            style: TextStyle(
-                                                                color: Theme.of(context)
-                                                                    .primaryColor),
-                                                          ),
-                                                          Icon(
-                                                            Icons.drag_handle,
-                                                            color: Theme.of(context)
-                                                                .primaryColor,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.bottomRight,
-                                                  child: IconButton(
-                                                    splashColor:
-                                                        Theme.of(context).primaryColor,
-                                                    onPressed: () {
-                                                      String copyText =
-                                                          '${state.chapterNames[state.chapterSelected]}\n\n${state.chapterText[state.chapterSelected]}';
-                                                      Clipboard.setData(
-                                                          ClipboardData(text: copyText));
-                                                    },
-                                                    icon: const Icon(Icons.copy),
-                                                    iconSize: 15,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  itemCount: state.chapters.length,
-                                  onReorder: (oldIndex, newIndex) {
-                                    editContext
-                                        .read<ChapterListBloc>()
-                                        .reorder(oldIndex, newIndex);
-                                  },
-                                ),
-                              )
-                            : GestureDetector(
-                              onTap: () {
-                                String chapterName;
-                                TextEditingController chaptNameController =
-                                    TextEditingController();
-                                Document doc = Document();
-                                QuillController quillController = QuillController(
-                                  document: doc,
-                                  selection: const TextSelection.collapsed(offset: 0),
-                                );
-                                showMenu(
-                                  context: context,
-                                  position:
-                                      const RelativeRect.fromLTRB(400, 50, 50, 50),
-                                  items: [
-                                    PopupMenuItem(
-                                      child: TextField(
-                                        autofocus: true,
-                                        decoration: const InputDecoration(
-                                            hintText: 'Chapter Name'),
-                                        controller: chaptNameController,
-                                        keyboardAppearance: Brightness.dark,
-                                        textCapitalization:
-                                            TextCapitalization.sentences,
-                                        onSubmitted: (_) {
-                                          Navigator.of(context).pop();
-                                          chapterName = chaptNameController.text;
-                                          editContext
-                                              .read<ChapterListBloc>()
-                                              .addChapter(
-                                                chapterName,
-                                                'Chapter ${state.chapters.length + 1}',
-                                                chapterName,
-                                                quillController,
-                                              );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                  elevation: 8.0,
-                                );
-                              },
-                              child: Container(
-                                height: MediaQuery.of(context).size.height / 2,
-                                width: MediaQuery.of(context).size.width / 2,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  border: Border.all(color: Colors.black, width: 2),
-                                  color: Theme.of(context).hoverColor,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        Icons.add_box_outlined,
-                                        color: Colors.black,
-                                        size: 50,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Add Chapter',
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                        SizedBox(
+                          height: orient == Orientation.portrait
+                              ? MediaQuery.of(context).size.height / 2
+                              : MediaQuery.of(context).size.height / 1.5,
+                          width: MediaQuery.of(context).size.width,
+                          //reorderable list
+                          child: ReorderableListView.builder(
+                            buildDefaultDragHandles: false,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              if (index != state.chapters.length) {
+                                matches = wordCount.allMatches(state.chapterText[index]);
+                                return chapterWidget(
+                                    context,
+                                    context.read<ChapterListBloc>(),
+                                    index,
+                                    id,
+                                    title,
+                                    matches);
+                              } else {
+                                return addChapter(
+                                    context, context.read<ChapterListBloc>(), state);
+                              }
+                            },
+                            itemCount: state.chapters.length + 1,
+                            onReorder: (oldIndex, newIndex) {
+                              if (newIndex > state.chapters.length) {
+                                editContext
+                                    .read<ChapterListBloc>()
+                                    .reorder(oldIndex, newIndex - 1);
+                              } else {
+                                editContext
+                                    .read<ChapterListBloc>()
+                                    .reorder(oldIndex, newIndex);
+                              }
+                            },
+                          ),
+                        ),
                         Align(
                           alignment: Alignment.bottomRight,
                           child: FittedBox(
@@ -344,10 +169,6 @@ class ChapterListPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10.0),
                                   child: TextButton(
-                                    // style: ButtonStyle(
-                                    //   backgroundColor:
-                                    //       MaterialStateProperty.resolveWith((states) {}),
-                                    // ),
                                     onPressed: () => editContext
                                         .read<ChapterListBloc>()
                                         .deleteBook(title, writingBloc),

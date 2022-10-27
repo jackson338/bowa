@@ -100,6 +100,7 @@ class LoginPage extends StatelessWidget {
               const LibraryPage(),
               BooksPage(
                 themeBloc: themeBloc,
+                user: state.user,
               ),
             ];
           }

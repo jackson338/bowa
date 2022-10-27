@@ -266,7 +266,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     emit(state.copyWith(chapterText: unmodifiedText, jsonChapterText: jsons));
   }
 
-// select a chapter
+/// select a chapter
   void select(chapterSelect) {
     emit(state.copyWith(chapterSelected: chapterSelect));
   }

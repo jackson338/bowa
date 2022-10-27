@@ -12,12 +12,14 @@ class LoginBloc extends Cubit<LoginState> {
       autoLoginInfo = prefs.getStringList('auto login')!;
     }
     if (autoLoginInfo.isNotEmpty) {
+      User? user = await createUserObject(autoLoginInfo, state.autoLogin);
       emit(state.copyWith(
         name: autoLoginInfo[0],
         authorName: autoLoginInfo[1],
         email: autoLoginInfo[2],
         password: autoLoginInfo[3],
         loggedIn: true,
+        user: user,
       ));
     }
   }
@@ -32,7 +34,7 @@ class LoginBloc extends Cubit<LoginState> {
 
   void login(String username, String password, BuildContext context) async {
     final nav = Navigator.of(context);
-    final contx = context;
+    final contx = ScaffoldMessenger.of(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> accountInfo = [];
     if (prefs.getStringList('$username Account Info') != null) {
@@ -52,10 +54,11 @@ class LoginBloc extends Cubit<LoginState> {
       } else {
         prefs.setStringList('auto login', []);
       }
-      emit(state.copyWith(loggedIn: true));
+      User? user = await createUserObject(accountInfo, state.autoLogin);
+      emit(state.copyWith(loggedIn: true, user: user));
       nav.pop();
     } else {
-      ScaffoldMessenger.of(contx).showSnackBar(const SnackBar(
+      contx.showSnackBar(const SnackBar(
         backgroundColor: Colors.red,
         // clipBehavior: Clip.antiAlias,
         behavior: SnackBarBehavior.floating,
@@ -70,7 +73,6 @@ class LoginBloc extends Cubit<LoginState> {
 
   void loading(bool loading) {
     emit(state.copyWith(loading: loading));
-    
   }
 
   void switchAutoLogin(bool val) {

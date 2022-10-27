@@ -1,0 +1,105 @@
+import 'dart:convert';
+
+import 'package:bowa/models/book.dart';
+import 'package:bowa/models/side_notes.dart';
+import 'package:bowa/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Future<User> createUserObject(List accountInfo, bool autoLogin) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String>? bookIds;
+  List<Book>? library;
+  if (prefs.getStringList('title ids list') != null) {
+    bookIds = prefs.getStringList('title ids list')!;
+
+    library = List.generate(bookIds.length, (index) {
+      List<int> drafts = [];
+      SideNotes? sideNotes;
+      final draftStrings = prefs.getStringList('${bookIds![index]} drafts')!;
+      for (final draftString in draftStrings) {
+        drafts.add(int.parse(draftString));
+      }
+      final chapterTitles = List.generate(
+          drafts.length,
+          (draftIndex) => prefs
+              .getStringList('${bookIds![index]} ${drafts[draftIndex]} chapterNames'));
+      final chapterTexts = List.generate(
+          drafts.length,
+          (draftIndex) => prefs
+              .getStringList('${bookIds![index]} ${drafts[draftIndex]} chapterText'));
+      final jsonChapterTexts = [];
+      for (int draftIndex = 0; draftIndex < drafts.length; draftIndex++) {
+        if (prefs.getStringList('${bookIds[index]} ${drafts[draftIndex]} jsonChapters') !=
+            null) {
+          for (String chapter in prefs
+              .getStringList('${bookIds[index]} ${drafts[draftIndex]} jsonChapters')!) {
+            var chapterJson = jsonDecode(chapter);
+            jsonChapterTexts.add(chapterJson);
+          }
+        }
+      }
+
+      final wordGoals = List.generate(
+        drafts.length,
+        (draftIndex) {
+          if (prefs.getString('${bookIds![index]} ${drafts[draftIndex]} word goal') !=
+              null) {
+            int.parse(
+                prefs.getString('${bookIds[index]} ${drafts[draftIndex]} word goal')!);
+          }
+        },
+      );
+
+      final chapters = List.generate(
+          drafts.length,
+          (draftIndex) =>
+              prefs.getStringList('${bookIds![index]} ${drafts[draftIndex]} chapters'));
+
+      if (prefs.getStringList('${bookIds[index]} note keys') != null &&
+          prefs.getStringList('${bookIds[index]} note vals') != null) {
+        Map<String, String> notes = {};
+        List<String> keys = prefs.getStringList('${bookIds[index]} note keys')!;
+        List<String> vals = prefs.getStringList('${bookIds[index]} note vals')!;
+        for (int noteIndex = 0; noteIndex < keys.length; noteIndex++) {
+          notes.addAll({keys[noteIndex]: vals[noteIndex]});
+        }
+        int outlines = 0;
+        int characters = 0;
+        int note = 0;
+        if (prefs.getInt('${bookIds[index]} outlines') != null) {
+          outlines = prefs.getInt('${bookIds[index]} outlines')!;
+        }
+        if (prefs.getInt('${bookIds[index]} characters') != null) {
+          characters = prefs.getInt('${bookIds[index]} characters')!;
+        }
+        if (prefs.getInt('${bookIds[index]} note') != null) {
+          note = prefs.getInt('${bookIds[index]} note')!;
+        }
+        sideNotes = SideNotes(
+            notes: notes, outlines: outlines, characters: characters, note: note);
+      }
+      return Book(
+        id: bookIds[index],
+        title: prefs.getString('${bookIds[index]} title')!,
+        chapterTitles: chapterTitles,
+        chapterTexts: chapterTexts,
+        chapters: chapters,
+        jsonChapterTexts: jsonChapterTexts,
+        drafts: drafts,
+        selectedDraft: prefs.getInt('${bookIds[index]} selected draft')!,
+        wordGoals: wordGoals,
+        sideNotes: sideNotes,
+      );
+    });
+  }
+
+  final User user = User(
+    username: accountInfo[0],
+    authorName: accountInfo[1],
+    email: accountInfo[2],
+    password: accountInfo[3],
+    autoLogin: autoLogin,
+    library: library,
+  );
+  return user;
+}

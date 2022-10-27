@@ -1,5 +1,6 @@
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
+import 'package:bowa/models/user.dart';
 import 'package:bowa/pages/settings.dart';
 import 'package:bowa/widgets/writing_book_list.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BooksPage extends StatelessWidget {
   final ThemeBloc themeBloc;
-  const BooksPage({Key? key,required this.themeBloc}) : super(key: key);
+  final User user;
+  const BooksPage({Key? key, required this.themeBloc, required this.user})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +21,10 @@ class BooksPage extends StatelessWidget {
       child: BlocBuilder<WritingBloc, WritingState>(
         buildWhen: (previous, current) => previous.idList != current.idList,
         builder: (context, state) {
+          if (user.library != null) {
+            user.library![0].title = 'doi';
+            print('title: ${user.library![0].title}');
+          }
           if (!context.read<WritingBloc>().state.titlesUpdated) {
             context.read<WritingBloc>().updateTitles();
           }
@@ -31,7 +38,11 @@ class BooksPage extends StatelessWidget {
               actions: [
                 IconButton(
                     onPressed: () => Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => SettingsPage(themeBloc: themeBloc,))),
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SettingsPage(
+                                  themeBloc: themeBloc,
+                                ))),
                     icon: Icon(
                       Icons.settings,
                       color: Theme.of(context).iconTheme.color,
@@ -135,7 +146,7 @@ class BooksPage extends StatelessWidget {
                               writingBloc.state, wordGoal.text);
                           // Navigator.of(context).pop();
                         },
-                        child:  Padding(
+                        child: Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
                             'Create Draft',
@@ -152,8 +163,7 @@ class BooksPage extends StatelessWidget {
                             children: [
                               Text(
                                 'Add Image',
-                                style:
-                                    TextStyle(color: Theme.of(context).primaryColor),
+                                style: TextStyle(color: Theme.of(context).primaryColor),
                               ),
                               Icon(
                                 Icons.add,
