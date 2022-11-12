@@ -1,3 +1,4 @@
+import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/models/user.dart';
@@ -8,9 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BooksPage extends StatelessWidget {
   final ThemeBloc themeBloc;
-  final User user;
-  const BooksPage({Key? key, required this.themeBloc, required this.user})
-      : super(key: key);
+  final LoginBloc loginBloc;
+  const BooksPage({
+    Key? key,
+    required this.themeBloc,
+    required this.loginBloc,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +25,6 @@ class BooksPage extends StatelessWidget {
       child: BlocBuilder<WritingBloc, WritingState>(
         buildWhen: (previous, current) => previous.idList != current.idList,
         builder: (context, state) {
-          if (user.library != null) {
-            user.library![0].title = 'doi';
-            print('title: ${user.library![0].title}');
-          }
           if (!context.read<WritingBloc>().state.titlesUpdated) {
             context.read<WritingBloc>().updateTitles();
           }

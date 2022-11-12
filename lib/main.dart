@@ -96,11 +96,12 @@ class LoginPage extends StatelessWidget {
               AccountPage(
                 authorName: state.authorName,
                 accountInfo: accountInfo,
+                loginBloc: context.read<LoginBloc>(),
               ),
               const LibraryPage(),
               BooksPage(
                 themeBloc: themeBloc,
-                user: state.user,
+                loginBloc: context.read<LoginBloc>(),
               ),
             ];
           }

@@ -9,7 +9,7 @@ class LoginState {
   final String email;
   final String password;
   final int index;
-  final User user;
+  final User? user;
 
   const LoginState({
     this.autoLogin = true,
@@ -20,7 +20,7 @@ class LoginState {
     this.email = '',
     this.password = '',
     this.index = 0,
-    this.user =  const User.empty(),
+    this.user = const User.empty(),
   });
 
   LoginState copyWith({

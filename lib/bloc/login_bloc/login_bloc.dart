@@ -24,6 +24,23 @@ class LoginBloc extends Cubit<LoginState> {
     }
   }
 
+  void updateUsername(String username) {
+    final newUser = state.user!.copyWith(username: username);
+    emit(state.copyWith(user: newUser));
+  }
+  void updateAuthor(String authorName) {
+    final newUser = state.user!.copyWith(authorName: authorName);
+    emit(state.copyWith(user: newUser));
+  }
+  void updateEmail(String email) {
+    final newUser = state.user!.copyWith(email: email);
+    emit(state.copyWith(user: newUser));
+  }
+  void updatePassword(String password) {
+    final newUser = state.user!.copyWith(password: password);
+    emit(state.copyWith(user: newUser));
+  }
+
   void name(name) {
     emit(state.copyWith(name: name));
   }
@@ -79,7 +96,8 @@ class LoginBloc extends Cubit<LoginState> {
     emit(state.copyWith(autoLogin: val));
   }
 
-  void accountCreated() {
-    emit(state.copyWith(loggedIn: true));
+  void accountCreated(List accountInfo) async {
+    User? user = await createUserObject(accountInfo, state.autoLogin);
+    emit(state.copyWith(loggedIn: true, user: user));
   }
 }

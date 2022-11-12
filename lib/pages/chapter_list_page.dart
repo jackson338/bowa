@@ -40,6 +40,7 @@ class ChapterListPage extends StatelessWidget {
           }
           double length = totalCount / state.wordGoal;
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Theme.of(context).hoverColor,

@@ -1,3 +1,4 @@
+import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/account_page/account.dart';
@@ -5,8 +6,13 @@ import '../bloc/account_page/account.dart';
 class AccountPage extends StatelessWidget {
   final String authorName;
   final List<String> accountInfo;
-  const AccountPage({Key? key, required this.authorName, required this.accountInfo})
-      : super(key: key);
+  final LoginBloc loginBloc;
+  const AccountPage({
+    Key? key,
+    required this.authorName,
+    required this.accountInfo,
+    required this.loginBloc,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,24 +62,25 @@ class AccountPage extends StatelessWidget {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    controller.text = state.accountInfo[0];
+                                    controller.text = loginBloc.state.user!.username;
                                     accountBloc.nameEdit(true);
                                   },
                                   child: state.nameEdit
                                       ? TextField(
-                                        style: Theme.of(context).textTheme.bodyText1,
+                                          style: Theme.of(context).textTheme.bodyText1,
                                           controller: controller,
                                           autofocus: true,
                                           keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
-                                            accountBloc.changeName(controller.text);
+                                            // accountBloc.changeName(controller.text);
+                                            loginBloc.updateUsername(controller.text);
                                             accountBloc.nameEdit(false);
                                           },
                                         )
                                       : FittedBox(
                                           child: Text(
-                                            'Name: ${state.accountInfo[0]}',
+                                            'Name: ${loginBloc.state.user!.username}',
                                             style: TextStyle(
                                                 fontSize: 30,
                                                 color: Theme.of(context)
@@ -94,24 +101,24 @@ class AccountPage extends StatelessWidget {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    authorNameCont.text = state.accountInfo[1];
+                                    authorNameCont.text = loginBloc.state.user!.authorName;
                                     accountBloc.authorEdit(true);
                                   },
                                   child: state.authorEdit
                                       ? TextField(
-                                        style: Theme.of(context).textTheme.bodyText1,
+                                          style: Theme.of(context).textTheme.bodyText1,
                                           controller: authorNameCont,
                                           autofocus: true,
                                           keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
-                                            accountBloc.changeAuthor(authorNameCont.text);
+                                            loginBloc.updateAuthor(authorNameCont.text);
                                             accountBloc.authorEdit(false);
                                           },
                                         )
                                       : FittedBox(
                                           child: Text(
-                                            'Author Name: ${state.accountInfo[1]}',
+                                            'Author Name: ${loginBloc.state.user!.authorName}',
                                             style: TextStyle(
                                                 fontSize: 30,
                                                 color: Theme.of(context)
@@ -132,24 +139,24 @@ class AccountPage extends StatelessWidget {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    emailCont.text = state.accountInfo[2];
+                                    emailCont.text = loginBloc.state.user!.email;
                                     accountBloc.emailEdit(true);
                                   },
                                   child: state.emailEdit
                                       ? TextField(
-                                        style: Theme.of(context).textTheme.bodyText1,
+                                          style: Theme.of(context).textTheme.bodyText1,
                                           controller: emailCont,
                                           autofocus: true,
                                           keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
-                                            accountBloc.changeEmail(emailCont.text);
+                                            loginBloc.updateEmail(emailCont.text);
                                             accountBloc.emailEdit(false);
                                           },
                                         )
                                       : FittedBox(
                                           child: Text(
-                                            'Email: ${state.accountInfo[2]}',
+                                            'Email: ${loginBloc.state.user!.email}',
                                             style: TextStyle(
                                                 fontSize: 30,
                                                 color: Theme.of(context)
@@ -170,24 +177,24 @@ class AccountPage extends StatelessWidget {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    passwordCont.text = state.accountInfo[3];
+                                    passwordCont.text = loginBloc.state.user!.password;
                                     accountBloc.passwordEdit(true);
                                   },
                                   child: state.passwordEdit
                                       ? TextField(
-                                        style: Theme.of(context).textTheme.bodyText1,
+                                          style: Theme.of(context).textTheme.bodyText1,
                                           controller: passwordCont,
                                           autofocus: true,
                                           keyboardAppearance: Brightness.dark,
                                           onSubmitted: (_) {
                                             FocusManager.instance.primaryFocus?.unfocus();
-                                            accountBloc.changePassword(passwordCont.text);
+                                            loginBloc.updatePassword(passwordCont.text);
                                             accountBloc.passwordEdit(false);
                                           },
                                         )
                                       : FittedBox(
                                           child: Text(
-                                            'Password: ${state.accountInfo[3]}',
+                                            'Password: ${loginBloc.state.user!.password}',
                                             style: TextStyle(
                                                 fontSize: 30,
                                                 color: Theme.of(context)

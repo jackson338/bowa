@@ -11,7 +11,7 @@ class Book {
    int selectedDraft;
    List<int?> wordGoals;
    SideNotes? sideNotes;
-   Book({
+  Book({
     required this.id,
     required this.title,
     required this.chapterTitles,

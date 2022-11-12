@@ -61,7 +61,7 @@ class AccountCreationBloc extends Cubit<AccountCreationState> {
       Duration dur = const Duration(seconds: 1);
       Timer(dur, () {
         emit(state.copyWith(loading: false, loggedIn: true));
-        loginBloc.accountCreated();
+        loginBloc.accountCreated(accountInfo);
         Navigator.of(context).pop();
       });
     }
