@@ -2,6 +2,7 @@ import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/pages/settings.dart';
+import 'package:bowa/pages/side_notes/side_notes_page.dart';
 import 'package:bowa/widgets/reorderable_chapter_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,43 +70,12 @@ class ChapterListPage extends StatelessWidget {
                 ),
                 // New chapter button
                 IconButton(
-                  onPressed: () {
-                    String chapterName;
-                    TextEditingController chaptNameController = TextEditingController();
-                    Document doc = Document();
-                    QuillController quillController = QuillController(
-                      document: doc,
-                      selection: const TextSelection.collapsed(offset: 0),
-                    );
-                    showMenu(
-                      context: context,
-                      position: const RelativeRect.fromLTRB(400, 50, 50, 50),
-                      items: [
-                        PopupMenuItem(
-                          child: TextField(
-                            autofocus: true,
-                            decoration: const InputDecoration(hintText: 'Chapter Name'),
-                            controller: chaptNameController,
-                            keyboardAppearance: Brightness.dark,
-                            textCapitalization: TextCapitalization.sentences,
-                            onSubmitted: (_) {
-                              Navigator.of(context).pop();
-                              chapterName = chaptNameController.text;
-                              editContext.read<ChapterListBloc>().addChapter(
-                                    chapterName,
-                                    'Chapter ${state.chapters.length + 1}',
-                                    chapterName,
-                                    quillController,
-                                  );
-                            },
-                          ),
-                        ),
-                      ],
-                      elevation: 8.0,
-                    );
-                  },
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SideNotesPage(id: id, title: title))),
                   icon: Icon(
-                    Icons.add,
+                    Icons.edit_note,
                     color: Theme.of(context).iconTheme.color,
                   ),
                 ),

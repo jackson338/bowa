@@ -55,7 +55,8 @@ class AccountCreationBloc extends Cubit<AccountCreationState> {
         state.name,
         state.authorName,
         state.email,
-        state.password
+        state.password,
+        UniqueKey().toString(),
       ];
       prefs.setStringList('${state.authorName} Account Info', accountInfo);
       Duration dur = const Duration(seconds: 1);

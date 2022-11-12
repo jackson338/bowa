@@ -5,6 +5,7 @@ class User {
  final String authorName;
  final String email;
  final String password;
+ final String id;
  final bool autoLogin;
  final List<Book>? library;
  const User({
@@ -12,6 +13,7 @@ class User {
     required this.authorName,
     required this.email,
     required this.password,
+    required this.id,
     required this.autoLogin,
     this.library,
   });
@@ -22,6 +24,7 @@ class User {
     this.email = '',
     this.password = '',
     this.autoLogin = false,
+    this.id = '',
     this.library = const [],
   });
 
@@ -30,6 +33,7 @@ class User {
     String? authorName,
     String? email,
     String? password,
+    String? id,
     bool? autoLogin,
     List<Book>? library,
   }) {
@@ -38,6 +42,7 @@ class User {
         authorName: authorName ?? this.authorName,
         email: email ?? this.email,
         password: password ?? this.password,
+        id: id ?? this.id,
         autoLogin: autoLogin ?? this.autoLogin);
   }
 }

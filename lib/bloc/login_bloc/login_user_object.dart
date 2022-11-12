@@ -9,15 +9,18 @@ Future<User> createUserObject(List accountInfo, bool autoLogin) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   List<String>? bookIds;
   List<Book>? library;
-  if (prefs.getStringList('title ids list') != null) {
-    bookIds = prefs.getStringList('title ids list')!;
+  if (prefs.getStringList('${accountInfo[4]} title ids list') != null) {
+    bookIds = prefs.getStringList('${accountInfo[4]} title ids list')!;
 
     library = List.generate(bookIds.length, (index) {
       List<int> drafts = [];
       SideNotes? sideNotes;
-      final draftStrings = prefs.getStringList('${bookIds![index]} drafts')!;
+      final draftStrings = prefs.getStringList('${bookIds![index]} drafts');
+      if (draftStrings != null) {
+
       for (final draftString in draftStrings) {
         drafts.add(int.parse(draftString));
+      }
       }
       final chapterTitles = List.generate(
           drafts.length,
@@ -86,7 +89,7 @@ Future<User> createUserObject(List accountInfo, bool autoLogin) async {
         chapters: chapters,
         jsonChapterTexts: jsonChapterTexts,
         drafts: drafts,
-        selectedDraft: prefs.getInt('${bookIds[index]} selected draft')!,
+        selectedDraft: prefs.getInt('${bookIds[index]} selected draft'),
         wordGoals: wordGoals,
         sideNotes: sideNotes,
       );
@@ -98,6 +101,7 @@ Future<User> createUserObject(List accountInfo, bool autoLogin) async {
     authorName: accountInfo[1],
     email: accountInfo[2],
     password: accountInfo[3],
+    id: accountInfo[4],
     autoLogin: autoLogin,
     library: library,
   );

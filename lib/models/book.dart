@@ -8,7 +8,7 @@ class Book {
    List<List<String>?> chapters;
    List<dynamic> jsonChapterTexts;
    List<int> drafts;
-   int selectedDraft;
+   int? selectedDraft;
    List<int?> wordGoals;
    SideNotes? sideNotes;
   Book({
@@ -19,7 +19,7 @@ class Book {
     required this.chapters,
     required this.jsonChapterTexts,
     required this.drafts,
-    required this.selectedDraft,
+    this.selectedDraft,
     required this.wordGoals,
     this.sideNotes,
   });

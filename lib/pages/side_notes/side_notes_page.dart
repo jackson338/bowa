@@ -20,13 +20,7 @@ class SideNotesPage extends StatelessWidget {
       child: BlocBuilder<SideNotesBloc, SideNotesState>(
         buildWhen: (previous, current) => previous.notes != current.notes,
         builder: (context, state) {
-          state.notes.forEach(
-            (key, value) {
-              // print('key: $key, val: $value');
-            },
-          );
           final SideNotesBloc sideNotesBloc = context.read<SideNotesBloc>();
-          int totalCount = 0;
           return Scaffold(
             appBar: AppBar(
               elevation: 0,

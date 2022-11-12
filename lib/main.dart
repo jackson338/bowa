@@ -360,16 +360,6 @@ void createAccount(BuildContext context, List<TextEditingController> conts,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      // if (state.index == 1)
-                      //   Padding(
-                      //     padding: const EdgeInsets.all(8.0),
-                      //     child: TextButton(
-                      //       onPressed: () {
-                      //         // conts[1].text =
-                      //       },
-                      //       child: const Text('Use Name'),
-                      //     ),
-                      //   ),
                       !state.loading
                           ? Container(
                               decoration: BoxDecoration(

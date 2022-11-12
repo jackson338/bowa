@@ -44,47 +44,4 @@ class AccountBloc extends Cubit<AccountState> {
   void passwordEdit(editing) {
     emit(state.copyWith(passwordEdit: editing));
   }
-
-  void changeName(newName) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> newInfo = [];
-    newInfo.addAll(state.accountInfo);
-    newInfo[0] = newName;
-    prefs.setStringList('${accountInfo[1]} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
-    emit(state.copyWith(accountInfo: newInfo));
-  }
-
-  void changeAuthor(newAuthor) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> newInfo = [];
-    newInfo.addAll(state.accountInfo);
-    newInfo[1] = newAuthor;
-    prefs.remove('${accountInfo[1]} Account Info');
-    prefs.setStringList('${newInfo[1]} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
-    emit(state.copyWith(accountInfo: newInfo));
-  }
-
-  void changeEmail(newEmail) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> newInfo = [];
-    newInfo.addAll(state.accountInfo);
-    newInfo[2] = newEmail;
-    prefs.remove('${accountInfo[1]} Account Info');
-    prefs.setStringList('${newInfo[1]} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
-    emit(state.copyWith(accountInfo: newInfo));
-  }
-
-  void changePassword(newPassword) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> newInfo = [];
-    newInfo.addAll(state.accountInfo);
-    newInfo[3] = newPassword;
-    prefs.remove('${accountInfo[1]} Account Info');
-    prefs.setStringList('${newInfo[1]} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
-    emit(state.copyWith(accountInfo: newInfo));
-  }
 }

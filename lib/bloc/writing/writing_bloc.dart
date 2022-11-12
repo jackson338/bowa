@@ -2,8 +2,10 @@ part of 'writing.dart';
 
 class WritingBloc extends Cubit<WritingState> {
   final BuildContext context;
+  final LoginBloc loginBloc;
   WritingBloc({
     required this.context,
+    required this.loginBloc
   }) : super(const WritingState());
 
   void updateTitles() async {
@@ -18,8 +20,8 @@ class WritingBloc extends Cubit<WritingState> {
     if (state.coverArtList != null) {
       newCoverArtList.addAll(state.coverArtList!);
     }
-    if (prefs.getStringList('title ids list') != null) {
-      titleIds = prefs.getStringList('title ids list')!;
+    if (prefs.getStringList('${loginBloc.state.user!.id} title ids list') != null) {
+      titleIds = prefs.getStringList('${loginBloc.state.user!.id} title ids list')!;
       for (String id in titleIds) {
         if (prefs.getString('$id title') != null) {
           titles.add(prefs.getString('$id title')!);
@@ -53,7 +55,7 @@ class WritingBloc extends Cubit<WritingState> {
     List<String> titleList = [];
     titleList.addAll(state.titleList);
     titleList.remove(title);
-    prefs.setStringList('title ids list', idList);
+    prefs.setStringList('${loginBloc.state.user!.id} title ids list', idList);
     prefs.remove('$id title');
     prefs.remove('$id path');
     emit(
@@ -126,7 +128,7 @@ class WritingBloc extends Cubit<WritingState> {
     }
 
     idList.add(id);
-    pref.setStringList('title ids list', idList);
+    pref.setStringList('${loginBloc.state.user!.id} title ids list', idList);
     pref.setString('$id title', titleController.text);
     pref.setString('$id path', imagePaths.last);
     pref.setString('$id word goal', wordGoal);

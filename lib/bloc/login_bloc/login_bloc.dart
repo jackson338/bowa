@@ -24,28 +24,71 @@ class LoginBloc extends Cubit<LoginState> {
     }
   }
 
-  void updateUsername(String username) {
-    final newUser = state.user!.copyWith(username: username);
+  void updateUsername(String username) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> newInfo = [
+      username,
+     state.user!.authorName,
+      state.user!.email,
+      state.user!.password,
+    ];
+    final User newUser = state.user!.copyWith(username: username);
     emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
+    prefs.setStringList('auto login', newInfo);
   }
-  void updateAuthor(String authorName) {
+
+  void updateAuthor(String authorName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> newInfo = [
+      state.user!.username,
+      authorName,
+      state.user!.email,
+      state.user!.password,
+    ];
     final newUser = state.user!.copyWith(authorName: authorName);
     emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
+    prefs.setStringList('auto login', newInfo);
   }
-  void updateEmail(String email) {
+
+  void updateEmail(String email) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> newInfo = [
+      state.user!.username,
+      state.user!.authorName,
+      email,
+      state.user!.password,
+    ];
     final newUser = state.user!.copyWith(email: email);
     emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
+    prefs.setStringList('auto login', newInfo);
   }
-  void updatePassword(String password) {
+
+  void updatePassword(String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> newInfo = [
+      state.user!.username,
+      state.user!.authorName,
+      state.user!.email,
+      password
+    ];
     final newUser = state.user!.copyWith(password: password);
     emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
+    prefs.setStringList('auto login', newInfo);
   }
 
   void name(name) {
     emit(state.copyWith(name: name));
   }
 
-  void password(password) {
+  void password(password) async {
     emit(state.copyWith(password: password));
   }
 

@@ -1,7 +1,6 @@
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
-import 'package:bowa/models/user.dart';
 import 'package:bowa/pages/settings.dart';
 import 'package:bowa/widgets/writing_book_list.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +17,11 @@ class BooksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(loginBloc.state.user!.id);
     return BlocProvider(
       create: (_) => WritingBloc(
         context: context,
+        loginBloc: loginBloc,
       ),
       child: BlocBuilder<WritingBloc, WritingState>(
         buildWhen: (previous, current) => previous.idList != current.idList,
@@ -109,7 +110,10 @@ class BooksPage extends StatelessWidget {
       context: context,
       builder: (sheetContext) {
         return BlocProvider(
-          create: (context) => WritingBloc(context: context),
+          create: (context) => WritingBloc(
+            context: context,
+            loginBloc: loginBloc,
+          ),
           child: BlocBuilder<WritingBloc, WritingState>(
             buildWhen: (previous, current) =>
                 previous.coverArtList != current.coverArtList,
