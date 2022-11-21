@@ -3,39 +3,26 @@ part of 'side_notes.dart';
 class SideNotesBloc extends Cubit<SideNotesState> {
   final String? id;
   final String title;
-  SideNotesBloc({this.id, required this.title}) : super(const SideNotesState()) {
+  final LoginBloc lBloc;
+  final int index;
+  SideNotesBloc({
+    this.id,
+    required this.title,
+    required this.lBloc,
+    required this.index,
+  }) : super(const SideNotesState()) {
     init(id);
   }
 
-  void init(id) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, String> notes = {};
-    if (prefs.getStringList('$id note keys') != null &&
-        prefs.getStringList('$id note vals') != null) {
-      List<String> keys = prefs.getStringList('$id note keys')!;
-      List<String> vals = prefs.getStringList('$id note vals')!;
-      for (int index = 0; index < keys.length; index++) {
-        notes.addAll({keys[index]: vals[index]});
-      }
-      int outlines = 0;
-      int characters = 0;
-      int note = 0;
-      if (prefs.getInt('$id outlines') != null) {
-        outlines = prefs.getInt('$id outlines')!;
-      }
-      if (prefs.getInt('$id characters') != null) {
-        characters = prefs.getInt('$id characters')!;
-      }
-      if (prefs.getInt('$id note') != null) {
-        note = prefs.getInt('$id note')!;
-      }
-      emit(state.copyWith(
-          notes: notes, outlines: outlines, characters: characters, note: note));
-    }
+  void init(id) {
+    emit(state.copyWith(
+        notes: lBloc.state.user!.library![index].sideNotes.notes,
+        outlines: lBloc.state.user!.library![index].sideNotes.outlines,
+        characters: lBloc.state.user!.library![index].sideNotes.outlines,
+        note: lBloc.state.user!.library![index].sideNotes.note));
   }
 
-  void updateVal(String key, String val) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  void updateVal(String key, String val) {
     Map<String, String> updatedNote = state.notes.map(
       (newKey, value) {
         final MapEntry<String, String> newVal;
@@ -47,10 +34,10 @@ class SideNotesBloc extends Cubit<SideNotesState> {
         return newVal;
       },
     );
-    final List<String> vals = List.generate(updatedNote.length, (index) {
-      return updatedNote.values.elementAt(index);
-    });
-    prefs.setStringList('$id note vals', vals);
+    print(lBloc.state.user!.library![index].sideNotes.notes);
+    lBloc.state.user!.library![index].sideNotes =
+        lBloc.state.user!.library![index].sideNotes.copyWith(notes: updatedNote);
+    print(lBloc.state.user!.library![index].sideNotes.notes);
     emit(state.copyWith(notes: updatedNote));
   }
 

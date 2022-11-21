@@ -1,3 +1,4 @@
+import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/side_notes/side_notes.dart';
 import 'package:bowa/pages/side_notes/side_notes_editing_page.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +8,25 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 class SideNotesPage extends StatelessWidget {
   final String id;
   final String title;
+  final LoginBloc lBloc;
+  final int index;
   const SideNotesPage({
     required this.id,
     required this.title,
+    required this.lBloc,
+    required this.index,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SideNotesBloc(id: id, title: title),
+      create: (context) => SideNotesBloc(
+        id: id,
+        title: title,
+        lBloc: lBloc,
+        index: index,
+      ),
       child: BlocBuilder<SideNotesBloc, SideNotesState>(
         buildWhen: (previous, current) => previous.notes != current.notes,
         builder: (context, state) {

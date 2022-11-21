@@ -28,7 +28,7 @@ class LoginBloc extends Cubit<LoginState> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final List<String> newInfo = [
       username,
-     state.user!.authorName,
+      state.user!.authorName,
       state.user!.email,
       state.user!.password,
     ];
@@ -142,5 +142,8 @@ class LoginBloc extends Cubit<LoginState> {
   void accountCreated(List accountInfo) async {
     User? user = await createUserObject(accountInfo, state.autoLogin);
     emit(state.copyWith(loggedIn: true, user: user));
+  }
+  void updateLibrary(User newUser) {
+    emit(state.copyWith(user: newUser));
   }
 }

@@ -17,14 +17,13 @@ class BooksPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(loginBloc.state.user!.id);
     return BlocProvider(
       create: (_) => WritingBloc(
         context: context,
         loginBloc: loginBloc,
       ),
       child: BlocBuilder<WritingBloc, WritingState>(
-        buildWhen: (previous, current) => previous.idList != current.idList,
+        buildWhen: (previous, current) => previous.library != current.library,
         builder: (context, state) {
           if (!context.read<WritingBloc>().state.titlesUpdated) {
             context.read<WritingBloc>().updateTitles();
@@ -33,7 +32,7 @@ class BooksPage extends StatelessWidget {
             appBar: AppBar(
               elevation: 0,
               title: Text(
-                state.title,
+                'Writing Page',
                 style: Theme.of(context).textTheme.headline1,
               ),
               actions: [
@@ -57,12 +56,10 @@ class BooksPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: WritingBookList(
-                  idList: context.read<WritingBloc>().state.idList,
-                  titleList: context.read<WritingBloc>().state.titleList,
-                  coverArtList: context.read<WritingBloc>().state.coverArtList ?? [],
-                  ids: state.idList,
+                  library: loginBloc.state.user!.library ?? [],
                   writingBloc: context.read<WritingBloc>(),
                   themeBloc: themeBloc,
+                  loginBloc: loginBloc,
                 ),
               ),
             ),
@@ -73,7 +70,7 @@ class BooksPage extends StatelessWidget {
                 elevation: 2,
                 child: TextButton(
                   onPressed: () {
-                    newDraft(context, context.read<WritingBloc>());
+                    newDraft(context, context.read<WritingBloc>(), loginBloc);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
@@ -102,7 +99,7 @@ class BooksPage extends StatelessWidget {
     );
   }
 
-  void newDraft(BuildContext context, WritingBloc bloc) {
+  void newDraft(BuildContext context, WritingBloc bloc, LoginBloc loginBloc) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController wordGoal = TextEditingController(text: '50000');
     showModalBottomSheet(
@@ -115,8 +112,6 @@ class BooksPage extends StatelessWidget {
             loginBloc: loginBloc,
           ),
           child: BlocBuilder<WritingBloc, WritingState>(
-            buildWhen: (previous, current) =>
-                previous.coverArtList != current.coverArtList,
             builder: (context, state) {
               WritingBloc writingBloc = context.read<WritingBloc>();
               return Container(
@@ -161,30 +156,6 @@ class BooksPage extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        TextButton(
-                          onPressed: writingBloc.getFromGallery,
-                          child: Row(
-                            children: [
-                              Text(
-                                'Add Image',
-                                style: TextStyle(color: Theme.of(context).primaryColor),
-                              ),
-                              Icon(
-                                Icons.add,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 70,
-                          width: 60,
-                          child: state.coverArtList == null
-                              ? Image.asset('lib/images/Untitled_Artwork.png')
-                              : state.coverArtList!.isNotEmpty
-                                  ? state.coverArtList!.last
-                                  : Image.asset('lib/images/Untitled_Artwork.png'),
-                        ),
                         Padding(
                           padding: const EdgeInsets.only(left: 24.0),
                           child: Text(

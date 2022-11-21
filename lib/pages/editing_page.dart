@@ -1,5 +1,6 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/editing/editing.dart';
+import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/pages/side_notes/side_notes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,8 @@ class EditingPage extends StatelessWidget {
   final ChapterListState chapterListState;
   final String id;
   final int initialIndex;
+  final LoginBloc lBloc;
+  final int bookIndex;
 
   const EditingPage({
     Key? key,
@@ -20,6 +23,8 @@ class EditingPage extends StatelessWidget {
     required this.chapterListState,
     required this.id,
     required this.initialIndex,
+    required this.lBloc,
+    required this.bookIndex,
   }) : super(key: key);
 
   @override
@@ -224,6 +229,8 @@ class EditingPage extends StatelessWidget {
                     child: SideNotesPage(
                       id: id,
                       title: title,
+                      lBloc: lBloc,
+                      index: bookIndex,
                     ),
                   );
                 },

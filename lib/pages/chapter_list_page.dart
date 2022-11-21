@@ -1,4 +1,5 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
+import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/pages/settings.dart';
@@ -7,32 +8,40 @@ import 'package:bowa/widgets/reorderable_chapter_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_quill/flutter_quill.dart' hide Text;
 
 class ChapterListPage extends StatelessWidget {
   final String title;
   final String id;
   final WritingBloc writingBloc;
   final ThemeBloc themeBloc;
-  const ChapterListPage({
-    Key? key,
-    required this.title,
-    required this.id,
-    required this.writingBloc,
-    required this.themeBloc,
-  }) : super(key: key);
+  final LoginBloc loginBloc;
+  final int index;
+  const ChapterListPage(
+      {Key? key,
+      required this.title,
+      required this.id,
+      required this.writingBloc,
+      required this.themeBloc,
+      required this.loginBloc,
+      required this.index})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     RegExp wordCount = RegExp(r"[\w-._]+");
     Iterable matches = [];
     return BlocProvider(
-      create: (context) => ChapterListBloc(context: context, id: id),
+      create: (context) => ChapterListBloc(
+        context: context,
+        id: id,
+        loginBloc: loginBloc,
+        index: index,
+      ),
       child: BlocBuilder<ChapterListBloc, ChapterListState>(
-        buildWhen: (previous, current) =>
-            previous.chapters != current.chapters ||
-            previous.selectedDraft != current.selectedDraft ||
-            previous.chapterText != current.chapterText,
+        // buildWhen: (previous, current) =>
+        //     previous.chapters != current.chapters ||
+        //     previous.selectedDraft != current.selectedDraft ||
+        //     previous.chapterText != current.chapterText,
         builder: (editContext, state) {
           int totalCount = 0;
           for (String text in state.chapterText) {
@@ -47,7 +56,7 @@ class ChapterListPage extends StatelessWidget {
               backgroundColor: Theme.of(context).hoverColor,
               title: FittedBox(
                 child: Text(
-                  '$title (Draft ${state.selectedDraft})',
+                  '$title (Draft ${state.selectedDraft + 1})',
                   style: Theme.of(context).textTheme.headline1,
                 ),
               ),
@@ -71,9 +80,16 @@ class ChapterListPage extends StatelessWidget {
                 // New chapter button
                 IconButton(
                   onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SideNotesPage(id: id, title: title))),
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SideNotesPage(
+                        id: id,
+                        title: title,
+                        lBloc: loginBloc,
+                        index: index,
+                      ),
+                    ),
+                  ),
                   icon: Icon(
                     Icons.edit_note,
                     color: Theme.of(context).iconTheme.color,
@@ -105,12 +121,14 @@ class ChapterListPage extends StatelessWidget {
                               if (index != state.chapters.length) {
                                 matches = wordCount.allMatches(state.chapterText[index]);
                                 return chapterWidget(
-                                    context,
-                                    context.read<ChapterListBloc>(),
-                                    index,
-                                    id,
-                                    title,
-                                    matches);
+                                  context,
+                                  context.read<ChapterListBloc>(),
+                                  index,
+                                  id,
+                                  title,
+                                  matches,
+                                  loginBloc,
+                                );
                               } else {
                                 return addChapter(
                                     context, context.read<ChapterListBloc>(), state);
@@ -140,9 +158,8 @@ class ChapterListPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10.0),
                                   child: TextButton(
-                                    onPressed: () => editContext
-                                        .read<ChapterListBloc>()
-                                        .deleteBook(title, writingBloc),
+                                    onPressed: () =>
+                                        editContext.read<ChapterListBloc>().deleteBook(),
                                     child: Row(
                                       children: [
                                         Text(
@@ -260,7 +277,7 @@ class ChapterListPage extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                         child: Text(
-                          '$title (Draft $draft)',
+                          '$title (Draft ${draft + 1})',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor, fontSize: 25),
                         ),

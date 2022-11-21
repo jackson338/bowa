@@ -1,14 +1,14 @@
 import 'package:bowa/models/book.dart';
 
 class User {
- final String username;
- final String authorName;
- final String email;
- final String password;
- final String id;
- final bool autoLogin;
- final List<Book>? library;
- const User({
+  final String username;
+  final String authorName;
+  final String email;
+  final String password;
+  final String id;
+  final bool autoLogin;
+  final List<Book>? library;
+  const User({
     required this.username,
     required this.authorName,
     required this.email,
@@ -18,7 +18,7 @@ class User {
     this.library,
   });
 
- const User.empty({
+  const User.empty({
     this.username = '',
     this.authorName = '',
     this.email = '',
@@ -38,11 +38,13 @@ class User {
     List<Book>? library,
   }) {
     return User(
-        username: username ?? this.username,
-        authorName: authorName ?? this.authorName,
-        email: email ?? this.email,
-        password: password ?? this.password,
-        id: id ?? this.id,
-        autoLogin: autoLogin ?? this.autoLogin);
+      username: username ?? this.username,
+      authorName: authorName ?? this.authorName,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      id: id ?? this.id,
+      autoLogin: autoLogin ?? this.autoLogin,
+      library: library ?? this.library,
+    );
   }
 }

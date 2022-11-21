@@ -3,14 +3,14 @@ import 'package:bowa/models/side_notes.dart';
 class Book {
    String id;
    String title;
-   List<List<String>?> chapterTitles;
-   List<List<String>?> chapterTexts;
-   List<List<String>?> chapters;
-   List<dynamic> jsonChapterTexts;
+   List<List<String>> chapterTitles;
+   List<List<String>> chapterTexts;
+   List<List<String>> chapters;
+   List<List<dynamic>> jsonChapterTexts;
    List<int> drafts;
-   int? selectedDraft;
+   int selectedDraft;
    List<int?> wordGoals;
-   SideNotes? sideNotes;
+   SideNotes sideNotes;
   Book({
     required this.id,
     required this.title,
@@ -19,8 +19,8 @@ class Book {
     required this.chapters,
     required this.jsonChapterTexts,
     required this.drafts,
-    this.selectedDraft,
+    required this.selectedDraft,
     required this.wordGoals,
-    this.sideNotes,
+    required this.sideNotes,
   });
 }

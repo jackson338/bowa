@@ -1,9 +1,9 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
+import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/pages/editing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
-
 
 /// Creates a widget that displays a container with text and functionality to add a new chapter
 Widget addChapter(BuildContext context, ChapterListBloc clBloc, ChapterListState state) {
@@ -86,7 +86,8 @@ Widget chapterWidget(
   int index,
   String id,
   String title,
-  Iterable matches
+  Iterable matches,
+  LoginBloc lBloc,
 ) {
   return Padding(
     key: UniqueKey(),
@@ -100,6 +101,8 @@ Widget chapterWidget(
           chapterListBloc: clBloc,
           chapterListState: clBloc.state,
           initialIndex: index,
+          lBloc: lBloc,
+          bookIndex: index,
         );
         Navigator.push(
           context,
