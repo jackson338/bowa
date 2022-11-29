@@ -31,7 +31,7 @@ class WritingBloc extends Cubit<WritingState> {
       wordGoals: [
         int.parse(wordGoal),
       ],
-      sideNotes: SideNotes.empty(),
+      sideNotes: SideNotes.init(),
     );
     final newLib = loginBloc.state.user!.library ?? [];
     newLib.add(newBook);

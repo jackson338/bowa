@@ -42,7 +42,15 @@ class WritingBookItem extends StatelessWidget {
                 ),
                 height: 100,
                 width: 100,
-                child: const Text('boWa'),
+                child: Center(
+                  child: Text(
+                    'boWa',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 30
+                    ),
+                  ),
+                ),
               ),
             ),
             Expanded(

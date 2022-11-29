@@ -17,7 +17,6 @@ class ChapterListBloc extends Cubit<ChapterListState> {
   void init() async {
     int selectedDraft = loginBloc.state.user!.library![index].selectedDraft;
     Book book = loginBloc.state.user!.library![index];
-    print(book.drafts);
     if (book.chapters.isNotEmpty) {
       emit(state.copyWith(
         chapters: book.chapters[selectedDraft],

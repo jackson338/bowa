@@ -84,6 +84,7 @@ Widget chapterWidget(
   BuildContext context,
   ChapterListBloc clBloc,
   int index,
+  int bookIndex,
   String id,
   String title,
   Iterable matches,
@@ -100,9 +101,8 @@ Widget chapterWidget(
           title: title,
           chapterListBloc: clBloc,
           chapterListState: clBloc.state,
-          initialIndex: index,
           lBloc: lBloc,
-          bookIndex: index,
+          bookIndex: bookIndex,
         );
         Navigator.push(
           context,

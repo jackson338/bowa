@@ -1,6 +1,7 @@
 part of 'editing.dart';
 
 class EditingState {
+  final bool editing;
   final List<Image>? coverArtList;
   final int chapterSelected;
   final List<String> chapters;
@@ -11,6 +12,7 @@ class EditingState {
   final bool tools;
 
   const EditingState({
+    this.editing = false,
     this.coverArtList = const [],
     this.chapterSelected = 0,
     this.chapters = const [],
@@ -22,6 +24,7 @@ class EditingState {
   });
 
   EditingState copyWith({
+    final bool? editing,
     final List<Image>? coverArtList,
     final int? chapterSelected,
     final List<String>? chapters,
@@ -32,6 +35,7 @@ class EditingState {
     final bool? tools,
   }) {
     return EditingState(
+      editing: editing ?? this.editing,
       coverArtList: coverArtList ?? this.coverArtList,
       chapterSelected: chapterSelected ?? this.chapterSelected,
       chapters: chapters ?? this.chapters,

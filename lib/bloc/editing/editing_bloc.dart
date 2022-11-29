@@ -3,9 +3,13 @@ part of 'editing.dart';
 class EditingBloc extends Cubit<EditingState> {
   final BuildContext context;
   final ChapterListState chapState;
+  final int bookIndex;
+  final LoginState lState;
   EditingBloc({
     required this.context,
     required this.chapState,
+    required this.bookIndex,
+    required this.lState,
   }) : super(const EditingState()) {
     init();
   }
@@ -13,10 +17,13 @@ class EditingBloc extends Cubit<EditingState> {
   void init() {
     emit(
       state.copyWith(
-        chapterNames: chapState.chapterNames,
-        chapters: chapState.chapters,
+        chapterNames: lState.user!.library![bookIndex]
+            .chapterTitles[lState.user!.library![bookIndex].selectedDraft],
+        chapters: lState.user!.library![bookIndex]
+            .chapters[lState.user!.library![bookIndex].selectedDraft],
         chapterSelected: chapState.chapterSelected,
-        jsonChapterText: chapState.jsonChapterText,
+        jsonChapterText: lState.user!.library![bookIndex]
+            .jsonChapterTexts[lState.user!.library![bookIndex].selectedDraft],
       ),
     );
   }
@@ -29,45 +36,44 @@ class EditingBloc extends Cubit<EditingState> {
     emit(state.copyWith(tools: !state.tools));
   }
 
-  void saveText(QuillController cont) {
-    List<dynamic> jsonTexts = [];
-    if (state.jsonChapterText.isNotEmpty) {
-      jsonTexts.addAll(state.jsonChapterText);
-    }
-    jsonTexts[state.chapterSelected] = cont.document.toDelta().toJson();
-    emit(state.copyWith(jsonChapterText: jsonTexts));
+  void editing(bool editing) {
+    emit(state.copyWith(editing: editing));
   }
 
-//select a chapter
-  void select(chapterSelect) {
+  void select(int chapterSelect, LoginState ls) {
     emit(state.copyWith(chapterSelected: chapterSelect));
+    emit(
+      state.copyWith(
+        chapterNames: ls.user!.library![bookIndex]
+            .chapterTitles[ls.user!.library![bookIndex].selectedDraft],
+        chapters: ls.user!.library![bookIndex]
+            .chapters[ls.user!.library![bookIndex].selectedDraft],
+        chapterSelected: chapterSelect,
+        jsonChapterText: ls.user!.library![bookIndex]
+            .jsonChapterTexts[ls.user!.library![bookIndex].selectedDraft],
+      ),
+    );
   }
 
-  //create a new chapter
   void addChapter(String chaptName, String chapt, String chaptText, int chapterSelect,
       QuillController cont) {
-    //add to the state.chapters property
     List<String> chapterList = [];
     if (state.chapters.isNotEmpty) {
       chapterList.addAll(state.chapters);
     }
     chapterList.add(chapt);
-    //add to the state.chapterNames property
     List<String> chapterNames = [];
     if (state.chapterNames.isNotEmpty) {
       chapterNames.addAll(state.chapterNames);
     }
     chapterNames.add(chaptName);
 
-    //add json chapterText
     var json = cont.document.toDelta().toJson();
     List<dynamic> jsonChapterText = [];
     if (state.jsonChapterText.isNotEmpty) {
       jsonChapterText.addAll(state.jsonChapterText);
     }
     jsonChapterText.add(json);
-
-    saveText(cont);
 
     emit(state.copyWith(
       chapters: chapterList,
@@ -77,31 +83,6 @@ class EditingBloc extends Cubit<EditingState> {
     ));
   }
 
-//reorder chapters
-  void reorder(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
-    final List<String> newChapterNames = [];
-    if (state.chapters.isNotEmpty) {
-      newChapterNames.addAll(state.chapterNames);
-    }
-    final String chapterName = newChapterNames.removeAt(oldIndex);
-    newChapterNames.insert(newIndex, chapterName);
-    //chapter text
-    final List<dynamic> newChapterText = [];
-    if (state.jsonChapterText.isNotEmpty) {
-      newChapterText.addAll(state.jsonChapterText);
-    }
-    final chapterT = newChapterText.removeAt(oldIndex);
-    newChapterText.insert(newIndex, chapterT);
-    emit(state.copyWith(
-        // chapters: newChapters,
-        chapterNames: newChapterNames,
-        jsonChapterText: newChapterText));
-  }
-
-//update the chapter title
   void updateTitle(String chapName, int index) {
     List<String> chapterNames = [];
     chapterNames.addAll(state.chapterNames);

@@ -10,8 +10,8 @@ class SideNotes {
     required this.note,
   });
 
-  SideNotes.empty({
-    this.notes = const {'': ''},
+  SideNotes.init({
+    this.notes = const {},
     this.outlines = 0,
     this.characters = 0,
     this.note = 0,

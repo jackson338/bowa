@@ -2,6 +2,7 @@ import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/editing/editing.dart';
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/pages/side_notes/side_notes_page.dart';
+import 'package:bowa/widgets/editing_chapterlist_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
@@ -12,7 +13,6 @@ class EditingPage extends StatelessWidget {
   final ChapterListBloc chapterListBloc;
   final ChapterListState chapterListState;
   final String id;
-  final int initialIndex;
   final LoginBloc lBloc;
   final int bookIndex;
 
@@ -22,205 +22,71 @@ class EditingPage extends StatelessWidget {
     required this.chapterListBloc,
     required this.chapterListState,
     required this.id,
-    required this.initialIndex,
     required this.lBloc,
     required this.bookIndex,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    RegExp wordCount = RegExp(r"[\w-._]+");
+ 
+    return BlocProvider(
+      create: (_) => EditingBloc(
+          context: context,
+          bookIndex: bookIndex,
+          lState: lBloc.state,
+          chapState: chapterListState),
+      child: BlocBuilder<EditingBloc, EditingState>(
+        buildWhen: (previous, current) =>
+            previous.editing != current.editing ||
+            previous.tools != current.tools ||
+            previous.drawerOpen != current.drawerOpen ||
+            previous.chapterSelected != current.chapterSelected,
+        builder: (editContext, state) {
+             RegExp wordCount = RegExp(r"[\w-._]+");
     Iterable matches = [];
     bool buildCalled = false;
     TextEditingController titleCont = TextEditingController();
     QuillController quillController = QuillController.basic();
     FocusNode quillFocus = FocusNode();
-    return GestureDetector(
-      onTap: () {
-        // FocusManager.instance.primaryFocus?.unfocus();
-        quillFocus.unfocus();
-      },
-      child: BlocProvider(
-        create: (_) => EditingBloc(context: context, chapState: chapterListState),
-        child: BlocBuilder<EditingBloc, EditingState>(
-          builder: (editContext, state) {
-            final editingBloc = editContext.read<EditingBloc>();
-            quillFocus.hasFocus
-                ? editingBloc.openDrawer(false)
-                : editingBloc.openDrawer(true);
-            if (state.jsonChapterText.isNotEmpty && !buildCalled) {
-              //Setting title controller text to chapter name
-              titleCont.text = state.chapterNames[state.chapterSelected];
-              titleCont.selection =
-                  TextSelection.fromPosition(TextPosition(offset: titleCont.text.length));
-              //setting document for json formatting
-              Document doc = Document.fromJson(
-                state.jsonChapterText[state.chapterSelected],
-              );
-              //creating quill controller and assigning the document to the json created 'doc' value
-              quillController = QuillController(
-                document: doc,
-                selection: const TextSelection.collapsed(offset: 0),
-                onSelectionChanged: (_) {
-                  //creating chapter text variable for wordcount
-                  List<dynamic> chapterText = [];
-                  if (state.jsonChapterText.isNotEmpty) {
-                    chapterText.addAll(state.jsonChapterText);
-                  }
-                  //assigning chapter text plain text from quill controller
-                  chapterText[state.chapterSelected] = quillController.document
-                      .getPlainText(0, quillController.document.length);
-                  //updating word count
-                  matches = wordCount.allMatches(quillController.document.toPlainText());
-                  //editing bloc saveText
-                  editingBloc.saveText(quillController);
-                  //saving data through sharedpreferences and updating the chapterlist.
-                  chapterListBloc.saveText(quillController.document.toPlainText(),
-                      quillController, state.chapterSelected);
-                },
-              );
-              //setting word count based on chapter text
-              matches = wordCount.allMatches(quillController.document.toPlainText());
-              buildCalled = true;
-            }
-            return Scaffold(
+          final editingBloc = editContext.read<EditingBloc>();
+          state.editing ? editingBloc.openDrawer(false) : editingBloc.openDrawer(true);
+          if (state.jsonChapterText.isNotEmpty && !buildCalled) {
+            titleCont.text = lBloc.state.user!.library![bookIndex]
+                    .chapterTitles[lBloc.state.user!.library![bookIndex].selectedDraft]
+                [state.chapterSelected];
+            titleCont.selection =
+                TextSelection.fromPosition(TextPosition(offset: titleCont.text.length));
+            Document doc = Document.fromJson(
+              state.jsonChapterText[state.chapterSelected],
+            );
+            quillController = QuillController(
+              document: doc,
+              selection: const TextSelection.collapsed(offset: 0),
+              onSelectionChanged: (_) {
+                editingBloc.editing(true);
+                List<dynamic> chapterText = [];
+                if (state.jsonChapterText.isNotEmpty) {
+                  chapterText.addAll(state.jsonChapterText);
+                }
+                chapterText[state.chapterSelected] = quillController.document
+                    .getPlainText(0, quillController.document.length);
+                matches = wordCount.allMatches(quillController.document.toPlainText());
+                chapterListBloc.saveText(quillController.document.toPlainText(),
+                    quillController, state.chapterSelected);
+              },
+            );
+            matches = wordCount.allMatches(quillController.document.toPlainText());
+            buildCalled = true;
+          }
+          return GestureDetector(
+            onTap: () {
+              quillFocus.unfocus();
+              editingBloc.editing(false);
+            },
+            child: Scaffold(
               //Chapter Container
-              drawer: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width / 3.5,
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: SizedBox(
-                      width: MediaQuery.of(context).size.width / 9,
-                      child: const FittedBox(
-                        child: Text(
-                          'Chapters',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    leading: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(
-                        Icons.arrow_back_ios_rounded,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  body: Container(
-                    color: Theme.of(context).hoverColor,
-                    child: ListView.builder(
-                      itemCount: state.chapters.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.resolveWith((states) {
-                                      if (index == state.chapterSelected) {
-                                        return Theme.of(context).primaryColor;
-                                      }
-                                      return null;
-                                    }),
-                                  ),
-                                  onPressed: () {
-                                    buildCalled = false;
-                                    FocusManager.instance.primaryFocus?.unfocus();
-                                    editingBloc.select(index);
-                                    chapterListBloc.select(index);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: FittedBox(
-                                      child: Text(
-                                        '${index + 1}: ${state.chapterNames[index]}',
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                            color: Colors.black, fontSize: 20.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              if (index == state.chapters.length - 1)
-                                // add chapter button
-                                Center(
-                                  child: IconButton(
-                                    splashColor: Theme.of(context).primaryColor,
-                                    onPressed: () {
-                                      String chapterName;
-                                      TextEditingController chaptNameController =
-                                          TextEditingController();
-                                      Document doc = Document();
-                                      QuillController quillCont = QuillController(
-                                        document: doc,
-                                        selection:
-                                            const TextSelection.collapsed(offset: 0),
-                                      );
-                                      showMenu(
-                                        context: context,
-                                        position:
-                                            const RelativeRect.fromLTRB(0, 110, 100, 100),
-                                        items: [
-                                          PopupMenuItem(
-                                            child: TextField(
-                                              autofocus: true,
-                                              decoration: InputDecoration(
-                                                hintText: 'Chapter Name',
-                                                hintStyle:
-                                                    Theme.of(context).textTheme.bodyText1,
-                                              ),
-                                              controller: chaptNameController,
-                                              keyboardAppearance: Brightness.dark,
-                                              textCapitalization:
-                                                  TextCapitalization.sentences,
-                                              onSubmitted: (_) {
-                                                Navigator.of(context).pop();
-                                                chapterName = chaptNameController.text;
-                                                editingBloc.addChapter(
-                                                  chapterName,
-                                                  'Chapter ${index + 2}',
-                                                  chapterName,
-                                                  index + 1,
-                                                  quillCont,
-                                                );
-                                                chapterListBloc.addChapter(
-                                                  chapterName,
-                                                  'Chapter ${index + 2}',
-                                                  chapterName,
-                                                  quillCont,
-                                                );
-                                                buildCalled = false;
-                                                editingBloc.select(index + 1);
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                        elevation: 8.0,
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.add_box_rounded,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              drawer: drawerChapterList(context, editingBloc, buildCalled,
+                  chapterListBloc, lBloc, bookIndex, state.chapterSelected),
               endDrawer: OrientationBuilder(
                 builder: (context, orient) {
                   //contains side notes
@@ -230,7 +96,7 @@ class EditingPage extends StatelessWidget {
                       id: id,
                       title: title,
                       lBloc: lBloc,
-                      index: bookIndex,
+                      bookIndex: bookIndex,
                     ),
                   );
                 },
@@ -244,6 +110,7 @@ class EditingPage extends StatelessWidget {
                           return FloatingActionButton(
                             onPressed: () {
                               quillFocus.unfocus();
+                              editingBloc.editing(false);
                               Scaffold.of(context).openDrawer();
                             },
                             child: const Icon(
@@ -281,6 +148,7 @@ class EditingPage extends StatelessWidget {
                       return IconButton(
                           onPressed: () {
                             quillFocus.unfocus();
+                            editingBloc.editing(false);
                             Scaffold.of(context).openEndDrawer();
                           },
                           icon: Icon(
@@ -407,6 +275,7 @@ class EditingPage extends StatelessWidget {
                                     icon: Icons.list_alt_outlined,
                                     onTap: () {
                                       quillFocus.unfocus();
+                                      editingBloc.editing(false);
                                       Scaffold.of(scaffoldContext).openDrawer();
                                     },
                                   ),
@@ -429,7 +298,6 @@ class EditingPage extends StatelessWidget {
                                 showVideoButton: false,
                                 showFontSize: false,
                                 showFontFamily: false,
-                                // showAlignmentButtons: state.tools,
                                 showColorButton: false,
                                 showQuote: false,
                                 showBackgroundColorButton: false,
@@ -449,9 +317,9 @@ class EditingPage extends StatelessWidget {
                   ),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

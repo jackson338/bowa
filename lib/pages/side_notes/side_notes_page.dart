@@ -3,18 +3,17 @@ import 'package:bowa/bloc/side_notes/side_notes.dart';
 import 'package:bowa/pages/side_notes/side_notes_editing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_quill/flutter_quill.dart' hide Text;
 
 class SideNotesPage extends StatelessWidget {
   final String id;
   final String title;
   final LoginBloc lBloc;
-  final int index;
+  final int bookIndex;
   const SideNotesPage({
     required this.id,
     required this.title,
     required this.lBloc,
-    required this.index,
+    required this.bookIndex,
     Key? key,
   }) : super(key: key);
 
@@ -25,7 +24,7 @@ class SideNotesPage extends StatelessWidget {
         id: id,
         title: title,
         lBloc: lBloc,
-        index: index,
+        index: bookIndex,
       ),
       child: BlocBuilder<SideNotesBloc, SideNotesState>(
         buildWhen: (previous, current) => previous.notes != current.notes,
@@ -116,17 +115,20 @@ class SideNotesPage extends StatelessWidget {
                             : MediaQuery.of(context).size.height / 1.5,
                         width: MediaQuery.of(context).size.width,
                         child: ListView.builder(
+                          itemCount: lBloc.state.user!.library![bookIndex].sideNotes.notes.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  context.read<SideNotesBloc>().select(index);
                                   final page = NotesEditingPage(
                                     title: state.notes.keys.elementAt(index),
                                     sideNotesBloc: sideNotesBloc,
                                     id: id,
+                                    lBloc: lBloc,
+                                    bookIndex: bookIndex,
+                                    valIndex: index,
                                   );
                                   Navigator.push(
                                     context,
@@ -187,7 +189,6 @@ class SideNotesPage extends StatelessWidget {
                               ),
                             );
                           },
-                          itemCount: state.notes.length,
                         ),
                       ),
                     ],

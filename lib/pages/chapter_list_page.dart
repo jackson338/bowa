@@ -16,15 +16,15 @@ class ChapterListPage extends StatelessWidget {
   final ThemeBloc themeBloc;
   final LoginBloc loginBloc;
   final int index;
-  const ChapterListPage(
-      {Key? key,
-      required this.title,
-      required this.id,
-      required this.writingBloc,
-      required this.themeBloc,
-      required this.loginBloc,
-      required this.index})
-      : super(key: key);
+  const ChapterListPage({
+    Key? key,
+    required this.title,
+    required this.id,
+    required this.writingBloc,
+    required this.themeBloc,
+    required this.loginBloc,
+    required this.index,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class ChapterListPage extends StatelessWidget {
                         id: id,
                         title: title,
                         lBloc: loginBloc,
-                        index: index,
+                        bookIndex: index,
                       ),
                     ),
                   ),
@@ -124,6 +124,7 @@ class ChapterListPage extends StatelessWidget {
                                   context,
                                   context.read<ChapterListBloc>(),
                                   index,
+                                  this.index,
                                   id,
                                   title,
                                   matches,
