@@ -33,8 +33,9 @@ class LoginBloc extends Cubit<LoginState> {
       state.user!.password,
     ];
     final User newUser = state.user!.copyWith(username: username);
-    emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} user');
     prefs.remove('${state.user!.authorName} Account Info');
+    emit(state.copyWith(user: newUser));
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
@@ -50,8 +51,9 @@ class LoginBloc extends Cubit<LoginState> {
       state.user!.password,
     ];
     final newUser = state.user!.copyWith(authorName: authorName);
-    emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} user');
     prefs.remove('${state.user!.authorName} Account Info');
+    emit(state.copyWith(user: newUser));
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
@@ -67,8 +69,9 @@ class LoginBloc extends Cubit<LoginState> {
       state.user!.password,
     ];
     final newUser = state.user!.copyWith(email: email);
-    emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} user');
     prefs.remove('${state.user!.authorName} Account Info');
+    emit(state.copyWith(user: newUser));
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
@@ -84,8 +87,9 @@ class LoginBloc extends Cubit<LoginState> {
       password
     ];
     final newUser = state.user!.copyWith(password: password);
-    emit(state.copyWith(user: newUser));
+    prefs.remove('${state.user!.authorName} user');
     prefs.remove('${state.user!.authorName} Account Info');
+    emit(state.copyWith(user: newUser));
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
