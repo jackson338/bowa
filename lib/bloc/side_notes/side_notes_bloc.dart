@@ -38,7 +38,7 @@ class SideNotesBloc extends Cubit<SideNotesState> {
         note: lBloc.state.user!.library![index].sideNotes.note));
   }
 
-  void updateVal(String key, QuillController doc) {
+  void updateVal(String key, QuillController doc) async {
     //updated note
     Map<String, String> updatedNote =
         lBloc.state.user!.library![index].sideNotes.notes.map(
@@ -72,9 +72,12 @@ class SideNotesBloc extends Cubit<SideNotesState> {
       }
     }
     emit(state.copyWith(notes: mapNotes));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(lBloc.state.user!.toJson());
+    prefs.setString('${lBloc.state.user!.authorName} user', jsonString);
   }
 
-  void newNote(String key) {
+  void newNote(String key) async {
     Map<String, String> notes = {};
     notes.addAll(lBloc.state.user!.library![index].sideNotes.notes);
     int outlines = lBloc.state.user!.library![index].sideNotes.outlines;
@@ -106,5 +109,8 @@ class SideNotesBloc extends Cubit<SideNotesState> {
       characters: characters,
     );
     init();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(lBloc.state.user!.toJson());
+    prefs.setString('${lBloc.state.user!.authorName} user', jsonString);
   }
 }

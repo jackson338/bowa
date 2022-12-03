@@ -1,11 +1,21 @@
 import 'package:bowa/models/book.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'user.g.dart';
 
+
+@JsonSerializable()
 class User {
+  @JsonKey(required: true)
   final String username;
+  @JsonKey(required: true)
   final String authorName;
+  @JsonKey(required: true)
   final String email;
+  @JsonKey(required: true)
   final String password;
+  @JsonKey(required: true)
   final String id;
+  @JsonKey(required: true)
   final bool autoLogin;
   final List<Book>? library;
   const User({
@@ -47,4 +57,8 @@ class User {
       library: library ?? this.library,
     );
   }
+
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this); 
 }
+

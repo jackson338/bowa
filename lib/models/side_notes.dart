@@ -1,7 +1,17 @@
+
+import 'package:json_annotation/json_annotation.dart';
+part 'side_notes.g.dart';
+
+
+@JsonSerializable()
 class SideNotes {
+  @JsonKey(required: true)
   Map<String, String> notes;
+  @JsonKey(required: true)
   int outlines;
+  @JsonKey(required: true)
   int characters;
+  @JsonKey(required: true)
   int note;
   SideNotes({
     required this.notes,
@@ -30,4 +40,6 @@ class SideNotes {
       note: note ?? this.note,
     );
   }
+   factory SideNotes.fromJson(Map<String, dynamic> json) => _$SideNotesFromJson(json);
+  Map<String, dynamic> toJson() => _$SideNotesToJson(this); 
 }

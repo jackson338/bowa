@@ -21,7 +21,7 @@ class AccountPage extends StatelessWidget {
     final emailCont = TextEditingController();
     final passwordCont = TextEditingController();
     return BlocProvider(
-      create: (_) => AccountBloc(accountInfo: accountInfo),
+      create: (_) => AccountBloc(accountInfo: accountInfo,loginBloc: loginBloc),
       child: BlocBuilder<AccountBloc, AccountState>(
         builder: (context, state) {
           final accountBloc = context.read<AccountBloc>();

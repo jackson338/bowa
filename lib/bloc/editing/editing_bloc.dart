@@ -15,8 +15,13 @@ class EditingBloc extends Cubit<EditingState> {
   }
 
   void init() {
-    emit(
+    bool tools = false;
+    if (kIsWeb || Theme.of(context).platform == TargetPlatform.macOS) {
+      tools = true;
+    }
+      emit(
       state.copyWith(
+        tools: tools,
         chapterNames: lState.user!.library![bookIndex]
             .chapterTitles[lState.user!.library![bookIndex].selectedDraft],
         chapters: lState.user!.library![bookIndex]

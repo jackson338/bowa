@@ -2,7 +2,11 @@ part of 'account.dart';
 
 class AccountBloc extends Cubit<AccountState> {
   final List<String> accountInfo;
-  AccountBloc({required this.accountInfo}) : super(const AccountState()) {
+  final LoginBloc loginBloc;
+  AccountBloc({
+    required this.accountInfo,
+    required this.loginBloc,
+  }) : super(const AccountState()) {
     init();
   }
 
@@ -27,6 +31,10 @@ class AccountBloc extends Cubit<AccountState> {
       prefs.setStringList('auto login', []);
     }
     emit(state.copyWith(autoLogin: val));
+    final newUser = loginBloc.state.user!.copyWith(autoLogin: val);
+    loginBloc.updateLibrary(newUser);
+    final jsonString = jsonEncode(loginBloc.state.user!.toJson());
+    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
   }
 
   void nameEdit(editing) {

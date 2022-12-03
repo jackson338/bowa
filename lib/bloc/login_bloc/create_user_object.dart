@@ -1,14 +1,30 @@
 import 'dart:convert';
 
-import 'package:bowa/models/book.dart';
-import 'package:bowa/models/side_notes.dart';
 import 'package:bowa/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<User> createUserObject(List accountInfo, bool autoLogin) async {
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  User newUser = const User.empty();
+  if (prefs.getString('${accountInfo[1]} user') != null) {
+    final json = jsonDecode(prefs.getString('${accountInfo[1]} user')!);
+    newUser = User.fromJson(json);
+  }
+
+ 
+  return newUser;
+
+   // final User user = User(
+  //   username: accountInfo[0],
+  //   authorName: accountInfo[1],
+  //   email: accountInfo[2],
+  //   password: accountInfo[3],
+  //   id: accountInfo[4],
+  //   autoLogin: autoLogin,
+  //   library: library,
+  // );
+
   // List<String>? bookIds;
-  List<Book>? library;
   // if (prefs.getStringList('${accountInfo[4]} title ids list') != null) {
   //   bookIds = prefs.getStringList('${accountInfo[4]} title ids list')!;
 
@@ -52,7 +68,6 @@ Future<User> createUserObject(List accountInfo, bool autoLogin) async {
   //       }
   //     }
 
-
   //     final chapters = List.generate(
   //         drafts.length,
   //         (draftIndex) =>
@@ -95,15 +110,4 @@ Future<User> createUserObject(List accountInfo, bool autoLogin) async {
   //     );
   //   });
   // }
-
-  final User user = User(
-    username: accountInfo[0],
-    authorName: accountInfo[1],
-    email: accountInfo[2],
-    password: accountInfo[3],
-    id: accountInfo[4],
-    autoLogin: autoLogin,
-    library: library,
-  );
-  return user;
 }

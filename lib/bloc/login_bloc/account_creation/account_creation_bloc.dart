@@ -3,21 +3,8 @@ part of 'account_creation.dart';
 class AccountCreationBloc extends Cubit<AccountCreationState> {
   AccountCreationBloc() : super(const AccountCreationState());
 
-  void submit(
-    TextEditingController nameCont,
-    TextEditingController authorNameCont,
-    TextEditingController emailCont,
-    TextEditingController passwordCont,
-    TextEditingController passwordConfirmCont,
-  ) {
-    if (nameCont.text.isEmpty ||
-        authorNameCont.text.isEmpty ||
-        emailCont.text.isEmpty ||
-        passwordCont.text.isEmpty ||
-        passwordConfirmCont.text.isEmpty) {}
-  }
 
-  void cancel() {
+   void cancel() {
     emit(state.copyWith(
       loading: false,
       authorName: '',
@@ -51,6 +38,16 @@ class AccountCreationBloc extends Cubit<AccountCreationState> {
     if (state.index == 3) {
       TextEditingController password = cont;
       emit(state.copyWith(index: newIndex, password: password.text, loading: true));
+      User user = User(
+        username: state.name,
+        authorName: state.authorName,
+        email: state.email,
+        password: state.password,
+        autoLogin: state.autoLogin,
+        id: UniqueKey().toString(),
+      );
+      final jsonString = jsonEncode(user.toJson());
+      prefs.setString('${user.authorName} user', jsonString);
       List<String> accountInfo = [
         state.name,
         state.authorName,
@@ -58,7 +55,6 @@ class AccountCreationBloc extends Cubit<AccountCreationState> {
         state.password,
         UniqueKey().toString(),
       ];
-      prefs.setStringList('${state.authorName} Account Info', accountInfo);
       Duration dur = const Duration(seconds: 1);
       Timer(dur, () {
         emit(state.copyWith(loading: false, loggedIn: true));

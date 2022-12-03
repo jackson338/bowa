@@ -159,8 +159,9 @@ class ChapterListPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10.0),
                                   child: TextButton(
-                                    onPressed: () =>
-                                        editContext.read<ChapterListBloc>().deleteBook(),
+                                    onPressed: () {
+                                      editContext.read<ChapterListBloc>().deleteBook(writingBloc);
+                                    }, 
                                     child: Row(
                                       children: [
                                         Text(

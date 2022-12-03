@@ -17,7 +17,7 @@ class WritingBloc extends Cubit<WritingState> {
   }
 
   void createDraft(TextEditingController titleController, BuildContext sheetContext,
-      WritingState writingState, String wordGoal) async {
+      WritingState writingState, String wordGoal) {
     String id = UniqueKey().toString();
     final newBook = Book(
       id: id,

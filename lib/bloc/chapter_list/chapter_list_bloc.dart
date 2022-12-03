@@ -47,12 +47,13 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     loginBloc.state.user!.library![index].selectedDraft =
         loginBloc.state.user!.library![index].drafts.last;
     loginBloc.state.user!.library![index].wordGoals.add(state.wordGoal);
-    // final User lib = loginBloc.state.user!.copyWith(library: newLib);
-    // loginBloc.updateLibrary(lib);
     init();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(loginBloc.state.user!.toJson());
+    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
   }
 
-  void deleteBook() {
+  void deleteBook(WritingBloc writingBloc) {
     final List<Book> newLib = [];
     for (int i = 0; i < loginBloc.state.user!.library!.length; i++) {
       if (i != index) {
@@ -61,7 +62,8 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     }
     final User lib = loginBloc.state.user!.copyWith(library: newLib);
     loginBloc.updateLibrary(lib);
-    init();
+    writingBloc.init();
+    Navigator.of(context).pop();
   }
 
   /// Saves the text typed in the current chapter.
@@ -83,7 +85,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
 
   // create a new chapter
   void addChapter(
-      String chaptName, String chapt, String chaptText, QuillController cont) {
+      String chaptName, String chapt, String chaptText, QuillController cont) async {
     var json = cont.document.toDelta().toJson();
     loginBloc.state.user!.library![index].chapterTitles[state.selectedDraft]
         .add(chaptName);
@@ -94,6 +96,9 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     init();
     emit(state.copyWith(
         chapters: loginBloc.state.user!.library![index].chapters[state.selectedDraft]));
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(loginBloc.state.user!.toJson());
+    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
   }
 
   // reorder chapters

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
@@ -23,8 +25,8 @@ class BooksPage extends StatelessWidget {
         loginBloc: loginBloc,
       ),
       child: BlocBuilder<WritingBloc, WritingState>(
-        buildWhen: (previous, current) => previous.library != current.library,
         builder: (context, state) {
+          print('building');
           if (!context.read<WritingBloc>().state.titlesUpdated) {
             context.read<WritingBloc>().updateTitles();
           }

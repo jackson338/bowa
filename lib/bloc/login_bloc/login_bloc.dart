@@ -37,6 +37,8 @@ class LoginBloc extends Cubit<LoginState> {
     prefs.remove('${state.user!.authorName} Account Info');
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
+    final jsonString = jsonEncode(state.user!.toJson());
+    prefs.setString('${state.user!.authorName} user', jsonString);
   }
 
   void updateAuthor(String authorName) async {
@@ -52,6 +54,8 @@ class LoginBloc extends Cubit<LoginState> {
     prefs.remove('${state.user!.authorName} Account Info');
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
+    final jsonString = jsonEncode(state.user!.toJson());
+    prefs.setString('${state.user!.authorName} user', jsonString);
   }
 
   void updateEmail(String email) async {
@@ -67,6 +71,8 @@ class LoginBloc extends Cubit<LoginState> {
     prefs.remove('${state.user!.authorName} Account Info');
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
+    final jsonString = jsonEncode(state.user!.toJson());
+    prefs.setString('${state.user!.authorName} user', jsonString);
   }
 
   void updatePassword(String password) async {
@@ -82,6 +88,8 @@ class LoginBloc extends Cubit<LoginState> {
     prefs.remove('${state.user!.authorName} Account Info');
     prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
     prefs.setStringList('auto login', newInfo);
+    final jsonString = jsonEncode(state.user!.toJson());
+    prefs.setString('${state.user!.authorName} user', jsonString);
   }
 
   void name(name) {
@@ -143,7 +151,11 @@ class LoginBloc extends Cubit<LoginState> {
     User? user = await createUserObject(accountInfo, state.autoLogin);
     emit(state.copyWith(loggedIn: true, user: user));
   }
-  void updateLibrary(User newUser) {
+
+  void updateLibrary(User newUser) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     emit(state.copyWith(user: newUser));
+    final jsonString = jsonEncode(state.user!.toJson());
+    prefs.setString('${state.user!.authorName} user', jsonString);
   }
 }

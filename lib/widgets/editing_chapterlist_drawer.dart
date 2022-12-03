@@ -103,6 +103,7 @@ Widget drawerChapterList(
                     showMenu(
                       context: context,
                       position: const RelativeRect.fromLTRB(0, 110, 100, 100),
+                      color: Theme.of(context).hoverColor,
                       items: [
                         PopupMenuItem(
                           child: TextField(
