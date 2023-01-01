@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/side_notes/side_notes.dart';
 import 'package:bowa/bloc/side_notes_editing/notes_editing.dart';
+import 'package:bowa/widgets/quill_editor_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
@@ -87,37 +88,7 @@ class NotesEditingPage extends StatelessWidget {
                     expands: true,
                     textCapitalization: TextCapitalization.sentences,
                     keyboardAppearance: Brightness.dark,
-                    customStyles: DefaultStyles(
-                        paragraph: DefaultTextBlockStyle(
-                            Theme.of(context).textTheme.bodyText1!,
-                            const Tuple2(16, 0),
-                            const Tuple2(0, 0),
-                            null),
-                        h1: DefaultTextBlockStyle(
-                            TextStyle(
-                                color: Theme.of(context).textTheme.bodyText1!.color,
-                                fontSize: 35),
-                            const Tuple2(16, 0),
-                            const Tuple2(0, 0),
-                            null),
-                        h2: DefaultTextBlockStyle(
-                            TextStyle(
-                                color: Theme.of(context).textTheme.bodyText1!.color,
-                                fontSize: 28),
-                            const Tuple2(16, 0),
-                            const Tuple2(0, 0),
-                            null),
-                        h3: DefaultTextBlockStyle(
-                            TextStyle(
-                                color: Theme.of(context).textTheme.bodyText1!.color,
-                                fontSize: 21),
-                            const Tuple2(16, 0),
-                            const Tuple2(0, 0),
-                            null),
-                        bold: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1!.color,
-                            fontWeight: FontWeight.bold),
-                        color: Theme.of(context).textTheme.bodyText1!.color),
+                    customStyles: quillStyles(context: context),
                   ),
                 ),
               ),

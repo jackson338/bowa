@@ -3,8 +3,7 @@ part of 'account_creation.dart';
 class AccountCreationBloc extends Cubit<AccountCreationState> {
   AccountCreationBloc() : super(const AccountCreationState());
 
-
-   void cancel() {
+  void cancel() {
     emit(state.copyWith(
       loading: false,
       authorName: '',
@@ -55,6 +54,7 @@ class AccountCreationBloc extends Cubit<AccountCreationState> {
         state.password,
         UniqueKey().toString(),
       ];
+      prefs.setStringList('${state.authorName} Account Info', accountInfo);
       Duration dur = const Duration(seconds: 1);
       Timer(dur, () {
         emit(state.copyWith(loading: false, loggedIn: true));

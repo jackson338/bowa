@@ -8,6 +8,7 @@ import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/pages/account_page.dart';
 import 'package:bowa/pages/books_page/books_page.dart';
 import 'package:bowa/pages/library_page.dart';
+import 'package:bowa/widgets/outline_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,6 +45,9 @@ class MyApp extends StatelessWidget {
                     color: state.headline,
                     fontSize: 32,
                     fontWeight: FontWeight.w300,
+                  ),
+                  headline6: TextStyle(
+                    color: state.headline6,
                   ),
                   bodyText1: TextStyle(
                     color: state.bodyText,
@@ -124,34 +128,49 @@ class LoginPage extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: TextButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Theme.of(context).primaryColor),
-                                elevation: MaterialStateProperty.all(5),
-                              ),
-                              onPressed: () => login(context, context.read<LoginBloc>()),
-                              child: const Text(
-                                'Login',
-                                maxLines: 1,
-                                style: TextStyle(color: Colors.black, fontSize: 25.0),
+                            child: GestureDetector(
+                              onTap: () => login(context, context.read<LoginBloc>()),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(15.0),
+                                  child: Text(
+                                    'Login',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25.0,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: TextButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Theme.of(context).primaryColor),
-                                elevation: MaterialStateProperty.all(5),
-                              ),
-                              onPressed: () => createAccount(
+                            child: GestureDetector(
+                              onTap: () => createAccount(
                                   context, conts, texts, context.read<LoginBloc>()),
-                              child: const Text(
-                                'Create Account :)',
-                                maxLines: 1,
-                                style: TextStyle(color: Colors.black, fontSize: 25.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(15.0),
+                                  child: Text(
+                                    'Create Account :)',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -208,39 +227,43 @@ void login(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey,
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: TextField(
+                            autofocus: true,
+                            decoration: outlineTextField(
+                              context: context,
+                              selected: Theme.of(context).primaryColor,
+                              stagnant: Theme.of(context).hoverColor,
+                              hintText: 'Name',
+                            ),
+                            controller: name,
+                            keyboardAppearance: Brightness.dark,
+                            onChanged: (nameText) => loginBloc.name(nameText),
+                            onSubmitted: (_) {},
                           ),
-                        ),
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: TextField(
-                          autofocus: true,
-                          decoration: const InputDecoration(hintText: 'Name'),
-                          controller: name,
-                          keyboardAppearance: Brightness.dark,
-                          onChanged: (nameText) => loginBloc.name(nameText),
-                          onSubmitted: (_) {},
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey,
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: TextField(
+                            autofocus: true,
+                            decoration: outlineTextField(
+                              context: context,
+                              selected: Theme.of(context).primaryColor,
+                              stagnant: Theme.of(context).hoverColor,
+                              hintText: 'Password',
+                            ),
+                            controller: password,
+                            obscureText: true,
+                            keyboardAppearance: Brightness.dark,
+                            onChanged: (pass) => loginBloc.password(pass),
+                            onSubmitted: (_) {},
                           ),
-                        ),
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: TextField(
-                          autofocus: true,
-                          decoration: const InputDecoration(hintText: 'Password'),
-                          controller: password,
-                          obscureText: true,
-                          keyboardAppearance: Brightness.dark,
-                          onChanged: (pass) => loginBloc.password(pass),
-                          onSubmitted: (_) {},
                         ),
                       ),
                       // : CircularProgressIndicator(
@@ -361,17 +384,16 @@ void createAccount(BuildContext context, List<TextEditingController> conts,
                           ),
                         ),
                       !state.loading
-                          ? Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                          ? SizedBox(
                               width: MediaQuery.of(context).size.width / 2,
                               child: TextField(
                                 autofocus: true,
-                                decoration: InputDecoration(hintText: texts[state.index]),
+                                decoration: outlineTextField(
+                                  context: context,
+                                  selected: Theme.of(context).primaryColor,
+                                  stagnant: Theme.of(context).hoverColor,
+                                  hintText: texts[state.index],
+                                ),
                                 controller: conts[state.index],
                                 keyboardAppearance: Brightness.dark,
                                 textCapitalization: TextCapitalization.sentences,

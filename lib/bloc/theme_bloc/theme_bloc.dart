@@ -26,6 +26,7 @@ class ThemeBloc extends Cubit<ThemeState> {
       hover: Colors.blueGrey,
       icon: Colors.cyan,
       headline: Colors.cyan,
+      headline6: Colors.white,
     ));
   }
 
@@ -39,6 +40,7 @@ class ThemeBloc extends Cubit<ThemeState> {
       hover: Colors.blueGrey,
       icon: Colors.cyan,
       headline: Colors.cyan,
+      headline6: Colors.black,
     ));
   }
 }

@@ -9,6 +9,7 @@ class ThemeState {
   final MaterialColor hover;
   final Color icon;
   final Color headline;
+  final Color headline6;
   final Color bodyText;
   final Color card;
 
@@ -21,6 +22,7 @@ class ThemeState {
     this.hover = Colors.blueGrey,
     this.icon = Colors.cyan,
     this.headline = Colors.cyan,
+    this.headline6 = Colors.black,
     this.bodyText = Colors.black,
     this.card = Colors.white,
   });
@@ -34,6 +36,7 @@ class ThemeState {
     final MaterialColor? hover,
     final Color? icon,
     final Color? headline,
+    final Color? headline6,
     final Color? bodyText,
     final Color? card,
   }) {
@@ -46,6 +49,7 @@ class ThemeState {
       hover: hover ?? this.hover,
       icon: icon ?? this.icon,
       headline: headline ?? this.headline,
+      headline6: headline6 ?? this.headline6,
       bodyText: bodyText ?? this.bodyText,
       card: card ?? this.card,
     );

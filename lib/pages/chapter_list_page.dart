@@ -160,8 +160,10 @@ class ChapterListPage extends StatelessWidget {
                                   padding: const EdgeInsets.only(right: 10.0),
                                   child: TextButton(
                                     onPressed: () {
-                                      editContext.read<ChapterListBloc>().deleteBook(writingBloc);
-                                    }, 
+                                      editContext
+                                          .read<ChapterListBloc>()
+                                          .deleteBook(writingBloc);
+                                    },
                                     child: Row(
                                       children: [
                                         Text(
@@ -179,7 +181,10 @@ class ChapterListPage extends StatelessWidget {
                                   ),
                                 ),
                                 //Copy All Button
-                                const Text('Copy All: '),
+                                const Text(
+                                  'Copy All: ',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
                                 IconButton(
                                   splashColor: Theme.of(context).primaryColor,
                                   color: Theme.of(context).primaryColor,
@@ -202,7 +207,11 @@ class ChapterListPage extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text('Word Goal: $totalCount / ${state.wordGoal}'),
+                          child: Text(
+                            'Word Goal: $totalCount / ${state.wordGoal}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 17),
+                          ),
                         ),
                         Stack(
                           children: [

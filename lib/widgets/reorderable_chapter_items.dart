@@ -1,6 +1,7 @@
 import 'package:bowa/bloc/chapter_list/chapter_list.dart';
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/pages/editing_page.dart';
+import 'package:bowa/widgets/outline_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
@@ -17,31 +18,38 @@ Widget addChapter(BuildContext context, ChapterListBloc clBloc, ChapterListState
         document: doc,
         selection: const TextSelection.collapsed(offset: 0),
       );
-      showMenu(
+      showModalBottomSheet(
+        isDismissible: true,
         context: context,
-        position: const RelativeRect.fromLTRB(400, 50, 50, 50),
-        color: Theme.of(context).hoverColor,
-        items: [
-          PopupMenuItem(
-            child: TextField(
-              autofocus: true,
-              decoration: const InputDecoration(hintText: 'Chapter Name'),
-              controller: chaptNameController,
-              keyboardAppearance: Brightness.dark,
-              textCapitalization: TextCapitalization.sentences,
-              onSubmitted: (_) {
-                Navigator.of(context).pop();
-                chapterName = chaptNameController.text;
-                clBloc.addChapter(
-                  chapterName,
-                  'Chapter ${state.chapters.length + 1}',
-                  chapterName,
-                  quillController,
-                );
-              },
-            ),
-          ),
-        ],
+        builder: ((sheetcontext) => Container(
+              height: MediaQuery.of(context).size.height / 2,
+              color: Theme.of(context).hoverColor,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  autofocus: true,
+                  decoration: outlineTextField(
+                    context: context,
+                    stagnant: Theme.of(context).backgroundColor,
+                    selected: Theme.of(context).primaryColor,
+                    hintText: 'Chapter Name',
+                  ),
+                  controller: chaptNameController,
+                  keyboardAppearance: Brightness.dark,
+                  textCapitalization: TextCapitalization.sentences,
+                  onSubmitted: (_) {
+                    Navigator.of(context).pop();
+                    chapterName = chaptNameController.text;
+                    clBloc.addChapter(
+                      chapterName,
+                      'Chapter ${state.chapters.length + 1}',
+                      chapterName,
+                      quillController,
+                    );
+                  },
+                ),
+              ),
+            )),
         elevation: 8.0,
       );
     },

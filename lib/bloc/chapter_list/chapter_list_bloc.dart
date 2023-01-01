@@ -35,6 +35,9 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     emit(state.copyWith(
       selectedDraft: selected,
     ));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(loginBloc.state.user!.toJson());
+    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
     init();
   }
 
@@ -96,22 +99,34 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     init();
     emit(state.copyWith(
         chapters: loginBloc.state.user!.library![index].chapters[state.selectedDraft]));
-        SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final jsonString = jsonEncode(loginBloc.state.user!.toJson());
     prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
   }
 
   // reorder chapters
   void reorder(int oldIndex, int newIndex) async {
-    // print('old index: $oldIndex new index: $newIndex');
-    // if (oldIndex < newIndex) {
-    //   newIndex -= 1;
-    // }
-    // final Book newBook = loginBloc.state.user!.library!.removeAt(oldIndex);
-    // loginBloc.state.user!.library!.insert(newIndex, newBook);
-    // // final newUser = loginBloc.state.user!.copyWith(library: newLib);
-    // // loginBloc.updateLibrary(newUser);
-    // init();
+    final draft = loginBloc.state.user!.library![index].selectedDraft;
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final String chapters =
+        loginBloc.state.user!.library![index].chapters[draft].removeAt(oldIndex);
+    final String chapterTexts =
+        loginBloc.state.user!.library![index].chapterTexts[draft].removeAt(oldIndex);
+    final String chapterTitles =
+        loginBloc.state.user!.library![index].chapterTitles[draft].removeAt(oldIndex);
+    final jsonChapterTexts =
+        loginBloc.state.user!.library![index].jsonChapterTexts[draft].removeAt(oldIndex);
+
+    loginBloc.state.user!.library![index].chapters[draft].insert(newIndex, chapters);
+    loginBloc.state.user!.library![index].chapterTexts[draft].insert(newIndex, chapterTexts);
+    loginBloc.state.user!.library![index].chapterTitles[draft].insert(newIndex, chapterTitles);
+    loginBloc.state.user!.library![index].jsonChapterTexts[draft].insert(newIndex, jsonChapterTexts);
+    final newLib = loginBloc.state.user!.library!;
+    final newUser = loginBloc.state.user!.copyWith(library: newLib);
+    loginBloc.updateLibrary(newUser);
+    init();
   }
 
   // update the chapter title

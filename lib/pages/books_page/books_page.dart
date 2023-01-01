@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/bloc/theme_bloc/theme.dart';
 import 'package:bowa/bloc/writing/writing.dart';
 import 'package:bowa/pages/settings.dart';
+import 'package:bowa/widgets/outline_text_field.dart';
 import 'package:bowa/widgets/writing_book_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +25,6 @@ class BooksPage extends StatelessWidget {
       ),
       child: BlocBuilder<WritingBloc, WritingState>(
         builder: (context, state) {
-          print('building');
           if (!context.read<WritingBloc>().state.titlesUpdated) {
             context.read<WritingBloc>().updateTitles();
           }
@@ -132,9 +130,15 @@ class BooksPage extends StatelessWidget {
                     //title name text field
                     TextField(
                       autofocus: true,
-                      decoration: const InputDecoration(hintText: 'Book Title'),
+                      decoration: outlineTextField(
+                        context: context,
+                        selected: Theme.of(context).primaryColor,
+                        stagnant: Theme.of(context).backgroundColor,
+                        hintText: 'New Draft',
+                      ),
                       controller: titleController,
                       keyboardAppearance: Brightness.dark,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                       textCapitalization: TextCapitalization.sentences,
                     ),
                     //submit button
@@ -168,8 +172,18 @@ class BooksPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 6,
+                            width: MediaQuery.of(context).size.width / 5,
                             child: TextField(
+                              keyboardType: TextInputType.number,
+                              keyboardAppearance: Brightness.dark,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: outlineTextField(
+                                context: context,
+                                selected: Theme.of(context).primaryColor,
+                                stagnant: Theme.of(context).backgroundColor,
+                              ),
                               controller: wordGoal,
                               cursorColor: Theme.of(context).primaryColor,
                             ),

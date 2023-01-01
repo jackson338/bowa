@@ -3,10 +3,11 @@ import 'package:bowa/bloc/editing/editing.dart';
 import 'package:bowa/bloc/login_bloc/login.dart';
 import 'package:bowa/pages/side_notes/side_notes_page.dart';
 import 'package:bowa/widgets/editing_chapterlist_drawer.dart';
+import 'package:bowa/widgets/outline_text_field.dart';
+import 'package:bowa/widgets/quill_editor_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
-import 'package:tuple/tuple.dart';
 
 class EditingPage extends StatelessWidget {
   final String title;
@@ -28,7 +29,7 @@ class EditingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
- 
+    print('builder');
     return BlocProvider(
       create: (_) => EditingBloc(
           context: context,
@@ -42,12 +43,13 @@ class EditingPage extends StatelessWidget {
             previous.drawerOpen != current.drawerOpen ||
             previous.chapterSelected != current.chapterSelected,
         builder: (editContext, state) {
-             RegExp wordCount = RegExp(r"[\w-._]+");
-    Iterable matches = [];
-    bool buildCalled = false;
-    TextEditingController titleCont = TextEditingController();
-    QuillController quillController = QuillController.basic();
-    FocusNode quillFocus = FocusNode();
+          print('build');
+          RegExp wordCount = RegExp(r"[\w-._]+");
+          Iterable matches = [];
+          bool buildCalled = false;
+          TextEditingController titleCont = TextEditingController();
+          QuillController quillController = QuillController.basic();
+          FocusNode quillFocus = FocusNode();
           final editingBloc = editContext.read<EditingBloc>();
           state.editing ? editingBloc.openDrawer(false) : editingBloc.openDrawer(true);
           if (state.jsonChapterText.isNotEmpty && !buildCalled) {
@@ -176,14 +178,18 @@ class EditingPage extends StatelessWidget {
                       children: [
                         // Chapter Name
                         SizedBox(
-                          height: 30,
+                          height: 50,
                           child: TextField(
                             autofocus: false,
-                            decoration: const InputDecoration(hintText: 'Chapter Name'),
+                            decoration: outlineTextField(
+                                context: context,
+                                stagnant: Theme.of(context).hoverColor,
+                                selected: Theme.of(context).primaryColor,
+                                hintText: 'Chapter Name'),
                             controller: titleCont,
                             keyboardAppearance: Brightness.dark,
                             textCapitalization: TextCapitalization.sentences,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.headline6,
                             onChanged: (_) {
                               String chapterName = titleCont.text;
                               editContext
@@ -215,50 +221,7 @@ class EditingPage extends StatelessWidget {
                                   expands: true,
                                   textCapitalization: TextCapitalization.sentences,
                                   keyboardAppearance: Brightness.dark,
-                                  customStyles: DefaultStyles(
-                                      paragraph: DefaultTextBlockStyle(
-                                          Theme.of(context).textTheme.bodyText1!,
-                                          const Tuple2(16, 0),
-                                          const Tuple2(0, 0),
-                                          null),
-                                      h1: DefaultTextBlockStyle(
-                                          TextStyle(
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color,
-                                              fontSize: 35),
-                                          const Tuple2(16, 0),
-                                          const Tuple2(0, 0),
-                                          null),
-                                      h2: DefaultTextBlockStyle(
-                                          TextStyle(
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color,
-                                              fontSize: 28),
-                                          const Tuple2(16, 0),
-                                          const Tuple2(0, 0),
-                                          null),
-                                      h3: DefaultTextBlockStyle(
-                                          TextStyle(
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color,
-                                              fontSize: 21),
-                                          const Tuple2(16, 0),
-                                          const Tuple2(0, 0),
-                                          null),
-                                      bold: TextStyle(
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!
-                                              .color,
-                                          fontWeight: FontWeight.bold),
-                                      color:
-                                          Theme.of(context).textTheme.bodyText1!.color),
+                                  customStyles: quillStyles(context: context),
                                 ),
                               ),
                             ),
