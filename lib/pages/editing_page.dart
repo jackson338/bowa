@@ -29,7 +29,6 @@ class EditingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('builder');
     return BlocProvider(
       create: (_) => EditingBloc(
           context: context,
@@ -43,7 +42,6 @@ class EditingPage extends StatelessWidget {
             previous.drawerOpen != current.drawerOpen ||
             previous.chapterSelected != current.chapterSelected,
         builder: (editContext, state) {
-          print('build');
           RegExp wordCount = RegExp(r"[\w-._]+");
           Iterable matches = [];
           bool buildCalled = false;
@@ -63,8 +61,14 @@ class EditingPage extends StatelessWidget {
             );
             quillController = QuillController(
               document: doc,
-              selection: const TextSelection.collapsed(offset: 0),
-              onSelectionChanged: (_) {
+              // selection: TextSelection.fromPosition(
+              //   TextPosition(
+              //     offset: state.offset,
+              //   ),
+              // ),
+              selection: TextSelection.collapsed(offset: state.offset),
+              onSelectionChanged: (osc) {
+                editingBloc.offset(osc.extentOffset);
                 editingBloc.editing(true);
                 List<dynamic> chapterText = [];
                 if (state.jsonChapterText.isNotEmpty) {
@@ -75,9 +79,11 @@ class EditingPage extends StatelessWidget {
                 matches = wordCount.allMatches(quillController.document.toPlainText());
                 chapterListBloc.saveText(quillController.document.toPlainText(),
                     quillController, state.chapterSelected);
+                editingBloc.updateWordCount(matches.length);
               },
             );
             matches = wordCount.allMatches(quillController.document.toPlainText());
+            editingBloc.updateWordCount(matches.length);
             buildCalled = true;
           }
           return GestureDetector(
@@ -139,10 +145,16 @@ class EditingPage extends StatelessWidget {
                 actions: [
                   Align(
                     alignment: Alignment.centerRight,
-                    child: Text(
-                      'Words: ${matches.length}',
-                      style: TextStyle(
-                          fontSize: 15, color: Theme.of(context).iconTheme.color),
+                    child: BlocBuilder<EditingBloc, EditingState>(
+                      buildWhen: (previous, current) =>
+                          previous.matches != current.matches,
+                      builder: (context, state) {
+                        return Text(
+                          'Words: ${state.matches}',
+                          style: TextStyle(
+                              fontSize: 15, color: Theme.of(context).iconTheme.color),
+                        );
+                      },
                     ),
                   ),
                   Builder(

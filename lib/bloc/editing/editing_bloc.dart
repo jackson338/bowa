@@ -37,12 +37,20 @@ class EditingBloc extends Cubit<EditingState> {
     emit(state.copyWith(drawerOpen: status));
   }
 
+  void updateWordCount(int matches) {
+    emit(state.copyWith(matches: matches));
+  }
+
   void tool() {
     emit(state.copyWith(tools: !state.tools));
   }
 
   void editing(bool editing) {
     emit(state.copyWith(editing: editing));
+  }
+
+  void offset(int offset) {
+    emit(state.copyWith(offset: offset));
   }
 
   void select(int chapterSelect, LoginState ls) {

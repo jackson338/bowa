@@ -10,6 +10,8 @@ class EditingState {
   final bool typing;
   final bool drawerOpen;
   final bool tools;
+  final int matches;
+  final int offset;
 
   const EditingState({
     this.editing = false,
@@ -21,6 +23,8 @@ class EditingState {
     this.jsonChapterText = const [],
     this.drawerOpen = true,
     this.tools = false,
+    this.matches = 0,
+    this.offset = 0,
   });
 
   EditingState copyWith({
@@ -33,6 +37,8 @@ class EditingState {
     final bool? typing,
     final bool? drawerOpen,
     final bool? tools,
+    final int? matches,
+    final int? offset,
   }) {
     return EditingState(
       editing: editing ?? this.editing,
@@ -44,6 +50,8 @@ class EditingState {
       jsonChapterText: jsonChapterText ?? this.jsonChapterText,
       drawerOpen: drawerOpen ?? this.drawerOpen,
       tools: tools ?? this.tools,
+      matches: matches ?? this.matches,
+      offset: offset ?? this.offset,
     );
   }
 }

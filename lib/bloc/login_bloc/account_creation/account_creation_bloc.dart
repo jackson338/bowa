@@ -46,19 +46,12 @@ class AccountCreationBloc extends Cubit<AccountCreationState> {
         id: UniqueKey().toString(),
       );
       final jsonString = jsonEncode(user.toJson());
-      prefs.setString('${user.authorName} user', jsonString);
-      List<String> accountInfo = [
-        state.name,
-        state.authorName,
-        state.email,
-        state.password,
-        UniqueKey().toString(),
-      ];
-      prefs.setStringList('${state.authorName} Account Info', accountInfo);
+      prefs.setString('${user.id} user', jsonString);
+      prefs.setString('${user.username} ${user.password} id', user.id);
       Duration dur = const Duration(seconds: 1);
       Timer(dur, () {
         emit(state.copyWith(loading: false, loggedIn: true));
-        loginBloc.accountCreated(accountInfo);
+        loginBloc.accountCreated(user);
         Navigator.of(context).pop();
       });
     }

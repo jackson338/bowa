@@ -7,93 +7,56 @@ class LoginBloc extends Cubit<LoginState> {
 
   void init() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List autoLoginInfo = [];
-    if (prefs.getStringList('auto login') != null) {
-      autoLoginInfo = prefs.getStringList('auto login')!;
-    }
-    if (autoLoginInfo.isNotEmpty) {
-      User? user = await createUserObject(autoLoginInfo, state.autoLogin);
-      emit(state.copyWith(
-        name: autoLoginInfo[0],
-        authorName: autoLoginInfo[1],
-        email: autoLoginInfo[2],
-        password: autoLoginInfo[3],
-        loggedIn: true,
-        user: user,
-      ));
+    String? id = prefs.getString('auto login');
+    if (id != null) {
+      if (id.isNotEmpty) {
+        User? user = await createUserObject(id);
+        emit(state.copyWith(
+          name: user.username,
+          authorName: user.authorName,
+          email: user.email,
+          password: user.password,
+          loggedIn: true,
+          user: user,
+        ));
+      }
     }
   }
 
   void updateUsername(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final List<String> newInfo = [
-      username,
-      state.user!.authorName,
-      state.user!.email,
-      state.user!.password,
-    ];
     final User newUser = state.user!.copyWith(username: username);
-    prefs.remove('${state.user!.authorName} user');
-    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.remove('${state.user!.id} user');
     emit(state.copyWith(user: newUser));
-    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
-    prefs.setString('${state.user!.authorName} user', jsonString);
+    prefs.setString('${state.user!.id} user', jsonString);
   }
 
   void updateAuthor(String authorName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final List<String> newInfo = [
-      state.user!.username,
-      authorName,
-      state.user!.email,
-      state.user!.password,
-    ];
     final newUser = state.user!.copyWith(authorName: authorName);
-    prefs.remove('${state.user!.authorName} user');
-    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.remove('${state.user!.id} user');
     emit(state.copyWith(user: newUser));
-    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
-    prefs.setString('${state.user!.authorName} user', jsonString);
+    prefs.setString('${state.user!.id} user', jsonString);
   }
 
   void updateEmail(String email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final List<String> newInfo = [
-      state.user!.username,
-      state.user!.authorName,
-      email,
-      state.user!.password,
-    ];
     final newUser = state.user!.copyWith(email: email);
-    prefs.remove('${state.user!.authorName} user');
-    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.remove('${state.user!.id} user');
     emit(state.copyWith(user: newUser));
-    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
-    prefs.setString('${state.user!.authorName} user', jsonString);
+    prefs.setString('${state.user!.id} user', jsonString);
   }
 
   void updatePassword(String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final List<String> newInfo = [
-      state.user!.username,
-      state.user!.authorName,
-      state.user!.email,
-      password
-    ];
     final newUser = state.user!.copyWith(password: password);
-    prefs.remove('${state.user!.authorName} user');
-    prefs.remove('${state.user!.authorName} Account Info');
+    prefs.remove('${state.user!.id} user');
     emit(state.copyWith(user: newUser));
-    prefs.setStringList('${state.user!.authorName} Account Info', newInfo);
-    prefs.setStringList('auto login', newInfo);
     final jsonString = jsonEncode(state.user!.toJson());
-    prefs.setString('${state.user!.authorName} user', jsonString);
+    prefs.setString('${state.user!.id} user', jsonString);
   }
 
   void name(name) {
@@ -104,35 +67,28 @@ class LoginBloc extends Cubit<LoginState> {
     emit(state.copyWith(password: password));
   }
 
-  void login(String username, String password, BuildContext context) async {
+  void login(
+    String username,
+    String password,
+    BuildContext context,
+  ) async {
     final nav = Navigator.of(context);
     final contx = ScaffoldMessenger.of(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> accountInfo = [];
-    if (prefs.getStringList('$username Account Info') != null) {
-      accountInfo = prefs.getStringList('$username Account Info')!;
-    }
-    if (accountInfo.isNotEmpty) {
-      emit(state.copyWith(
-        name: accountInfo[0],
-        authorName: accountInfo[1],
-        email: accountInfo[2],
-        password: accountInfo[3],
-      ));
-    }
-    if (username == state.authorName && password == state.password) {
+    String? id = prefs.getString('$username $password id');
+    User user = const User.empty();
+    if (id != null) {
+      User? user = await createUserObject(id);
       if (state.autoLogin == true) {
-        prefs.setStringList('auto login', accountInfo);
+        prefs.setString('auto login', id);
       } else {
-        prefs.setStringList('auto login', []);
+        prefs.setString('auto login', '');
       }
-      User? user = await createUserObject(accountInfo, state.autoLogin);
       emit(state.copyWith(loggedIn: true, user: user));
       nav.pop();
     } else {
       contx.showSnackBar(const SnackBar(
         backgroundColor: Colors.red,
-        // clipBehavior: Clip.antiAlias,
         behavior: SnackBarBehavior.floating,
         dismissDirection: DismissDirection.down,
         duration: Duration(seconds: 1),
@@ -151,8 +107,7 @@ class LoginBloc extends Cubit<LoginState> {
     emit(state.copyWith(autoLogin: val));
   }
 
-  void accountCreated(List accountInfo) async {
-    User? user = await createUserObject(accountInfo, state.autoLogin);
+  void accountCreated(User user) async {
     emit(state.copyWith(loggedIn: true, user: user));
   }
 
@@ -160,6 +115,6 @@ class LoginBloc extends Cubit<LoginState> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     emit(state.copyWith(user: newUser));
     final jsonString = jsonEncode(state.user!.toJson());
-    prefs.setString('${state.user!.authorName} user', jsonString);
+    prefs.setString('${state.user!.id} user', jsonString);
   }
 }

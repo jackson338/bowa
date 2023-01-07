@@ -13,8 +13,8 @@ class AccountBloc extends Cubit<AccountState> {
   void init() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool autoLogin = false;
-    if (prefs.getStringList('auto login') != null) {
-      if (prefs.getStringList('auto login')!.isNotEmpty) {
+    if (prefs.getString('auto login') != null) {
+      if (prefs.getString('auto login')!.isNotEmpty) {
         autoLogin = true;
       }
     }
@@ -23,18 +23,18 @@ class AccountBloc extends Cubit<AccountState> {
         : emit(state.copyWith(autoLogin: autoLogin));
   }
 
-  void switchAutoLogin(bool val) async {
+  void switchAutoLogin(bool val, String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (val) {
-      prefs.setStringList('auto login', accountInfo);
+      prefs.setString('auto login', id);
     } else {
-      prefs.setStringList('auto login', []);
+      prefs.setString('auto login', '');
     }
     emit(state.copyWith(autoLogin: val));
     final newUser = loginBloc.state.user!.copyWith(autoLogin: val);
     loginBloc.updateLibrary(newUser);
     final jsonString = jsonEncode(loginBloc.state.user!.toJson());
-    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
+    prefs.setString('${loginBloc.state.user!.id} user', jsonString);
   }
 
   void nameEdit(editing) {

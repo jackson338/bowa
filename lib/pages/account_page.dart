@@ -21,7 +21,7 @@ class AccountPage extends StatelessWidget {
     final emailCont = TextEditingController();
     final passwordCont = TextEditingController();
     return BlocProvider(
-      create: (_) => AccountBloc(accountInfo: accountInfo,loginBloc: loginBloc),
+      create: (_) => AccountBloc(accountInfo: accountInfo, loginBloc: loginBloc),
       child: BlocBuilder<AccountBloc, AccountState>(
         builder: (context, state) {
           final accountBloc = context.read<AccountBloc>();
@@ -101,7 +101,8 @@ class AccountPage extends StatelessWidget {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    authorNameCont.text = loginBloc.state.user!.authorName;
+                                    authorNameCont.text =
+                                        loginBloc.state.user!.authorName;
                                     accountBloc.authorEdit(true);
                                   },
                                   child: state.authorEdit
@@ -222,7 +223,10 @@ class AccountPage extends StatelessWidget {
                                   activeTrackColor: Theme.of(context).primaryColorLight,
                                   inactiveTrackColor: Theme.of(context).hoverColor,
                                   inactiveThumbColor: Theme.of(context).primaryColor,
-                                  onChanged: (val) => accountBloc.switchAutoLogin(val),
+                                  onChanged: (val) => accountBloc.switchAutoLogin(
+                                    val,
+                                    loginBloc.state.user!.id,
+                                  ),
                                 ),
                               ],
                             ),

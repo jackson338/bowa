@@ -37,7 +37,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     ));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final jsonString = jsonEncode(loginBloc.state.user!.toJson());
-    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
+    prefs.setString('${loginBloc.state.user!.id} user', jsonString);
     init();
   }
 
@@ -53,7 +53,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
     init();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final jsonString = jsonEncode(loginBloc.state.user!.toJson());
-    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
+    prefs.setString('${loginBloc.state.user!.id} user', jsonString);
   }
 
   void deleteBook(WritingBloc writingBloc) {
@@ -101,7 +101,7 @@ class ChapterListBloc extends Cubit<ChapterListState> {
         chapters: loginBloc.state.user!.library![index].chapters[state.selectedDraft]));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final jsonString = jsonEncode(loginBloc.state.user!.toJson());
-    prefs.setString('${loginBloc.state.user!.authorName} user', jsonString);
+    prefs.setString('${loginBloc.state.user!.id} user', jsonString);
   }
 
   // reorder chapters
