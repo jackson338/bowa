@@ -224,68 +224,74 @@ void login(
                   ),
                 ),
                 body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: TextField(
-                            autofocus: true,
-                            decoration: outlineTextField(
-                              context: context,
-                              selected: Theme.of(context).primaryColor,
-                              stagnant: Theme.of(context).hoverColor,
-                              hintText: 'Name',
+                  child: AutofillGroup(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: TextField(
+                              autofocus: true,
+                              decoration: outlineTextField(
+                                context: context,
+                                selected: Theme.of(context).primaryColor,
+                                stagnant: Theme.of(context).hoverColor,
+                                hintText: 'Name',
+                              ),
+                              controller: name,
+                              keyboardType: TextInputType.name,
+                              autofillHints: const [AutofillHints.username],
+                              keyboardAppearance: Brightness.dark,
+                              onChanged: (nameText) => loginBloc.name(nameText),
+                              onSubmitted: (_) {},
                             ),
-                            controller: name,
-                            keyboardAppearance: Brightness.dark,
-                            onChanged: (nameText) => loginBloc.name(nameText),
-                            onSubmitted: (_) {},
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: TextField(
-                            autofocus: true,
-                            decoration: outlineTextField(
-                              context: context,
-                              selected: Theme.of(context).primaryColor,
-                              stagnant: Theme.of(context).hoverColor,
-                              hintText: 'Password',
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: TextField(
+                              autofocus: true,
+                              decoration: outlineTextField(
+                                context: context,
+                                selected: Theme.of(context).primaryColor,
+                                stagnant: Theme.of(context).hoverColor,
+                                hintText: 'Password',
+                              ),
+                              controller: password,
+                              obscureText: true,
+                              keyboardAppearance: Brightness.dark,
+                              keyboardType: TextInputType.text,
+                              autofillHints: const [AutofillHints.password],
+                              onChanged: (pass) => loginBloc.password(pass),
+                              onSubmitted: (_) {},
                             ),
-                            controller: password,
-                            obscureText: true,
-                            keyboardAppearance: Brightness.dark,
-                            onChanged: (pass) => loginBloc.password(pass),
-                            onSubmitted: (_) {},
                           ),
                         ),
-                      ),
-                      // : CircularProgressIndicator(
-                      //     backgroundColor: Theme.of(context).backgroundColor,
-                      //     color: Theme.of(context).primaryColor,
-                      //     strokeWidth: 3,
-                      //   ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Auto Login'),
-                          Switch(
-                            value: state.autoLogin,
-                            onChanged: (val) {
-                              origLoginBloc.switchAutoLogin(val);
-                              context.read<LoginBloc>().switchAutoLogin(val);
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                        // : CircularProgressIndicator(
+                        //     backgroundColor: Theme.of(context).backgroundColor,
+                        //     color: Theme.of(context).primaryColor,
+                        //     strokeWidth: 3,
+                        //   ),
+                  
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Auto Login'),
+                            Switch(
+                              value: state.autoLogin,
+                              onChanged: (val) {
+                                origLoginBloc.switchAutoLogin(val);
+                                context.read<LoginBloc>().switchAutoLogin(val);
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 floatingActionButton: FloatingActionButton(
@@ -386,33 +392,40 @@ void createAccount(BuildContext context, List<TextEditingController> conts,
                       !state.loading
                           ? SizedBox(
                               width: MediaQuery.of(context).size.width / 2,
-                              child: TextField(
-                                autofocus: true,
-                                decoration: outlineTextField(
-                                  context: context,
-                                  selected: Theme.of(context).primaryColor,
-                                  stagnant: Theme.of(context).hoverColor,
-                                  hintText: texts[state.index],
+                              child: AutofillGroup(
+                                child: TextField(
+                                  autofocus: true,
+                                  decoration: outlineTextField(
+                                    context: context,
+                                    selected: Theme.of(context).primaryColor,
+                                    stagnant: Theme.of(context).hoverColor,
+                                    hintText: texts[state.index],
+                                  ),
+                                  controller: conts[state.index],
+                                  keyboardAppearance: Brightness.dark,
+                                  textCapitalization: TextCapitalization.sentences,
+                                  onChanged: (change) => context
+                                      .read<AccountCreationBloc>()
+                                      .changes(change, state.index),
+                                  keyboardType: state.index == 2
+                                      ? TextInputType.emailAddress
+                                      : state.index == 3
+                                          ? TextInputType.text
+                                          : TextInputType.name,
+                                  autofillHints: state.index == 2
+                                      ? [AutofillHints.email]
+                                      : state.index == 3
+                                          ? [AutofillHints.newPassword]
+                                          : [AutofillHints.newUsername],
+                                  onSubmitted: (_) {
+                                    if (conts[state.index].text.isNotEmpty) {
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                      context
+                                          .read<AccountCreationBloc>()
+                                          .next(conts[state.index], context, loginBloc);
+                                    }
+                                  },
                                 ),
-                                controller: conts[state.index],
-                                keyboardAppearance: Brightness.dark,
-                                textCapitalization: TextCapitalization.sentences,
-                                onChanged: (change) => context
-                                    .read<AccountCreationBloc>()
-                                    .changes(change, state.index),
-                                keyboardType: state.index == 2
-                                    ? TextInputType.emailAddress
-                                    : state.index == 3
-                                        ? TextInputType.visiblePassword
-                                        : TextInputType.name,
-                                onSubmitted: (_) {
-                                  if (conts[state.index].text.isNotEmpty) {
-                                    FocusManager.instance.primaryFocus?.unfocus();
-                                    context
-                                        .read<AccountCreationBloc>()
-                                        .next(conts[state.index], context, loginBloc);
-                                  }
-                                },
                               ),
                             )
                           : CircularProgressIndicator(
